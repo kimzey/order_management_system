@@ -1,7 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"kizmey/intern/task/database"
+	server_pkg "kizmey/intern/task/server"
+)
 
 func main() {
-	fmt.Println("check")
+	db := database.NewPostgresDatabase()
+
+	server := server_pkg.NewEchoServer(db)
+	server.Start()
+
 }
