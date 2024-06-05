@@ -2,23 +2,27 @@ package server
 
 import (
 	"fmt"
+	"github.com/kizmey/order_management_system/config"
+	"github.com/kizmey/order_management_system/database"
 	"github.com/labstack/echo/v4"
-	"kizmey/intern/task/database"
 	"net/http"
 )
 
 type echoServer struct {
-	app *echo.Echo
-	db  database.Database
+	app  *echo.Echo
+	db   database.Database
+	conf *config.Config
 }
 
-func NewEchoServer(DB database.Database) Server {
+func NewEchoServer(conf *config.Config, DB database.Database) Server {
 	echoApp := echo.New()
 	//echoApp.logger = setLevel(log.debug)
 
 	server := &echoServer{
-		app: echoApp,
-		db:  DB}
+		app:  echoApp,
+		db:   DB,
+		conf: conf,
+	}
 	return server
 }
 
@@ -29,7 +33,7 @@ func (s *echoServer) Start() {
 }
 
 func (s *echoServer) httpListening() {
-	Url := fmt.Sprintf(":%d", 8080)
+	Url := fmt.Sprintf(":%d", s.conf.Server.Port)
 
 	err := s.app.Start(Url)
 

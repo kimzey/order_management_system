@@ -1,14 +1,15 @@
 package main
 
 import (
-	"kizmey/intern/task/database"
-	server_pkg "kizmey/intern/task/server"
+	"github.com/kizmey/order_management_system/config"
+	"github.com/kizmey/order_management_system/database"
+	serverPkg "github.com/kizmey/order_management_system/server"
 )
 
 func main() {
-	db := database.NewPostgresDatabase()
+	conf := config.GettingConfig()
+	db := database.NewPostgresDatabase(conf.Database)
 
-	server := server_pkg.NewEchoServer(db)
+	server := serverPkg.NewEchoServer(conf, db)
 	server.Start()
-
 }

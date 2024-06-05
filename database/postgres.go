@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"github.com/kizmey/order_management_system/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -10,9 +11,16 @@ type postgresDatabase struct {
 	*gorm.DB
 }
 
-func NewPostgresDatabase() Database {
-	dsn := "host=localhost port=5433 user=postgres password=123456 dbname=orderdb sslmode=disable search_path=public "
-
+func NewPostgresDatabase(conf *config.Database) Database {
+	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s search_path=%s ",
+		conf.Host,
+		conf.Port,
+		conf.User,
+		conf.Password,
+		conf.DBName,
+		conf.SSLMode,
+		conf.Schema,
+	)
 	conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil
