@@ -5,6 +5,7 @@ import (
 	"github.com/kizmey/order_management_system/config"
 	"github.com/kizmey/order_management_system/database"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"net/http"
 )
 
@@ -29,6 +30,11 @@ func NewEchoServer(conf *config.Config, DB database.Database) Server {
 func (s *echoServer) Start() {
 	s.app.GET("/v1/health", s.healthCheck)
 
+	s.app.Use(middleware.Recover())
+	s.app.Use(middleware.Logger())
+
+	s.initStockRouter()
+
 	s.httpListening()
 }
 
@@ -42,6 +48,7 @@ func (s *echoServer) httpListening() {
 	}
 }
 
+// path : /v1/health method : GET FOR check server
 func (s *echoServer) healthCheck(c echo.Context) error {
 	s.db.Connect()
 	return c.String(http.StatusOK, "Ok")
