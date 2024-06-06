@@ -34,6 +34,7 @@ func (s *echoServer) Start() {
 	s.app.Use(middleware.Logger())
 
 	s.initStockRouter()
+	s.initProductRouter()
 
 	s.httpListening()
 }
