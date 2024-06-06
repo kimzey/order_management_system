@@ -59,12 +59,3 @@ func (m *Order) NextPaidToDone() error {
 
 	return errors.New("invalid order status")
 }
-func ConvertOrderModelsToEntities(orders *[]Order) *[]entities.Order {
-	entityOrders := new([]entities.Order)
-
-	for _, order := range *orders {
-		*entityOrders = append(*entityOrders, *order.ToOrderEntity())
-	}
-
-	return entityOrders
-}

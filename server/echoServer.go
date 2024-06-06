@@ -36,6 +36,7 @@ func (s *echoServer) Start() {
 	s.initStockRouter()
 	s.initProductRouter()
 	s.initOrderRouter()
+	s.inittransactionRouter()
 
 	s.httpListening()
 }

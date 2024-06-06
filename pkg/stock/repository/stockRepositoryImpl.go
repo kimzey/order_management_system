@@ -17,9 +17,10 @@ func NewStockRepositoryImpl(db database.Database, logger echo.Logger) StockRepos
 }
 
 func (r *stockRepositoryImpl) Create(stock *entities.Stock) (*entities.Stock, error) {
+	modelStock := ToStockModel(stock)
 	newStock := new(model.Stock)
 
-	if err := r.db.Connect().Create(stock.ToStockModel()).Scan(newStock).Error; err != nil {
+	if err := r.db.Connect().Create(modelStock).Scan(newStock).Error; err != nil {
 		r.logger.Error("Creating item failed:", err.Error())
 		return nil, err
 	}
@@ -39,27 +40,37 @@ func (r *stockRepositoryImpl) FindAll() (*[]entities.Stock, error) {
 
 func (r *stockRepositoryImpl) CheckStockByProductId(productId uint64) (*entities.Stock, error) {
 	stock := new(model.Stock)
-
-	if err := r.db.Connect().Where("id = ?", productId).First(stock).Error; err != nil {
+	//fmt.Println("productId: ", productId)
+	if err := r.db.Connect().Preload("Product").Where("product_id = ?", productId).First(stock).Error; err != nil {
 		return nil, err
 	}
+	//fmt.Println("stock: ", stock)
 	return stock.ToStockEntity(), nil
 }
 
 func (r *stockRepositoryImpl) Update(stockid uint64, stock *entities.Stock) (*entities.Stock, error) {
 	stocks := new(model.Stock)
+	modelStock := ToStockModel(stock)
 
-	if err := r.db.Connect().Model(&model.Stock{}).Where(
+	if err := r.db.Connect().Model(&modelStock).Where(
 		"id = ?", stockid,
 	).Updates(
-		stock,
+		modelStock,
 	).Scan(stocks).Error; err != nil {
 		r.logger.Error("Editing item failed:", err.Error())
 		return nil, err
 	}
+	//fmt.Println("stocks: ", stocks)
 	return stocks.ToStockEntity(), nil
 }
 
 func (r *stockRepositoryImpl) Delete(id uint64) error {
 	return r.db.Connect().Delete(&model.Stock{}, id).Error
+}
+
+func ToStockModel(e *entities.Stock) *model.Stock {
+	return &model.Stock{
+		ProductID: e.ProductID,
+		Quantity:  e.Quantity,
+	}
 }

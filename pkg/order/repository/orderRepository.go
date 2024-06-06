@@ -9,5 +9,5 @@ type OrderRepository interface {
 	//Update(order *entities.Order) (*entities.Order, error)
 	//Delete(order *entities.Order)
 	ChangeStatusNext(id uint64) (*entities.Order, error)
-	ChageStatusDone(id uint64) (*entities.Order, error)
+	ChangeStatusDone(id uint64) (*entities.Order, error)
 }

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"github.com/kizmey/order_management_system/database"
 	"github.com/kizmey/order_management_system/entities"
 	"github.com/kizmey/order_management_system/model"
@@ -17,21 +18,29 @@ func NewOrderRepositoryImpl(db database.Database, logger echo.Logger) OrderRepos
 }
 
 func (r *orderRepositoryImpl) Create(order *entities.Order) (*entities.Order, error) {
-
+	modelOrder := ToOrderModel(order)
 	newOrder := new(model.Order)
-	if err := r.db.Connect().Create(order.ToOrderModel()).Scan(&newOrder).Error; err != nil {
+
+	if err := r.db.Connect().Create(modelOrder).Scan(&newOrder).Error; err != nil {
 		r.logger.Error("Creating item failed:", err.Error())
 		return nil, err
 	}
+
+	if err := r.db.Connect().Preload("Product").Preload("Transaction").First(&newOrder, newOrder.ID).Error; err != nil {
+		r.logger.Error("Failed to find order:", err.Error())
+		return nil, err
+	}
+	fmt.Println("newOrder: ", newOrder)
 	return newOrder.ToOrderEntity(), nil
 }
+
 func (r *orderRepositoryImpl) FindAll() (*[]entities.Order, error) {
 	orders := new([]model.Order)
 
-	if err := r.db.Connect().Find(orders).Error; err != nil {
+	if err := r.db.Connect().Preload("Product").Preload("Transaction").Find(orders).Error; err != nil {
 		return nil, err
 	}
-	allOrder := model.ConvertOrderModelsToEntities(orders)
+	allOrder := ConvertOrderModelsToEntities(orders)
 	return allOrder, nil
 }
 func (r *orderRepositoryImpl) ChangeStatusNext(id uint64) (*entities.Order, error) {
@@ -55,7 +64,7 @@ func (r *orderRepositoryImpl) ChangeStatusNext(id uint64) (*entities.Order, erro
 	return newOrder.ToOrderEntity(), nil
 }
 
-func (r orderRepositoryImpl) ChageStatusDone(id uint64) (*entities.Order, error) {
+func (r *orderRepositoryImpl) ChangeStatusDone(id uint64) (*entities.Order, error) {
 	newOrder := new(model.Order)
 
 	if err := r.db.Connect().First(&newOrder, id).Error; err != nil {
@@ -74,4 +83,21 @@ func (r orderRepositoryImpl) ChageStatusDone(id uint64) (*entities.Order, error)
 	}
 
 	return newOrder.ToOrderEntity(), nil
+}
+
+func ConvertOrderModelsToEntities(orders *[]model.Order) *[]entities.Order {
+	entityOrders := new([]entities.Order)
+
+	for _, order := range *orders {
+		*entityOrders = append(*entityOrders, *order.ToOrderEntity())
+	}
+
+	return entityOrders
+}
+func ToOrderModel(e *entities.Order) *model.Order {
+	return &model.Order{
+		TransactionID: e.TransactionID,
+		ProductID:     e.ProductID,
+		Status:        e.Status,
+	}
 }
