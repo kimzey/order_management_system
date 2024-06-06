@@ -12,10 +12,11 @@ func (s *echoServer) initOrderRouter() {
 
 	transactionRepository := _transactionRepository.NewTransactionController(s.db, s.app.Logger)
 	orderRepository := _orderRepository.NewOrderRepositoryImpl(s.db, s.app.Logger)
+
 	orderService := _orderService.NewOrderService(orderRepository, transactionRepository)
 	orderController := _orderController.NewOrderControllerImpl(orderService)
 
-	//router.GET("", stockController.FindAll)
+	router.GET("", orderController.FindAll)
 	//router.GET("/product/:id", stockController.CheckStockByProductId)
 	router.POST("", orderController.Create)
 	router.PUT("/next/:id", orderController.ChangeStatusNext)

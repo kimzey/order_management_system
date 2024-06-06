@@ -3,6 +3,7 @@ package repository
 import (
 	"github.com/kizmey/order_management_system/database"
 	"github.com/kizmey/order_management_system/entities"
+	"github.com/kizmey/order_management_system/model"
 	"github.com/labstack/echo/v4"
 )
 
@@ -17,16 +18,24 @@ func NewOrderRepositoryImpl(db database.Database, logger echo.Logger) OrderRepos
 
 func (r *orderRepositoryImpl) Create(order *entities.Order) (*entities.Order, error) {
 
-	newOrder := new(entities.Order)
-	if err := r.db.Connect().Create(order).Scan(&newOrder).Error; err != nil {
+	newOrder := new(model.Order)
+	if err := r.db.Connect().Create(order.ToOrderModel()).Scan(&newOrder).Error; err != nil {
 		r.logger.Error("Creating item failed:", err.Error())
 		return nil, err
 	}
-	return newOrder, nil
+	return newOrder.ToOrderEntity(), nil
 }
+func (r *orderRepositoryImpl) FindAll() (*[]entities.Order, error) {
+	orders := new([]model.Order)
 
+	if err := r.db.Connect().Find(orders).Error; err != nil {
+		return nil, err
+	}
+	allOrder := model.ConvertOrderModelsToEntities(orders)
+	return allOrder, nil
+}
 func (r *orderRepositoryImpl) ChangeStatusNext(id uint64) (*entities.Order, error) {
-	newOrder := new(entities.Order)
+	newOrder := new(model.Order)
 
 	if err := r.db.Connect().First(&newOrder, id).Error; err != nil {
 		r.logger.Error("Failed to find order:", err.Error())
@@ -43,11 +52,11 @@ func (r *orderRepositoryImpl) ChangeStatusNext(id uint64) (*entities.Order, erro
 		return nil, err
 	}
 
-	return newOrder, nil
+	return newOrder.ToOrderEntity(), nil
 }
 
 func (r orderRepositoryImpl) ChageStatusDone(id uint64) (*entities.Order, error) {
-	newOrder := new(entities.Order)
+	newOrder := new(model.Order)
 
 	if err := r.db.Connect().First(&newOrder, id).Error; err != nil {
 		r.logger.Error("Failed to find order:", err.Error())
@@ -64,5 +73,5 @@ func (r orderRepositoryImpl) ChageStatusDone(id uint64) (*entities.Order, error)
 		return nil, err
 	}
 
-	return newOrder, nil
+	return newOrder.ToOrderEntity(), nil
 }

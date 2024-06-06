@@ -3,6 +3,7 @@ package repository
 import (
 	"github.com/kizmey/order_management_system/database"
 	"github.com/kizmey/order_management_system/entities"
+	"github.com/kizmey/order_management_system/model"
 	"github.com/labstack/echo/v4"
 )
 
@@ -16,48 +17,49 @@ func NewStockRepositoryImpl(db database.Database, logger echo.Logger) StockRepos
 }
 
 func (r *stockRepositoryImpl) Create(stock *entities.Stock) (*entities.Stock, error) {
-	newStock := new(entities.Stock)
+	newStock := new(model.Stock)
 
-	if err := r.db.Connect().Create(stock).Scan(newStock).Error; err != nil {
+	if err := r.db.Connect().Create(stock.ToStockModel()).Scan(newStock).Error; err != nil {
 		r.logger.Error("Creating item failed:", err.Error())
 		return nil, err
 	}
 
-	return newStock, nil
+	return newStock.ToStockEntity(), nil
 }
 
 func (r *stockRepositoryImpl) FindAll() (*[]entities.Stock, error) {
-	stocks := new([]entities.Stock)
+	stocks := new([]model.Stock)
 
 	if err := r.db.Connect().Find(stocks).Error; err != nil {
 		return nil, err
 	}
-	return stocks, nil
+	allStock := model.ConvertStockModelsToEntities(stocks)
+	return allStock, nil
 }
 
 func (r *stockRepositoryImpl) CheckStockByProductId(productId uint64) (*entities.Stock, error) {
-	stock := new(entities.Stock)
+	stock := new(model.Stock)
 
-	if err := r.db.Connect().Where("product_id = ?", productId).First(stock).Error; err != nil {
+	if err := r.db.Connect().Where("id = ?", productId).First(stock).Error; err != nil {
 		return nil, err
 	}
-	return stock, nil
+	return stock.ToStockEntity(), nil
 }
 
 func (r *stockRepositoryImpl) Update(stockid uint64, stock *entities.Stock) (*entities.Stock, error) {
-	stocks := new(entities.Stock)
+	stocks := new(model.Stock)
 
-	if err := r.db.Connect().Model(&entities.Stock{}).Where(
-		"stock_id = ?", stockid,
+	if err := r.db.Connect().Model(&model.Stock{}).Where(
+		"id = ?", stockid,
 	).Updates(
 		stock,
 	).Scan(stocks).Error; err != nil {
 		r.logger.Error("Editing item failed:", err.Error())
 		return nil, err
 	}
-	return stocks, nil
+	return stocks.ToStockEntity(), nil
 }
 
 func (r *stockRepositoryImpl) Delete(id uint64) error {
-	return r.db.Connect().Delete(&entities.Stock{}, id).Error
+	return r.db.Connect().Delete(&model.Stock{}, id).Error
 }

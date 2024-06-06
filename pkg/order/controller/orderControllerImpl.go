@@ -62,3 +62,11 @@ func (c *orderControllerImpl) ChageStatusDone(pctx echo.Context) error {
 	}
 	return pctx.JSON(http.StatusOK, order)
 }
+
+func (c *orderControllerImpl) FindAll(pctx echo.Context) error {
+	orderListingResult, err := c.orderService.FindAll()
+	if err != nil {
+		return pctx.JSON(http.StatusInternalServerError, err.Error())
+	}
+	return pctx.JSON(http.StatusOK, orderListingResult)
+}

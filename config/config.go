@@ -35,10 +35,10 @@ type (
 func GettingConfig() *Config {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath("./config")
+	//viper.AddConfigPath("./config")
 
 	//comment for migration database
-	//viper.AddConfigPath("../../config")
+	viper.AddConfigPath("../../config")
 
 	viper.AutomaticEnv()
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))

@@ -46,6 +46,10 @@ func (s *orderServiceImpl) ChageStatusDone(id uint64) (*entities.Order, error) {
 	return s.orderRepository.ChageStatusDone(id)
 }
 
+func (s *orderServiceImpl) FindAll() (*[]entities.Order, error) {
+	return s.orderRepository.FindAll()
+}
+
 func (s *orderServiceImpl) calculatePrice(price uint, quantity uint, isDomestic bool) uint {
 	if isDomestic {
 		return (price * quantity) + 40

@@ -1,19 +1,22 @@
 package entities
 
-import (
-	"time"
-)
+import "github.com/kizmey/order_management_system/model"
 
 type Transaction struct {
-	TransactionID uint64    `gorm:"primaryKey;autoIncrement;" json:"transactionid" validate:"required"`
-	ProductName   string    `gorm:"type:varchar(128);not null;" json:"productname" validate:"required"`
-	ProductPrice  uint      `gorm:"not null;" json:"productprice" validate:"required"`
-	Quantity      uint      `gorm:"not null;" json:"quantity" validate:"required"`
-	SumPrice      uint      `gorm:"not null;" json:"sumprice" validate:"required"`
-	CreatedAt     time.Time `gorm:"not null;autoCreateTime;"`
-	UpdatedAt     time.Time `gorm:"not null;autoUpdateTime;"`
+	TransactionID uint64 `json:"transactionid" `
+	ProductID     uint64 `json:"ProductID" `
+	ProductName   string `json:"productname" `
+	ProductPrice  uint   `json:"productprice" `
+	Quantity      uint   `json:"quantity" `
+	SumPrice      uint   `json:"sumprice" `
+	IsDomestic    bool   `json:"isdomestic" `
 }
 
-//func (s *Transaction) calculatePrice(price uint, quantity uint) uint {
-//	return price * quantity
-//}
+func (e *Transaction) ToTransactionModel() *model.Transaction {
+	return &model.Transaction{
+		ProductID:  e.ProductID,
+		Quantity:   e.Quantity,
+		SumPrice:   e.SumPrice,
+		IsDomestic: e.IsDomestic,
+	}
+}

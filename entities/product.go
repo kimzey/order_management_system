@@ -1,13 +1,16 @@
 package entities
 
-import (
-	"time"
-)
+import "github.com/kizmey/order_management_system/model"
 
 type Product struct {
-	ProductID    uint64    `gorm:"primaryKey;autoIncrement;" json:"ProductID" `
-	ProductName  string    `gorm:"type:varchar(128);not null;" json:"ProductName" validate:"required"`
-	ProductPrice uint      `gorm:"not null;" json:"ProductPrice" validate:"required"`
-	CreatedAt    time.Time `gorm:"not null;autoCreateTime;" `
-	UpdatedAt    time.Time `gorm:"not null;autoUpdateTime;" `
+	ProductID    uint64 `json:"ProductID" `
+	ProductName  string `json:"ProductName"`
+	ProductPrice uint   `json:"ProductPrice" `
+}
+
+func (e *Product) ToProductModel() *model.Product {
+	return &model.Product{
+		Name:  e.ProductName,
+		Price: e.ProductPrice,
+	}
 }
