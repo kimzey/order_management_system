@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/kizmey/order_management_system/entities"
 	_StockService "github.com/kizmey/order_management_system/pkg/stock/service"
@@ -28,7 +29,7 @@ func (c *stockControllerImpl) Create(pctx echo.Context) error {
 	if err := validatorInit.Struct(stockReq); err != nil {
 		return err
 	}
-	//fmt.Println("check")
+	fmt.Println("check")
 	address, err := c.stockService.Create(stockReq)
 
 	if err != nil {

@@ -4,7 +4,6 @@ import (
 	"github.com/kizmey/order_management_system/config"
 	"github.com/kizmey/order_management_system/database"
 	"github.com/kizmey/order_management_system/entities"
-	"github.com/kizmey/order_management_system/ขยะ"
 	"gorm.io/gorm"
 )
 
@@ -14,7 +13,6 @@ func main() {
 
 	tx := db.Connect().Begin()
 
-	addressMigration(tx)
 	orderMigration(tx)
 	productMigration(tx)
 	stockMigration(tx)
@@ -23,13 +21,6 @@ func main() {
 	if err := tx.Commit().Error; err != nil {
 		tx.Rollback()
 		panic(err)
-	}
-}
-
-func addressMigration(tx *gorm.DB) {
-	err := tx.Migrator().CreateTable(&ขยะ.Address{})
-	if err != nil {
-		return
 	}
 }
 
