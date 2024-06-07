@@ -55,6 +55,7 @@ func (s *orderServiceImpl) Create(order *entities.Order) (*entities.Order, error
 		ProductName:  checkProduct.ProductName,
 		ProductPrice: checkProduct.ProductPrice,
 		Quantity:     order.Quantity,
+		IsDomestic:   order.IsDomestic,
 		SumPrice:     s.calculatePrice(checkProduct.ProductPrice, order.Quantity, order.IsDomestic),
 	}
 
@@ -69,16 +70,27 @@ func (s *orderServiceImpl) Create(order *entities.Order) (*entities.Order, error
 
 	return newOrder, nil
 }
+func (s *orderServiceImpl) FindAll() (*[]entities.Order, error) {
+	return s.orderRepository.FindAll()
+}
+
+func (s *orderServiceImpl) FindByID(id uint64) (*entities.Order, error) {
+	return s.orderRepository.FindByID(id)
+}
+
+func (s *orderServiceImpl) Update(id uint64, order *entities.Order) (*entities.Order, error) {
+	return s.orderRepository.Update(id, order)
+}
+
+func (s *orderServiceImpl) Delete(id uint64) error {
+	return s.orderRepository.Delete(id)
+}
 
 func (s *orderServiceImpl) ChangeStatusNext(id uint64) (*entities.Order, error) {
 	return s.orderRepository.ChangeStatusNext(id)
 }
 func (s *orderServiceImpl) ChageStatusDone(id uint64) (*entities.Order, error) {
 	return s.orderRepository.ChangeStatusDone(id)
-}
-
-func (s *orderServiceImpl) FindAll() (*[]entities.Order, error) {
-	return s.orderRepository.FindAll()
 }
 
 func (s *orderServiceImpl) calculatePrice(price uint, quantity uint, isDomestic bool) uint {

@@ -25,6 +25,7 @@ func (s *productServiceImpl) FindByID(id uint64) (*entities.Product, error) {
 	return s.productRepository.FindByID(id)
 }
 func (s *productServiceImpl) Update(id uint64, product *entities.Product) (*entities.Product, error) {
+
 	return s.productRepository.Update(id, product)
 }
 

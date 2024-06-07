@@ -42,6 +42,7 @@ func (r *productRepositoryImpl) FindByID(id uint64) (*entities.Product, error) {
 	product := new(model.Product)
 
 	if err := r.db.Connect().Where("id = ?", id).First(product).Error; err != nil {
+		r.logger.Error("Failed to find product:", err.Error())
 		return nil, err
 	}
 	return product.ToProductEntity(), nil

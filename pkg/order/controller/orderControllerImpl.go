@@ -49,6 +49,57 @@ func (c *orderControllerImpl) ChangeStatusNext(pctx echo.Context) error {
 	return pctx.JSON(http.StatusOK, order)
 }
 
+func (c *orderControllerImpl) FindAll(pctx echo.Context) error {
+	orderListingResult, err := c.orderService.FindAll()
+	if err != nil {
+		return pctx.JSON(http.StatusInternalServerError, err.Error())
+	}
+	return pctx.JSON(http.StatusOK, orderListingResult)
+}
+
+func (c *orderControllerImpl) FindByID(pctx echo.Context) error {
+	id, err := strconv.ParseUint(pctx.Param("id"), 0, 64)
+
+	if err != nil {
+		return pctx.JSON(http.StatusInternalServerError, err.Error())
+	}
+	order, err := c.orderService.FindByID(id)
+	if err != nil {
+		return pctx.JSON(http.StatusInternalServerError, err.Error())
+	}
+	return pctx.JSON(http.StatusOK, order)
+}
+func (c *orderControllerImpl) Update(pctx echo.Context) error {
+	id, err := strconv.ParseUint(pctx.Param("id"), 0, 64)
+	if err != nil {
+		return pctx.JSON(http.StatusInternalServerError, err.Error())
+	}
+	orderReq := new(entities.Order)
+	if err := pctx.Bind(orderReq); err != nil {
+		return pctx.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	order, err := c.orderService.Update(id, orderReq)
+	if err != nil {
+		return pctx.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	return pctx.JSON(http.StatusOK, order)
+}
+
+func (c *orderControllerImpl) Delete(pctx echo.Context) error {
+	id, err := strconv.ParseUint(pctx.Param("id"), 0, 64)
+	if err != nil {
+		return pctx.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	err = c.orderService.Delete(id)
+	if err != nil {
+		return pctx.JSON(http.StatusInternalServerError, err.Error())
+	}
+	return pctx.JSON(http.StatusOK, "deleted")
+}
+
 func (c *orderControllerImpl) ChageStatusDone(pctx echo.Context) error {
 	orderId, err := strconv.ParseUint(pctx.Param("id"), 0, 64)
 
@@ -61,12 +112,4 @@ func (c *orderControllerImpl) ChageStatusDone(pctx echo.Context) error {
 		return pctx.JSON(http.StatusInternalServerError, err.Error())
 	}
 	return pctx.JSON(http.StatusOK, order)
-}
-
-func (c *orderControllerImpl) FindAll(pctx echo.Context) error {
-	orderListingResult, err := c.orderService.FindAll()
-	if err != nil {
-		return pctx.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return pctx.JSON(http.StatusOK, orderListingResult)
 }

@@ -15,5 +15,8 @@ func (s *echoServer) inittransactionRouter() {
 
 	router.POST("", transactionController.Create)
 	router.GET("", transactionController.FindAll)
+	router.GET("/:id", transactionController.FindByID)
+	router.PUT("/:id", transactionController.Update)
+	router.DELETE("/:id", transactionController.Delete)
 
 }

@@ -20,12 +20,12 @@ func (s *echoServer) initOrderRouter() {
 	orderService := _orderService.NewOrderService(orderRepository, transactionRepository, stockRepository, productRepository)
 	orderController := _orderController.NewOrderControllerImpl(orderService)
 
-	router.GET("", orderController.FindAll)
-	//router.GET("/product/:id", stockController.CheckStockByProductId)
 	router.POST("", orderController.Create)
+	router.GET("", orderController.FindAll)
+	router.GET("/:id", orderController.FindByID)
+	router.PUT("/:id", orderController.Update)
+	router.DELETE("/:id", orderController.Delete)
 	router.PUT("/next/:id", orderController.ChangeStatusNext)
 	router.PUT("/done/:id", orderController.ChageStatusDone)
 
-	//router.PUT("/:id", stockController.Update)
-	//router.DELETE("/:id", stockController.Delete)
 }

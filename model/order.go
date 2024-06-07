@@ -20,6 +20,7 @@ type Order struct {
 func (m *Order) ToOrderEntity() *entities.Order {
 	return &entities.Order{
 		OrderID:       m.ID,
+		ProductID:     m.ProductID,
 		TransactionID: m.TransactionID,
 		IsDomestic:    m.Transaction.IsDomestic,
 		ProductName:   m.Product.Name,

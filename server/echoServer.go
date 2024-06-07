@@ -6,6 +6,7 @@ import (
 	"github.com/kizmey/order_management_system/database"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/gommon/log"
 	"net/http"
 )
 
@@ -17,7 +18,7 @@ type echoServer struct {
 
 func NewEchoServer(conf *config.Config, DB database.Database) Server {
 	echoApp := echo.New()
-	//echoApp.logger = setLevel(log.debug)
+	echoApp.Logger.SetLevel(log.DEBUG)
 
 	server := &echoServer{
 		app:  echoApp,

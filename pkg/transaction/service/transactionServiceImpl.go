@@ -25,3 +25,15 @@ func (s *transactionService) Create(transaction *entities.Transaction) (*entitie
 func (s *transactionService) FindAll() (*[]entities.Transaction, error) {
 	return s.transactionRepository.FindAll()
 }
+
+func (s *transactionService) FindByID(id uint64) (*entities.Transaction, error) {
+	return s.transactionRepository.FindByID(id)
+}
+
+func (s *transactionService) Update(id uint64, transaction *entities.Transaction) (*entities.Transaction, error) {
+	return s.transactionRepository.Update(id, transaction)
+}
+
+func (s *transactionService) Delete(id uint64) error {
+	return s.transactionRepository.Delete(id)
+}
