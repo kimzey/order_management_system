@@ -13,7 +13,7 @@ type productController struct {
 	productService _productService.ProductService
 }
 
-func NewProductController(productService _productService.ProductService) ProductController {
+func NewProductControllerImpl(productService _productService.ProductService) ProductController {
 	return &productController{
 		productService: productService,
 	}

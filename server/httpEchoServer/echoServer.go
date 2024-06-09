@@ -1,36 +1,38 @@
-package server
+package httpEchoServer
 
 import (
 	"fmt"
 	"github.com/kizmey/order_management_system/config"
-	"github.com/kizmey/order_management_system/database"
+	"github.com/kizmey/order_management_system/server"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 	"net/http"
+
+	"github.com/kizmey/order_management_system/pkg"
 )
 
 type echoServer struct {
-	app  *echo.Echo
-	db   database.Database
-	conf *config.Config
+	app     *echo.Echo
+	conf    *config.Config
+	usecase *pkg.Usecase
 }
 
-func NewEchoServer(conf *config.Config, DB database.Database) Server {
+func NewEchoServer(conf *config.Config, usecase *pkg.Usecase) server.Server {
 	echoApp := echo.New()
 	echoApp.Logger.SetLevel(log.DEBUG)
 
-	server := &echoServer{
-		app:  echoApp,
-		db:   DB,
-		conf: conf,
+	serverEcho := &echoServer{
+		app:     echoApp,
+		conf:    conf,
+		usecase: usecase,
 	}
-	return server
+
+	return serverEcho
 }
 
 func (s *echoServer) Start() {
 	s.app.GET("/v1/health", s.healthCheck)
-
 	s.app.Use(middleware.Recover())
 	s.app.Use(middleware.Logger())
 
@@ -54,6 +56,5 @@ func (s *echoServer) httpListening() {
 
 // path : /v1/health method : GET FOR check server
 func (s *echoServer) healthCheck(c echo.Context) error {
-	s.db.Connect()
 	return c.String(http.StatusOK, "Ok")
 }

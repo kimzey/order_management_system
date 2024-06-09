@@ -12,7 +12,7 @@ type transactionControllerImpl struct {
 	transaction _transactionService.TransactionService
 }
 
-func NewTransactionController(transaction _transactionService.TransactionService) TransactionController {
+func NewTransactionControllerImpl(transaction _transactionService.TransactionService) TransactionController {
 	return &transactionControllerImpl{
 		transaction: transaction,
 	}

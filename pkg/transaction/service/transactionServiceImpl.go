@@ -9,17 +9,18 @@ type transactionService struct {
 	transactionRepository _TransactionRepository.TransactionRepository
 }
 
-func NewTransactionService(transactionRepository _TransactionRepository.TransactionRepository) TransactionService {
+func NewTransactionServiceImpl(transactionRepository _TransactionRepository.TransactionRepository) TransactionService {
 	return &transactionService{transactionRepository}
 }
 
-func (s *transactionService) Create(transaction *entities.Transaction) (*entities.Transaction, error) {
-	_, err := s.transactionRepository.Create(transaction)
+func (s *transactionService) Create(transaction *entities.Transaction) (uint64, error) {
+	id, err := s.transactionRepository.Create(transaction)
+
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
-	return nil, nil
+	return id, nil
 }
 
 func (s *transactionService) FindAll() (*[]entities.Transaction, error) {

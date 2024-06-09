@@ -38,3 +38,10 @@ func ConvertModelsTransactionToEntities(transactions *[]Transaction) *[]entities
 
 	return entityTransaction
 }
+func (m *Transaction) CalculatePrice(price uint, quantity uint, isDomestic bool) uint {
+	if isDomestic {
+		return (price * quantity) + 40
+	} else {
+		return (price * quantity) + 200
+	}
+}

@@ -1,13 +1,12 @@
 package entities
 
 type Transaction struct {
-	TransactionID uint64 `json:"transactionid" `
-	ProductID     uint64 `json:"productid" `
-	ProductName   string `json:"productname" `
-	ProductPrice  uint   `json:"productprice" `
-	Quantity      uint   `json:"quantity" `
-	SumPrice      uint   `json:"sumprice" `
-	IsDomestic    bool   `json:"isdomestic" `
+	TransactionID uint64
+	ProductName   string
+	ProductPrice  uint
+	Quantity      uint
+	SumPrice      uint
+	IsDomestic    bool
 }
 
 //func (e *Transaction) ToTransactionModel() *model.Transaction {

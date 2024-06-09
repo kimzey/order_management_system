@@ -1,9 +1,9 @@
 package entities
 
 type Stock struct {
-	StockID   uint64
-	ProductID uint64
-	Quantity  uint
+	StockID   uint64 `json:"stockid"`
+	ProductID uint64 `json:"productid" `
+	Quantity  uint   `json:"quantity" `
 }
 
 //func (e *Stock) ToStockModel() *model.Stock {

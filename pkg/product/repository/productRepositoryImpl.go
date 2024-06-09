@@ -4,16 +4,14 @@ import (
 	"github.com/kizmey/order_management_system/database"
 	"github.com/kizmey/order_management_system/entities"
 	"github.com/kizmey/order_management_system/model"
-	"github.com/labstack/echo/v4"
 )
 
 type productRepositoryImpl struct {
-	db     database.Database
-	logger echo.Logger
+	db database.Database
 }
 
-func NewProductRepositoryImpl(db database.Database, logger echo.Logger) ProductRepository {
-	return &productRepositoryImpl{db: db, logger: logger}
+func NewProductRepositoryImpl(db database.Database) ProductRepository {
+	return &productRepositoryImpl{db: db}
 
 }
 
@@ -22,7 +20,6 @@ func (r *productRepositoryImpl) Create(product *entities.Product) (*entities.Pro
 	newProduct := new(model.Product)
 
 	if err := r.db.Connect().Create(modelProduct).Scan(newProduct).Error; err != nil {
-		r.logger.Error("Creating item failed:", err.Error())
 		return nil, err
 	}
 	return newProduct.ToProductEntity(), nil
@@ -42,7 +39,6 @@ func (r *productRepositoryImpl) FindByID(id uint64) (*entities.Product, error) {
 	product := new(model.Product)
 
 	if err := r.db.Connect().Where("id = ?", id).First(product).Error; err != nil {
-		r.logger.Error("Failed to find product:", err.Error())
 		return nil, err
 	}
 	return product.ToProductEntity(), nil
@@ -57,7 +53,6 @@ func (r *productRepositoryImpl) Update(id uint64, product *entities.Product) (*e
 	).Updates(
 		productModel,
 	).Scan(newProduct).Error; err != nil {
-		r.logger.Error("Editing item failed:", err.Error())
 		return nil, err
 	}
 	return newProduct.ToProductEntity(), nil

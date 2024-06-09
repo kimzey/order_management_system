@@ -4,16 +4,14 @@ import (
 	"github.com/kizmey/order_management_system/database"
 	"github.com/kizmey/order_management_system/entities"
 	"github.com/kizmey/order_management_system/model"
-	"github.com/labstack/echo/v4"
 )
 
 type orderRepositoryImpl struct {
-	db     database.Database
-	logger echo.Logger
+	db database.Database
 }
 
-func NewOrderRepositoryImpl(db database.Database, logger echo.Logger) OrderRepository {
-	return &orderRepositoryImpl{db: db, logger: logger}
+func NewOrderRepositoryImpl(db database.Database) OrderRepository {
+	return &orderRepositoryImpl{db: db}
 }
 
 func (r *orderRepositoryImpl) Create(order *entities.Order) (*entities.Order, error) {
@@ -22,12 +20,10 @@ func (r *orderRepositoryImpl) Create(order *entities.Order) (*entities.Order, er
 	//fmt.Println(modelOrder.Transaction.IsDomestic)
 
 	if err := r.db.Connect().Create(modelOrder).Scan(&newOrder).Error; err != nil {
-		r.logger.Error("Creating item failed:", err.Error())
 		return nil, err
 	}
 
 	if err := r.db.Connect().Preload("Product").Preload("Transaction").First(&newOrder, newOrder.ID).Error; err != nil {
-		r.logger.Error("Failed to find order:", err.Error())
 		return nil, err
 	}
 	//fmt.Println("newOrder: ", newOrder)
@@ -47,7 +43,6 @@ func (r *orderRepositoryImpl) FindAll() (*[]entities.Order, error) {
 func (r *orderRepositoryImpl) FindByID(id uint64) (*entities.Order, error) {
 	order := new(model.Order)
 	if err := r.db.Connect().Preload("Product").Preload("Transaction").First(&order, id).Error; err != nil {
-		r.logger.Error("Failed to find order:", err.Error())
 		return nil, err
 	}
 	return order.ToOrderEntity(), nil
@@ -57,13 +52,11 @@ func (r *orderRepositoryImpl) Update(id uint64, order *entities.Order) (*entitie
 	orderModel := ToOrderModel(order)
 
 	if err := r.db.Connect().Model(&orderModel).Where("id = ?", id).Updates(&orderModel).Scan(orderModel).Error; err != nil {
-		r.logger.Error("Editing item failed:", err.Error())
 		return nil, err
 
 	}
 
 	if err := r.db.Connect().Preload("Product").Preload("Transaction").First(&orderModel, id).Error; err != nil {
-		r.logger.Error("Failed to find order:", err.Error())
 		return nil, err
 	}
 
@@ -79,17 +72,14 @@ func (r *orderRepositoryImpl) ChangeStatusNext(id uint64) (*entities.Order, erro
 	newOrder := new(model.Order)
 
 	if err := r.db.Connect().Preload("Product").Preload("Transaction").First(&newOrder, id).Error; err != nil {
-		r.logger.Error("Failed to find order:", err.Error())
 		return nil, err
 	}
 
 	if err := newOrder.NextStatus(); err != nil {
-		r.logger.Error("Next Status failed:", err.Error())
 		return nil, err
 	}
 
 	if err := r.db.Connect().Save(&newOrder).Error; err != nil {
-		r.logger.Error("Failed to save order:", err.Error())
 		return nil, err
 	}
 
@@ -100,17 +90,14 @@ func (r *orderRepositoryImpl) ChangeStatusDone(id uint64) (*entities.Order, erro
 	newOrder := new(model.Order)
 
 	if err := r.db.Connect().Preload("Product").Preload("Transaction").First(&newOrder, id).Error; err != nil {
-		r.logger.Error("Failed to find order:", err.Error())
 		return nil, err
 	}
 
 	if err := newOrder.NextPaidToDone(); err != nil {
-		r.logger.Error("Next Status failed:", err.Error())
 		return nil, err
 	}
 
 	if err := r.db.Connect().Save(&newOrder).Error; err != nil {
-		r.logger.Error("Failed to save order:", err.Error())
 		return nil, err
 	}
 

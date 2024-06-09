@@ -1,9 +1,9 @@
 package entities
 
 type Product struct {
-	ProductID    uint64
-	ProductName  string
-	ProductPrice uint
+	ProductID    uint64 `json:"productID" `
+	ProductName  string `json:"productName"`
+	ProductPrice uint   `json:"productPrice" `
 }
 
 //func (e *Product) ToProductModel() *model.Product {

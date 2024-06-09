@@ -16,7 +16,7 @@ type orderServiceImpl struct {
 	productRepository     _productRepository.ProductRepository
 }
 
-func NewOrderService(orderRepository _orderRepository.OrderRepository,
+func NewOrderServiceImpl(orderRepository _orderRepository.OrderRepository,
 	transactionRepository _transactionRepository.TransactionRepository,
 	stockRepository _stockRepository.StockRepository,
 	productRepository _productRepository.ProductRepository,
@@ -56,7 +56,7 @@ func (s *orderServiceImpl) Create(order *entities.Order) (*entities.Order, error
 		ProductPrice: checkProduct.ProductPrice,
 		Quantity:     order.Quantity,
 		IsDomestic:   order.IsDomestic,
-		SumPrice:     s.calculatePrice(checkProduct.ProductPrice, order.Quantity, order.IsDomestic),
+		//SumPrice:     s.calculatePrice(checkProduct.ProductPrice, order.Quantity, order.IsDomestic),
 	}
 
 	tranID, err := s.transactionRepository.Create(newTransaction)
@@ -93,10 +93,10 @@ func (s *orderServiceImpl) ChageStatusDone(id uint64) (*entities.Order, error) {
 	return s.orderRepository.ChangeStatusDone(id)
 }
 
-func (s *orderServiceImpl) calculatePrice(price uint, quantity uint, isDomestic bool) uint {
-	if isDomestic {
-		return (price * quantity) + 40
-	} else {
-		return (price * quantity) + 200
-	}
-}
+//func (s *orderServiceImpl) calculatePrice(price uint, quantity uint, isDomestic bool) uint {
+//	if isDomestic {
+//		return (price * quantity) + 40
+//	} else {
+//		return (price * quantity) + 200
+//	}
+//}
