@@ -12,3 +12,13 @@ type Product struct {
 //		Price: e.ProductPrice,
 //	}
 //}
+
+//func ConvertProductModelsToEntities(products *[]Product) *[]entities.Product {
+//	entityProducts := new([]entities.Product)
+//
+//	for _, product := range *products {
+//		*entityProducts = append(*entityProducts, *product.ToProductEntity())
+//	}
+//
+//	return entityProducts
+//}

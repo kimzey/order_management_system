@@ -3,6 +3,8 @@ package service
 import (
 	"fmt"
 	"github.com/kizmey/order_management_system/entities"
+	"github.com/kizmey/order_management_system/pkg/modelReq"
+	"github.com/kizmey/order_management_system/pkg/modelRes"
 	_orderRepository "github.com/kizmey/order_management_system/pkg/order/repository"
 	_productRepository "github.com/kizmey/order_management_system/pkg/product/repository"
 	_stockRepository "github.com/kizmey/order_management_system/pkg/stock/repository"
@@ -29,74 +31,133 @@ func NewOrderServiceImpl(orderRepository _orderRepository.OrderRepository,
 	}
 }
 
-func (s *orderServiceImpl) Create(order *entities.Order) (*entities.Order, error) {
+func (s *orderServiceImpl) Create(order *modelReq.Order) (*modelRes.Order, error) {
+
+	//เช็คสต๊อกน้อยกว่ามั้ย
+	//ถ้าซื้อลบไปN
 
 	stock, err := s.stockRepository.CheckStockByProductId(order.ProductID)
 	if err != nil {
 		return nil, err
 	}
-	if stock.Quantity < order.Quantity {
+
+	transaction, err := s.transactionRepository.FindByID(order.TransactionID)
+	if err != nil {
+		return nil, err
+	}
+
+	if stock.Quantity < transaction.Quantity {
 		return nil, fmt.Errorf("stock not enough")
 	}
 
-	stock.Quantity = stock.Quantity - order.Quantity
+	stock.Quantity = stock.Quantity - transaction.Quantity
 	_, err = s.stockRepository.Update(stock.StockID, stock)
 	if err != nil {
 		return nil, err
 	}
 
-	checkProduct, err := s.productRepository.FindByID(order.ProductID)
+	createOrder := s.modelReqToEntity(order)
+	newOrder, err := s.orderRepository.Create(createOrder)
 	if err != nil {
 		return nil, err
 	}
 
-	newTransaction := &entities.Transaction{
-		ProductID:    order.ProductID,
-		ProductName:  checkProduct.ProductName,
-		ProductPrice: checkProduct.ProductPrice,
-		Quantity:     order.Quantity,
-		IsDomestic:   order.IsDomestic,
-		//SumPrice:     s.calculatePrice(checkProduct.ProductPrice, order.Quantity, order.IsDomestic),
-	}
+	return s.orderEntityToModelRes(newOrder), nil
+}
 
-	tranID, err := s.transactionRepository.Create(newTransaction)
-
-	order.TransactionID = tranID
-	newOrder, err := s.orderRepository.Create(order)
-
+func (s *orderServiceImpl) FindAll() (*[]modelRes.Order, error) {
+	orders, err := s.orderRepository.FindAll()
 	if err != nil {
 		return nil, err
 	}
 
-	return newOrder, nil
-}
-func (s *orderServiceImpl) FindAll() (*[]entities.Order, error) {
-	return s.orderRepository.FindAll()
-}
-
-func (s *orderServiceImpl) FindByID(id uint64) (*entities.Order, error) {
-	return s.orderRepository.FindByID(id)
+	allOrder := make([]modelRes.Order, 0)
+	for _, order := range *orders {
+		allOrder = append(allOrder, *s.orderEntityToModelRes(&order))
+	}
+	return &allOrder, nil
 }
 
-func (s *orderServiceImpl) Update(id uint64, order *entities.Order) (*entities.Order, error) {
-	return s.orderRepository.Update(id, order)
+func (s *orderServiceImpl) FindByID(id uint64) (*modelRes.Order, error) {
+
+	order, err := s.orderRepository.FindByID(id)
+	if err != nil {
+		return nil, err
+	}
+	return s.orderEntityToModelRes(order), nil
+}
+
+func (s *orderServiceImpl) Update(id uint64, order *modelReq.Order) (*modelRes.Order, error) {
+
+	orderEntity := s.modelReqToEntity(order)
+	orderEntity, err := s.orderRepository.Update(id, orderEntity)
+	if err != nil {
+		return nil, err
+	}
+	return s.orderEntityToModelRes(orderEntity), nil
 }
 
 func (s *orderServiceImpl) Delete(id uint64) error {
-	return s.orderRepository.Delete(id)
+
+	err := s.orderRepository.Delete(id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func (s *orderServiceImpl) ChangeStatusNext(id uint64) (*entities.Order, error) {
-	return s.orderRepository.ChangeStatusNext(id)
+func (s *orderServiceImpl) ChangeStatusNext(id uint64) (*modelRes.Order, error) {
+
+	order, err := s.orderRepository.FindByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	err = order.NextStatus()
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = s.orderRepository.Update(id, order)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.orderEntityToModelRes(order), nil
 }
-func (s *orderServiceImpl) ChageStatusDone(id uint64) (*entities.Order, error) {
-	return s.orderRepository.ChangeStatusDone(id)
+func (s *orderServiceImpl) ChageStatusDone(id uint64) (*modelRes.Order, error) {
+
+	order, err := s.orderRepository.FindByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	err = order.NextPaidToDone()
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = s.orderRepository.Update(id, order)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.orderEntityToModelRes(order), nil
 }
 
-//func (s *orderServiceImpl) calculatePrice(price uint, quantity uint, isDomestic bool) uint {
-//	if isDomestic {
-//		return (price * quantity) + 40
-//	} else {
-//		return (price * quantity) + 200
-//	}
-//}
+func (s *orderServiceImpl) modelReqToEntity(orderReq *modelReq.Order) *entities.Order {
+	return &entities.Order{
+		TransactionID: orderReq.TransactionID,
+		ProductID:     orderReq.ProductID,
+		Status:        orderReq.Status,
+	}
+}
+
+func (s *orderServiceImpl) orderEntityToModelRes(order *entities.Order) *modelRes.Order {
+	return &modelRes.Order{
+		OrderID:       order.OrderID,
+		TransactionID: order.TransactionID,
+		ProductID:     order.ProductID,
+		Status:        order.Status,
+	}
+}

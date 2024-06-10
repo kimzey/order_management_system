@@ -2,7 +2,7 @@ package controller
 
 import (
 	"github.com/go-playground/validator/v10"
-	"github.com/kizmey/order_management_system/entities"
+	"github.com/kizmey/order_management_system/pkg/modelReq"
 	_orderService "github.com/kizmey/order_management_system/pkg/order/service"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -18,7 +18,7 @@ func NewOrderControllerImpl(orderService _orderService.OrderService) OrderContro
 }
 
 func (c *orderControllerImpl) Create(pctx echo.Context) error {
-	newOrderReq := new(entities.Order)
+	newOrderReq := new(modelReq.Order)
 
 	if err := pctx.Bind(newOrderReq); err != nil {
 		return pctx.JSON(http.StatusBadRequest, err.Error())
@@ -28,6 +28,7 @@ func (c *orderControllerImpl) Create(pctx echo.Context) error {
 	if err := validatorInit.Struct(newOrderReq); err != nil {
 		return pctx.JSON(http.StatusBadRequest, err.Error())
 	}
+
 	newOrderRes, err := c.orderService.Create(newOrderReq)
 	if err != nil {
 		return pctx.JSON(http.StatusInternalServerError, err.Error())
@@ -74,7 +75,8 @@ func (c *orderControllerImpl) Update(pctx echo.Context) error {
 	if err != nil {
 		return pctx.JSON(http.StatusInternalServerError, err.Error())
 	}
-	orderReq := new(entities.Order)
+
+	orderReq := new(modelReq.Order)
 	if err := pctx.Bind(orderReq); err != nil {
 		return pctx.JSON(http.StatusBadRequest, err.Error())
 	}

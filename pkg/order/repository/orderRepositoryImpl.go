@@ -75,10 +75,6 @@ func (r *orderRepositoryImpl) ChangeStatusNext(id uint64) (*entities.Order, erro
 		return nil, err
 	}
 
-	if err := newOrder.NextStatus(); err != nil {
-		return nil, err
-	}
-
 	if err := r.db.Connect().Save(&newOrder).Error; err != nil {
 		return nil, err
 	}
@@ -90,10 +86,6 @@ func (r *orderRepositoryImpl) ChangeStatusDone(id uint64) (*entities.Order, erro
 	newOrder := new(model.Order)
 
 	if err := r.db.Connect().Preload("Product").Preload("Transaction").First(&newOrder, id).Error; err != nil {
-		return nil, err
-	}
-
-	if err := newOrder.NextPaidToDone(); err != nil {
 		return nil, err
 	}
 

@@ -12,3 +12,13 @@ type Stock struct {
 //		Quantity:  e.Quantity,
 //	}
 //}
+
+//func ConvertStockModelsToEntities(stocks *[]Stock) *[]entities.Stock {
+//	entityStocks := new([]entities.Stock)
+//
+//	for _, stock := range *stocks {
+//		*entityStocks = append(*entityStocks, *stock.ToStockEntity())
+//	}
+//
+//	return entityStocks
+//}

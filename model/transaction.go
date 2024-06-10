@@ -19,7 +19,6 @@ type Transaction struct {
 func (m *Transaction) ToTransactionEntity() *entities.Transaction {
 	return &entities.Transaction{
 		TransactionID: m.ID,
-		ProductID:     m.ProductID,
 		ProductName:   m.Product.Name,
 		ProductPrice:  m.Product.Price,
 		Quantity:      m.Quantity,
@@ -38,10 +37,11 @@ func ConvertModelsTransactionToEntities(transactions *[]Transaction) *[]entities
 
 	return entityTransaction
 }
-func (m *Transaction) CalculatePrice(price uint, quantity uint, isDomestic bool) uint {
-	if isDomestic {
-		return (price * quantity) + 40
-	} else {
-		return (price * quantity) + 200
-	}
-}
+
+//func (m *Transaction) CalculatePrice(price uint, quantity uint, isDomestic bool) uint {
+//	if isDomestic {
+//		return (price * quantity) + 40
+//	} else {
+//		return (price * quantity) + 200
+//	}
+//}

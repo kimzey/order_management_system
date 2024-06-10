@@ -9,11 +9,10 @@ type Transaction struct {
 	IsDomestic    bool
 }
 
-//func (e *Transaction) ToTransactionModel() *model.Transaction {
-//	return &model.Transaction{
-//		ProductID:  e.ProductID,
-//		Quantity:   e.Quantity,
-//		SumPrice:   e.SumPrice,
-//		IsDomestic: e.IsDomestic,
-//	}
-//}
+func (m *Transaction) CalculatePrice(price uint, quantity uint, isDomestic bool) uint {
+	if isDomestic {
+		return (price * quantity) + 40
+	} else {
+		return (price * quantity) + 200
+	}
+}

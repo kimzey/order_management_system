@@ -1,14 +1,6 @@
-package entities
+package modelReq
 
 type Product struct {
-	ProductID    uint64 `json:"productID" `
-	ProductName  string `json:"productName"`
-	ProductPrice uint   `json:"productPrice" `
+	ProductName  string `json:"productName" validate:"required"`
+	ProductPrice uint   `json:"productPrice" validate:"required"`
 }
-
-//func (e *Product) ToProductModel() *model.Product {
-//	return &model.Product{
-//		Name:  e.ProductName,
-//		Price: e.ProductPrice,
-//	}
-//}
