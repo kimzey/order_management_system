@@ -2,6 +2,8 @@ package service
 
 import (
 	"github.com/kizmey/order_management_system/entities"
+	"github.com/kizmey/order_management_system/pkg/modelReq"
+	"github.com/kizmey/order_management_system/pkg/modelRes"
 	_ProductRepository "github.com/kizmey/order_management_system/pkg/product/repository"
 )
 
@@ -13,22 +15,71 @@ func NewProductServiceImpl(productRepository _ProductRepository.ProductRepositor
 	return &productServiceImpl{productRepository: productRepository}
 }
 
-func (s *productServiceImpl) Create(product *entities.Product) (*entities.Product, error) {
-	return s.productRepository.Create(product)
+func (s *productServiceImpl) Create(product *modelReq.Product) (*modelRes.Product, error) {
+
+	productEntity := s.productReqToEntity(product)
+
+	productEntity, err := s.productRepository.Create(productEntity)
+	if err != nil {
+		return nil, err
+	}
+	return s.productEntityToRes(productEntity), nil
 }
 
-func (s *productServiceImpl) FindAll() (*[]entities.Product, error) {
-	return s.productRepository.FindAll()
+func (s *productServiceImpl) FindAll() (*[]modelRes.Product, error) {
+
+	products, err := s.productRepository.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
+	productsRes := make([]modelRes.Product, 0)
+	for _, product := range *products {
+		productsRes = append(productsRes, *s.productEntityToRes(&product))
+	}
+	return &productsRes, nil
 }
 
-func (s *productServiceImpl) FindByID(id uint64) (*entities.Product, error) {
-	return s.productRepository.FindByID(id)
-}
-func (s *productServiceImpl) Update(id uint64, product *entities.Product) (*entities.Product, error) {
+func (s *productServiceImpl) FindByID(id uint64) (*modelRes.Product, error) {
 
-	return s.productRepository.Update(id, product)
+	product, err := s.productRepository.FindByID(id)
+	if err != nil {
+		return nil, err
+	}
+	return s.productEntityToRes(product), nil
+}
+func (s *productServiceImpl) Update(id uint64, product *modelReq.Product) (*modelRes.Product, error) {
+
+	productEntity := s.productReqToEntity(product)
+	productEntity, err := s.productRepository.Update(id, productEntity)
+	if err != nil {
+		return nil, err
+	}
+	return s.productEntityToRes(productEntity), nil
 }
 
 func (s *productServiceImpl) Delete(id uint64) error {
-	return s.productRepository.Delete(id)
+
+	err := s.productRepository.Delete(id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *productServiceImpl) productReqToEntity(product *modelReq.Product) *entities.Product {
+	return &entities.Product{
+		ProductName:  product.ProductName,
+		ProductPrice: product.ProductPrice,
+	}
+
+}
+
+func (r *productServiceImpl) productEntityToRes(product *entities.Product) *modelRes.Product {
+	return &modelRes.Product{
+		ProductID:    product.ProductID,
+		ProductName:  product.ProductName,
+		ProductPrice: product.ProductPrice,
+	}
+
 }

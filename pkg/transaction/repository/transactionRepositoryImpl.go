@@ -14,16 +14,23 @@ func NewTransactionController(db database.Database) TransactionRepository {
 	return &transactionRepositoryImpl{db: db}
 }
 
-func (r *transactionRepositoryImpl) Create(transaction *entities.Transaction) (uint64, error) {
-	modelTransaction := ToTransactionModel(transaction)
-	newTransaction := new(model.Transaction)
+func (r *transactionRepositoryImpl) Create(transaction *entities.Transaction) (*entities.Transaction, error) {
+	//check stock ก่อน
 
-	modelTransaction.SumPrice = modelTransaction.CalculatePrice(transaction.ProductPrice, transaction.Quantity, transaction.IsDomestic)
+	//stock := new(model.Stock)
+	//if err := r.db.Connect().Where("product_id = ? AND quantity >= ?", transaction.ProductID, transaction.Quantity).First(&stock).Error; err != nil {
+	//	return 0, err
+	//}
 
-	if err := r.db.Connect().Create(modelTransaction).Scan(&newTransaction).Error; err != nil {
-		return 0, err
+	transactionModel := ToTransactionModel(transaction)
+	if err := r.db.Connect().Create(transactionModel).Preload("Product").Error; err != nil {
+		return nil, err
 	}
-	return newTransaction.ID, nil
+
+	if err := r.db.Connect().Preload("Product").First(&transactionModel, transactionModel.ID).Error; err != nil {
+		return nil, err
+	}
+	return transactionModel.ToTransactionEntity(), nil
 }
 
 func (r *transactionRepositoryImpl) FindAll() (*[]entities.Transaction, error) {

@@ -2,7 +2,7 @@ package controller
 
 import (
 	"github.com/go-playground/validator/v10"
-	"github.com/kizmey/order_management_system/entities"
+	"github.com/kizmey/order_management_system/pkg/modelReq"
 	_productService "github.com/kizmey/order_management_system/pkg/product/service"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -20,7 +20,7 @@ func NewProductControllerImpl(productService _productService.ProductService) Pro
 }
 
 func (c *productController) Create(pctx echo.Context) error {
-	productReq := new(entities.Product)
+	productReq := new(modelReq.Product)
 	if err := pctx.Bind(productReq); err != nil {
 		return pctx.JSON(http.StatusBadRequest, err.Error())
 	}
@@ -67,7 +67,7 @@ func (c *productController) Update(pctx echo.Context) error {
 		return pctx.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	productReq := new(entities.Product)
+	productReq := new(modelReq.Product)
 	if err := pctx.Bind(productReq); err != nil {
 		return pctx.JSON(http.StatusBadRequest, err.Error())
 	}

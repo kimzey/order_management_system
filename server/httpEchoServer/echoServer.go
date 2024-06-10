@@ -45,7 +45,7 @@ func (s *echoServer) Start() {
 }
 
 func (s *echoServer) httpListening() {
-	Url := fmt.Sprintf(":%gitlog", s.conf.Server.Port)
+	Url := fmt.Sprintf(":%d", s.conf.Server.Port)
 
 	err := s.app.Start(Url)
 

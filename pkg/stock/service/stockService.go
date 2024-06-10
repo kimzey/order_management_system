@@ -1,11 +1,14 @@
 package service
 
-import "github.com/kizmey/order_management_system/entities"
+import (
+	"github.com/kizmey/order_management_system/pkg/modelReq"
+	"github.com/kizmey/order_management_system/pkg/modelRes"
+)
 
 type StockService interface {
-	Create(stock *entities.Stock) (*entities.Stock, error)
-	FindAll() (*[]entities.Stock, error)
-	CheckStockByProductId(id uint64) (*entities.Stock, error)
-	Update(id uint64, stock *entities.Stock) (*entities.Stock, error)
+	Create(stock *modelReq.Stock) (*modelRes.Stock, error)
+	FindAll() (*[]modelRes.Stock, error)
+	CheckStockByProductId(id uint64) (*modelRes.Stock, error)
+	Update(id uint64, stock *modelReq.Stock) (*modelRes.Stock, error)
 	Delete(id uint64) error
 }

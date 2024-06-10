@@ -44,7 +44,7 @@ func initUsecase(db database.Database) *pkg.Usecase {
 	// Init Service
 	productService := _productService.NewProductServiceImpl(productRepo)
 	stockService := _stockService.NewStockServiceImpl(stockRepo)
-	transactionService := _transactionService.NewTransactionServiceImpl(transactionRepo)
+	transactionService := _transactionService.NewTransactionServiceImpl(transactionRepo, stockRepo, productRepo)
 	orderService := _orderService.NewOrderServiceImpl(orderRepo, transactionRepo, stockRepo, productRepo)
 
 	usecase := pkg.NewUsecase(transactionService, stockService, productService, orderService)

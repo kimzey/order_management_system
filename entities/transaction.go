@@ -2,6 +2,7 @@ package entities
 
 type Transaction struct {
 	TransactionID uint64
+	ProductID     uint64
 	ProductName   string
 	ProductPrice  uint
 	Quantity      uint

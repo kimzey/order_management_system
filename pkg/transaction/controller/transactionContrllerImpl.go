@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"github.com/kizmey/order_management_system/entities"
+	"github.com/kizmey/order_management_system/pkg/modelReq"
 	_transactionService "github.com/kizmey/order_management_system/pkg/transaction/service"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -19,14 +19,16 @@ func NewTransactionControllerImpl(transaction _transactionService.TransactionSer
 }
 
 func (c *transactionControllerImpl) Create(pctx echo.Context) error {
-	transactionReq := new(entities.Transaction)
+	transactionReq := new(modelReq.Transaction)
 	if err := pctx.Bind(transactionReq); err != nil {
 		return pctx.JSON(http.StatusBadRequest, err.Error())
 	}
+
 	transaction, err := c.transaction.Create(transactionReq)
 	if err != nil {
 		return pctx.JSON(http.StatusInternalServerError, err.Error())
 	}
+
 	return pctx.JSON(http.StatusCreated, transaction)
 }
 
@@ -59,7 +61,7 @@ func (c *transactionControllerImpl) Update(pctx echo.Context) error {
 		return pctx.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	transactionReq := new(entities.Transaction)
+	transactionReq := new(modelReq.Transaction)
 	if err := pctx.Bind(transactionReq); err != nil {
 		return pctx.JSON(http.StatusBadRequest, err.Error())
 	}

@@ -7,7 +7,7 @@ import (
 
 type Order struct {
 	ID            uint64      `gorm:"primaryKey;autoIncrement;"`
-	TransactionID uint64      `gorm:"not null;" `
+	TransactionID uint64      `gorm:"not null; unique;" `
 	Transaction   Transaction `gorm:"foreignKey:TransactionID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	ProductID     uint64      `gorm:"not null;" `
 	Product       Product     `gorm:"foreignKey:ProductID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`

@@ -12,7 +12,7 @@ type postgresDatabase struct {
 }
 
 func NewPostgresDatabase(conf *config.Database) Database {
-	dsn := fmt.Sprintf("host=%s port=%gitlog user=%s password=%s dbname=%s sslmode=%s search_path=%s ",
+	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s search_path=%s ",
 		conf.Host,
 		conf.Port,
 		conf.User,

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"github.com/kizmey/order_management_system/database"
 	"github.com/kizmey/order_management_system/entities"
 	"github.com/kizmey/order_management_system/model"
@@ -17,7 +18,6 @@ func NewOrderRepositoryImpl(db database.Database) OrderRepository {
 func (r *orderRepositoryImpl) Create(order *entities.Order) (*entities.Order, error) {
 	modelOrder := ToOrderModel(order)
 	newOrder := new(model.Order)
-	//fmt.Println(modelOrder.Transaction.IsDomestic)
 
 	if err := r.db.Connect().Create(modelOrder).Scan(&newOrder).Error; err != nil {
 		return nil, err
@@ -26,7 +26,7 @@ func (r *orderRepositoryImpl) Create(order *entities.Order) (*entities.Order, er
 	if err := r.db.Connect().Preload("Product").Preload("Transaction").First(&newOrder, newOrder.ID).Error; err != nil {
 		return nil, err
 	}
-	//fmt.Println("newOrder: ", newOrder)
+	fmt.Println(newOrder)
 	return newOrder.ToOrderEntity(), nil
 }
 

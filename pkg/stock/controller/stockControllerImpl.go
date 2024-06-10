@@ -3,7 +3,7 @@ package controller
 import (
 	"fmt"
 	"github.com/go-playground/validator/v10"
-	"github.com/kizmey/order_management_system/entities"
+	"github.com/kizmey/order_management_system/pkg/modelReq"
 	_StockService "github.com/kizmey/order_management_system/pkg/stock/service"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -19,7 +19,7 @@ func NewStockControllerImpl(stockController _StockService.StockService) StockCon
 }
 
 func (c *stockControllerImpl) Create(pctx echo.Context) error {
-	stockReq := new(entities.Stock)
+	stockReq := new(modelReq.Stock)
 
 	if err := pctx.Bind(stockReq); err != nil {
 		return err
@@ -72,7 +72,7 @@ func (c *stockControllerImpl) Update(pctx echo.Context) error {
 		return pctx.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	stockReq := new(entities.Stock)
+	stockReq := new(modelReq.Stock)
 	if err := pctx.Bind(stockReq); err != nil {
 		return pctx.JSON(http.StatusBadRequest, err.Error())
 

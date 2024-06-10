@@ -19,6 +19,7 @@ type Transaction struct {
 func (m *Transaction) ToTransactionEntity() *entities.Transaction {
 	return &entities.Transaction{
 		TransactionID: m.ID,
+		ProductID:     m.ProductID,
 		ProductName:   m.Product.Name,
 		ProductPrice:  m.Product.Price,
 		Quantity:      m.Quantity,
