@@ -1,7 +1,8 @@
 package custom
 
 import (
-	"net/http"
+	"errors"
+	"fmt"
 	"sync"
 
 	"github.com/go-playground/validator/v10"
@@ -35,19 +36,13 @@ func NewCustomEchoRequest(echoRequest echo.Context) EchoRequest {
 
 func (r *customEchoRequest) BindAndValidate(obj any) error {
 	if err := r.ctx.Bind(obj); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "Invalid request payload").SetInternal(err)
+		//fmt.Errorf("invalid validate request : %s", err.Error())
+		return errors.New(fmt.Sprintf("invalid request body: %s", err))
 	}
 
 	if err := r.validator.Struct(obj); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "Validation failed").SetInternal(err)
+		return errors.New(fmt.Sprintf("invalid validate request : %s", err))
 	}
 
 	return nil
 }
-
-//func Error(ctx echo.Context, statusCode int, err error) error {
-//	return ctx.JSON(statusCode, map[string]interface{}{
-//		"error":   err.Error(),
-//		"message": http.StatusText(statusCode),
-//	})
-//}

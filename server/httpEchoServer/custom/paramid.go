@@ -18,7 +18,7 @@ func CheckParamId(echoRequest echo.Context) (uint64, error) {
 
 	id, err := strconv.ParseUint(paramid, 0, 64)
 	if err != nil {
-		return 0, errors.New("param is not number")
+		return 0, errors.New(fmt.Sprintf("param is not number : %s", err.Error()))
 	}
 
 	return id, nil
