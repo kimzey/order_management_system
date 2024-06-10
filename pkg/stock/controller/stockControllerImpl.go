@@ -1,13 +1,11 @@
 package controller
 
 import (
-	"fmt"
-	"github.com/go-playground/validator/v10"
 	"github.com/kizmey/order_management_system/pkg/modelReq"
 	_StockService "github.com/kizmey/order_management_system/pkg/stock/service"
+	"github.com/kizmey/order_management_system/server/httpEchoServer/custom"
 	"github.com/labstack/echo/v4"
 	"net/http"
-	"strconv"
 )
 
 type stockControllerImpl struct {
@@ -21,19 +19,15 @@ func NewStockControllerImpl(stockController _StockService.StockService) StockCon
 func (c *stockControllerImpl) Create(pctx echo.Context) error {
 	stockReq := new(modelReq.Stock)
 
-	if err := pctx.Bind(stockReq); err != nil {
-		return err
+	validatingContext := custom.NewCustomEchoRequest(pctx)
+	if err := validatingContext.BindAndValidate(stockReq); err != nil {
+		return custom.Error(pctx, http.StatusBadRequest, err)
 	}
-	//fmt.Println("addressReq: ", addressReq)
-	validatorInit := validator.New()
-	if err := validatorInit.Struct(stockReq); err != nil {
-		return err
-	}
-	fmt.Println("check")
+
 	address, err := c.stockService.Create(stockReq)
 
 	if err != nil {
-		return err
+		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
 
 	return pctx.JSON(http.StatusCreated, address)
@@ -44,50 +38,45 @@ func (c *stockControllerImpl) FindAll(pctx echo.Context) error {
 	stockListingResult, err := c.stockService.FindAll()
 
 	if err != nil {
-		return pctx.JSON(http.StatusInternalServerError, err.Error())
+		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
 	return pctx.JSON(http.StatusOK, stockListingResult)
 }
 
 func (c *stockControllerImpl) CheckStockByProductId(pctx echo.Context) error {
 
-	productid, err := strconv.ParseUint(pctx.Param("id"), 0, 64)
+	productid, err := custom.CheckParamId(pctx)
 
 	if err != nil {
-		return pctx.JSON(http.StatusInternalServerError, err.Error())
+		return custom.Error(pctx, http.StatusBadRequest, err)
 	}
 
 	stockListingResult, err := c.stockService.CheckStockByProductId(productid)
 
 	if err != nil {
-		return pctx.JSON(http.StatusInternalServerError, err.Error())
+		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
 	return pctx.JSON(http.StatusOK, stockListingResult)
 }
 
 func (c *stockControllerImpl) Update(pctx echo.Context) error {
-	stockid, err := strconv.ParseUint(pctx.Param("id"), 0, 64)
+	stockid, err := custom.CheckParamId(pctx)
 
 	if err != nil {
-		return pctx.JSON(http.StatusBadRequest, err.Error())
+		return custom.Error(pctx, http.StatusBadRequest, err)
 	}
 
 	stockReq := new(modelReq.Stock)
-	if err := pctx.Bind(stockReq); err != nil {
-		return pctx.JSON(http.StatusBadRequest, err.Error())
 
+	validatingContext := custom.NewCustomEchoRequest(pctx)
+	if err := validatingContext.BindAndValidate(stockReq); err != nil {
+		return custom.Error(pctx, http.StatusBadRequest, err)
 	}
-	//fmt.Println("addressReq: ", addressReq)
-	validatorInit := validator.New()
-	if err := validatorInit.Struct(stockReq); err != nil {
-		return pctx.JSON(http.StatusBadRequest, err.Error())
 
-	}
-	//fmt.Println("check")
 	stockupdate, err := c.stockService.Update(stockid, stockReq)
 
 	if err != nil {
-		return pctx.JSON(http.StatusInternalServerError, err.Error())
+		return custom.Error(pctx, http.StatusInternalServerError, err)
 
 	}
 
@@ -95,16 +84,16 @@ func (c *stockControllerImpl) Update(pctx echo.Context) error {
 }
 
 func (c *stockControllerImpl) Delete(pctx echo.Context) error {
-	stockid, err := strconv.ParseUint(pctx.Param("id"), 0, 64)
+	stockid, err := custom.CheckParamId(pctx)
 
 	if err != nil {
-		return pctx.JSON(http.StatusInternalServerError, err.Error())
+		return custom.Error(pctx, http.StatusBadRequest, err)
 	}
 
 	err = c.stockService.Delete(stockid)
 
 	if err != nil {
-		return pctx.JSON(http.StatusInternalServerError, err.Error())
+		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
 	return pctx.JSON(http.StatusOK, "deleted successfully")
 }

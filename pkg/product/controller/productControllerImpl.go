@@ -1,12 +1,11 @@
 package controller
 
 import (
-	"github.com/go-playground/validator/v10"
 	"github.com/kizmey/order_management_system/pkg/modelReq"
 	_productService "github.com/kizmey/order_management_system/pkg/product/service"
+	"github.com/kizmey/order_management_system/server/httpEchoServer/custom"
 	"github.com/labstack/echo/v4"
 	"net/http"
-	"strconv"
 )
 
 type productController struct {
@@ -21,18 +20,14 @@ func NewProductControllerImpl(productService _productService.ProductService) Pro
 
 func (c *productController) Create(pctx echo.Context) error {
 	productReq := new(modelReq.Product)
-	if err := pctx.Bind(productReq); err != nil {
-		return pctx.JSON(http.StatusBadRequest, err.Error())
-	}
-	//fmt.Println("productReq: ", productReq)
-	validatorInit := validator.New()
-	if err := validatorInit.Struct(productReq); err != nil {
-		return pctx.JSON(http.StatusBadRequest, err.Error())
-	}
 
+	validatingContext := custom.NewCustomEchoRequest(pctx)
+	if err := validatingContext.BindAndValidate(productReq); err != nil {
+		return custom.Error(pctx, http.StatusBadRequest, err)
+	}
 	product, err := c.productService.Create(productReq)
 	if err != nil {
-		return pctx.JSON(http.StatusInternalServerError, err.Error())
+		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
 	return pctx.JSON(http.StatusCreated, product)
 
@@ -41,60 +36,55 @@ func (c *productController) Create(pctx echo.Context) error {
 func (c *productController) FindAll(pctx echo.Context) error {
 	productListingResult, err := c.productService.FindAll()
 	if err != nil {
-		return pctx.JSON(http.StatusInternalServerError, err.Error())
+		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
 	return pctx.JSON(http.StatusOK, productListingResult)
 }
 
 func (c *productController) FindByID(pctx echo.Context) error {
-	productid, err := strconv.ParseUint(pctx.Param("id"), 0, 64)
+	productid, err := custom.CheckParamId(pctx)
 
 	if err != nil {
-		return pctx.JSON(http.StatusInternalServerError, err.Error())
+		return custom.Error(pctx, http.StatusBadRequest, err)
 	}
 
 	product, err := c.productService.FindByID(productid)
 	if err != nil {
-		return pctx.JSON(http.StatusInternalServerError, err.Error())
+		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
 	return pctx.JSON(http.StatusOK, product)
 }
 
 func (c *productController) Update(pctx echo.Context) error {
-	productid, err := strconv.ParseUint(pctx.Param("id"), 0, 64)
+	productid, err := custom.CheckParamId(pctx)
 
 	if err != nil {
-		return pctx.JSON(http.StatusBadRequest, err.Error())
+		return custom.Error(pctx, http.StatusBadRequest, err)
 	}
-
 	productReq := new(modelReq.Product)
-	if err := pctx.Bind(productReq); err != nil {
-		return pctx.JSON(http.StatusBadRequest, err.Error())
-	}
-	//fmt.Println("productReq: ", productReq)
-	validatorInit := validator.New()
-	if err := validatorInit.Struct(productReq); err != nil {
-		return pctx.JSON(http.StatusBadRequest, err.Error())
-	}
 
+	validatingContext := custom.NewCustomEchoRequest(pctx)
+	if err := validatingContext.BindAndValidate(productReq); err != nil {
+		return custom.Error(pctx, http.StatusBadRequest, err)
+	}
 	product, err := c.productService.Update(productid, productReq)
 	if err != nil {
-		return pctx.JSON(http.StatusInternalServerError, err.Error())
+		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
 
 	return pctx.JSON(http.StatusOK, product)
 }
 
 func (c *productController) Delete(pctx echo.Context) error {
-	productid, err := strconv.ParseUint(pctx.Param("id"), 0, 64)
+	productid, err := custom.CheckParamId(pctx)
 
 	if err != nil {
-		return pctx.JSON(http.StatusInternalServerError, err.Error())
+		return custom.Error(pctx, http.StatusBadRequest, err)
 	}
 
 	err = c.productService.Delete(productid)
 	if err != nil {
-		return pctx.JSON(http.StatusInternalServerError, err.Error())
+		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
 
 	return pctx.JSON(http.StatusOK, "deleted")

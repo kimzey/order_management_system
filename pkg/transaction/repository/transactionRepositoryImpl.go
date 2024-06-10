@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"github.com/kizmey/order_management_system/database"
 	"github.com/kizmey/order_management_system/entities"
 	"github.com/kizmey/order_management_system/model"
@@ -24,11 +25,11 @@ func (r *transactionRepositoryImpl) Create(transaction *entities.Transaction) (*
 
 	transactionModel := ToTransactionModel(transaction)
 	if err := r.db.Connect().Create(transactionModel).Preload("Product").Error; err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create transaction: %w", err)
 	}
 
 	if err := r.db.Connect().Preload("Product").First(&transactionModel, transactionModel.ID).Error; err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to get created transaction: %w", err)
 	}
 	return transactionModel.ToTransactionEntity(), nil
 }
@@ -37,7 +38,8 @@ func (r *transactionRepositoryImpl) FindAll() (*[]entities.Transaction, error) {
 	transactions := new([]model.Transaction)
 
 	if err := r.db.Connect().Preload("Product").Find(&transactions).Error; err != nil {
-		return nil, err
+
+		return nil, fmt.Errorf("failed to find all transactions: %w", err)
 	}
 	allTransactions := model.ConvertModelsTransactionToEntities(transactions)
 	return allTransactions, nil
@@ -47,7 +49,7 @@ func (r *transactionRepositoryImpl) FindByID(id uint64) (*entities.Transaction, 
 
 	transaction := new(model.Transaction)
 	if err := r.db.Connect().Preload("Product").Where("id = ?", id).First(&transaction, id).Error; err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to find transaction: %w", err)
 	}
 
 	return transaction.ToTransactionEntity(), nil
@@ -60,18 +62,25 @@ func (r *transactionRepositoryImpl) Update(id uint64, transaction *entities.Tran
 	).Updates(
 		transactionModel,
 	).Scan(transactionModel).Error; err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to update transaction: %w", err)
 	}
 
 	if err := r.db.Connect().Preload("Product").First(&transactionModel, id).Error; err != nil {
-		return nil, err
+
+		return nil, fmt.Errorf("failed to get updated transaction: %w", err)
 	}
 
 	return transactionModel.ToTransactionEntity(), nil
 }
 
 func (r *transactionRepositoryImpl) Delete(id uint64) error {
-	return r.db.Connect().Delete(&model.Transaction{}, id).Error
+
+	err := r.db.Connect().Delete(&model.Transaction{}, id).Error
+	if err != nil {
+		return fmt.Errorf("failed to delete transaction: %w", err)
+	}
+	fmt.Println(err)
+	return nil
 
 }
 

@@ -3,9 +3,9 @@ package controller
 import (
 	"github.com/kizmey/order_management_system/pkg/modelReq"
 	_transactionService "github.com/kizmey/order_management_system/pkg/transaction/service"
+	"github.com/kizmey/order_management_system/server/httpEchoServer/custom"
 	"github.com/labstack/echo/v4"
 	"net/http"
-	"strconv"
 )
 
 type transactionControllerImpl struct {
@@ -20,13 +20,15 @@ func NewTransactionControllerImpl(transaction _transactionService.TransactionSer
 
 func (c *transactionControllerImpl) Create(pctx echo.Context) error {
 	transactionReq := new(modelReq.Transaction)
-	if err := pctx.Bind(transactionReq); err != nil {
-		return pctx.JSON(http.StatusBadRequest, err.Error())
+
+	validatingContext := custom.NewCustomEchoRequest(pctx)
+	if err := validatingContext.BindAndValidate(transactionReq); err != nil {
+		return custom.Error(pctx, http.StatusBadRequest, err)
 	}
 
 	transaction, err := c.transaction.Create(transactionReq)
 	if err != nil {
-		return pctx.JSON(http.StatusInternalServerError, err.Error())
+		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
 
 	return pctx.JSON(http.StatusCreated, transaction)
@@ -35,20 +37,20 @@ func (c *transactionControllerImpl) Create(pctx echo.Context) error {
 func (c *transactionControllerImpl) FindAll(pctx echo.Context) error {
 	transactions, err := c.transaction.FindAll()
 	if err != nil {
-		return pctx.JSON(http.StatusInternalServerError, err.Error())
+		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
 	return pctx.JSON(http.StatusOK, transactions)
 }
 
 func (c *transactionControllerImpl) FindByID(pctx echo.Context) error {
-	id, err := strconv.ParseUint(pctx.Param("id"), 0, 64)
+	id, err := custom.CheckParamId(pctx)
 	if err != nil {
-		return pctx.JSON(http.StatusBadRequest, err.Error())
+		return custom.Error(pctx, http.StatusBadRequest, err)
 	}
 
 	transaction, err := c.transaction.FindByID(id)
 	if err != nil {
-		return pctx.JSON(http.StatusInternalServerError, err.Error())
+		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
 
 	return pctx.JSON(http.StatusOK, transaction)
@@ -56,34 +58,35 @@ func (c *transactionControllerImpl) FindByID(pctx echo.Context) error {
 
 func (c *transactionControllerImpl) Update(pctx echo.Context) error {
 
-	id, err := strconv.ParseUint(pctx.Param("id"), 0, 64)
+	id, err := custom.CheckParamId(pctx)
 	if err != nil {
-		return pctx.JSON(http.StatusBadRequest, err.Error())
+		return custom.Error(pctx, http.StatusBadRequest, err)
 	}
 
 	transactionReq := new(modelReq.Transaction)
-	if err := pctx.Bind(transactionReq); err != nil {
-		return pctx.JSON(http.StatusBadRequest, err.Error())
+	validatingContext := custom.NewCustomEchoRequest(pctx)
+	if err := validatingContext.BindAndValidate(transactionReq); err != nil {
+		return custom.Error(pctx, http.StatusBadRequest, err)
 	}
 
 	transaction, err := c.transaction.Update(id, transactionReq)
 	if err != nil {
-		return pctx.JSON(http.StatusInternalServerError, err.Error())
+		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
 
 	return pctx.JSON(http.StatusOK, transaction)
 }
 
 func (c *transactionControllerImpl) Delete(pctx echo.Context) error {
-	id, err := strconv.ParseUint(pctx.Param("id"), 0, 64)
+	id, err := custom.CheckParamId(pctx)
 	if err != nil {
-		return pctx.JSON(http.StatusBadRequest, err.Error())
+		return custom.Error(pctx, http.StatusBadRequest, err)
 	}
 
 	err = c.transaction.Delete(id)
 	if err != nil {
-		return pctx.JSON(http.StatusInternalServerError, err.Error())
+		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
 
-	return pctx.JSON(http.StatusOK, "deleted")
+	return pctx.JSON(http.StatusOK, "deleted successfully")
 }

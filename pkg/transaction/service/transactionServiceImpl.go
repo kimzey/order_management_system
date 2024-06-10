@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"github.com/kizmey/order_management_system/entities"
 	"github.com/kizmey/order_management_system/pkg/modelReq"
 	"github.com/kizmey/order_management_system/pkg/modelRes"
@@ -37,7 +36,7 @@ func (s *transactionService) Create(transaction *modelReq.Transaction) (*modelRe
 	}
 
 	if stock.Quantity < transaction.Quantity {
-		return nil, fmt.Errorf("stock not enough")
+		return nil, err
 	}
 
 	//stock.Quantity -= transaction.Quantity
@@ -89,7 +88,7 @@ func (s *transactionService) Update(id uint64, transaction *modelReq.Transaction
 		return nil, err
 	}
 	if stock.Quantity < transaction.Quantity {
-		return nil, fmt.Errorf("stock not enough")
+		return nil, err
 	}
 
 	product, err := s.productRepository.FindByID(transaction.ProductID)
