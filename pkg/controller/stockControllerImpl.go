@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	_StockService "github.com/kizmey/order_management_system/pkg/service"
 	"github.com/kizmey/order_management_system/server/httpEchoServer/custom"
@@ -44,14 +45,15 @@ func (c *stockControllerImpl) FindAll(pctx echo.Context) error {
 }
 
 func (c *stockControllerImpl) CheckStockByProductId(pctx echo.Context) error {
+	id := pctx.Param("id")
+	fmt.Println(id)
+	//id, err := custom.CheckParamId(pctx)
+	//
+	//if err != nil {
+	//	return custom.Error(pctx, http.StatusBadRequest, err)
+	//}
 
-	productid, err := custom.CheckParamId(pctx)
-
-	if err != nil {
-		return custom.Error(pctx, http.StatusBadRequest, err)
-	}
-
-	stockListingResult, err := c.stockService.CheckStockByProductId(productid)
+	stockListingResult, err := c.stockService.CheckStockByProductId(id)
 
 	if err != nil {
 		return custom.Error(pctx, http.StatusInternalServerError, err)
@@ -60,11 +62,13 @@ func (c *stockControllerImpl) CheckStockByProductId(pctx echo.Context) error {
 }
 
 func (c *stockControllerImpl) Update(pctx echo.Context) error {
-	stockid, err := custom.CheckParamId(pctx)
-
-	if err != nil {
-		return custom.Error(pctx, http.StatusBadRequest, err)
-	}
+	id := pctx.Param("id")
+	fmt.Println(id)
+	//stockid, err := custom.CheckParamId(pctx)
+	//
+	//if err != nil {
+	//	return custom.Error(pctx, http.StatusBadRequest, err)
+	//}
 
 	stockReq := new(modelReq.Stock)
 
@@ -73,7 +77,7 @@ func (c *stockControllerImpl) Update(pctx echo.Context) error {
 		return custom.Error(pctx, http.StatusBadRequest, err)
 	}
 
-	stockupdate, err := c.stockService.Update(stockid, stockReq)
+	stockupdate, err := c.stockService.Update(id, stockReq)
 
 	if err != nil {
 		return custom.Error(pctx, http.StatusInternalServerError, err)
@@ -84,13 +88,15 @@ func (c *stockControllerImpl) Update(pctx echo.Context) error {
 }
 
 func (c *stockControllerImpl) Delete(pctx echo.Context) error {
-	stockid, err := custom.CheckParamId(pctx)
+	id := pctx.Param("id")
+	fmt.Println(id)
+	//stockid, err := custom.CheckParamId(pctx)
+	//
+	//if err != nil {
+	//	return custom.Error(pctx, http.StatusBadRequest, err)
+	//}
 
-	if err != nil {
-		return custom.Error(pctx, http.StatusBadRequest, err)
-	}
-
-	err = c.stockService.Delete(stockid)
+	err := c.stockService.Delete(id)
 
 	if err != nil {
 		return custom.Error(pctx, http.StatusInternalServerError, err)

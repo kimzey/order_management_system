@@ -8,7 +8,7 @@ import (
 type StockService interface {
 	Create(stock *modelReq.Stock) (*modelRes.Stock, error)
 	FindAll() (*[]modelRes.Stock, error)
-	CheckStockByProductId(id uint64) (*modelRes.Stock, error)
-	Update(id uint64, stock *modelReq.Stock) (*modelRes.Stock, error)
-	Delete(id uint64) error
+	CheckStockByProductId(id string) (*modelRes.Stock, error)
+	Update(id string, stock *modelReq.Stock) (*modelRes.Stock, error)
+	Delete(id string) error
 }

@@ -29,8 +29,8 @@ func (r *transactionRepositoryImpl) Create(transaction *entities.Transaction) (*
 	//
 	//transaction.SumPrice = transaction.CalculatePrice(product.Price, transaction.Quantity, transaction.IsDomestic)
 	transactionModel := ToTransactionModel(transaction)
-
-	if err := r.db.Connect().Create(transactionModel).Preload("Product").Preload("Product").First(&transactionModel, transactionModel.ID).Error; err != nil {
+	fmt.Println(" transactionModel: ", transactionModel)
+	if err := r.db.Connect().Create(transactionModel).Preload("Product").First(&transactionModel).Where("id = ?", transactionModel.ID).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to create transaction: %s", err))
 	}
 
@@ -47,31 +47,31 @@ func (r *transactionRepositoryImpl) FindAll() (*[]entities.Transaction, error) {
 	return allTransactions, nil
 }
 
-func (r *transactionRepositoryImpl) FindByID(id uint64) (*entities.Transaction, error) {
+func (r *transactionRepositoryImpl) FindByID(id string) (*entities.Transaction, error) {
 
 	transaction := new(model.Transaction)
-	if err := r.db.Connect().Preload("Product").Where("id = ?", id).First(&transaction, id).Error; err != nil {
+	if err := r.db.Connect().Preload("Product").Where("id = ?", id).First(&transaction).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to find transaction: %s", err))
 	}
 
 	return transaction.ToTransactionEntity(), nil
 }
-func (r *transactionRepositoryImpl) Update(id uint64, transaction *entities.Transaction) (*entities.Transaction, error) {
+func (r *transactionRepositoryImpl) Update(id string, transaction *entities.Transaction) (*entities.Transaction, error) {
 	transactionModel := ToTransactionModel(transaction)
 
 	if err := r.db.Connect().Model(&transactionModel).Where(
 		"id = ?", id,
 	).Updates(
 		transactionModel,
-	).Scan(transactionModel).Preload("Product").First(&transactionModel, id).Error; err != nil {
+	).Scan(transactionModel).Preload("Product").First(&transactionModel).Where("id = ?", id).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to update transaction: %s", err))
 	}
 	return transactionModel.ToTransactionEntity(), nil
 }
 
-func (r *transactionRepositoryImpl) Delete(id uint64) error {
+func (r *transactionRepositoryImpl) Delete(id string) error {
 
-	err := r.db.Connect().Delete(&model.Transaction{}, id).Error
+	err := r.db.Connect().Where("id = ?", id).Delete(&model.Transaction{}).Error
 	if err != nil {
 		return errors.New(fmt.Sprintf("failed to delete transaction: %s", err))
 	}

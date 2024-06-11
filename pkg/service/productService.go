@@ -8,7 +8,7 @@ import (
 type ProductService interface {
 	Create(product *modelReq.Product) (*modelRes.Product, error)
 	FindAll() (*[]modelRes.Product, error)
-	FindByID(id uint64) (*modelRes.Product, error)
-	Update(id uint64, product *modelReq.Product) (*modelRes.Product, error)
-	Delete(id uint64) error
+	FindByID(id string) (*modelRes.Product, error)
+	Update(id string, product *modelReq.Product) (*modelRes.Product, error)
+	Delete(id string) error
 }

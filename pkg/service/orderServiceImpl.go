@@ -71,7 +71,7 @@ func (s *orderServiceImpl) FindAll() (*[]modelRes.Order, error) {
 	return &allOrder, nil
 }
 
-func (s *orderServiceImpl) FindByID(id uint64) (*modelRes.Order, error) {
+func (s *orderServiceImpl) FindByID(id string) (*modelRes.Order, error) {
 
 	order, err := s.orderRepository.FindByID(id)
 	if err != nil {
@@ -80,7 +80,7 @@ func (s *orderServiceImpl) FindByID(id uint64) (*modelRes.Order, error) {
 	return s.orderEntityToModelRes(order), nil
 }
 
-func (s *orderServiceImpl) Update(id uint64, order *modelReq.Order) (*modelRes.Order, error) {
+func (s *orderServiceImpl) Update(id string, order *modelReq.Order) (*modelRes.Order, error) {
 
 	transaction, err := s.transactionRepository.FindByID(order.TransactionID)
 	if err != nil {
@@ -111,7 +111,7 @@ func (s *orderServiceImpl) Update(id uint64, order *modelReq.Order) (*modelRes.O
 	return s.orderEntityToModelRes(orderEntity), nil
 }
 
-func (s *orderServiceImpl) Delete(id uint64) error {
+func (s *orderServiceImpl) Delete(id string) error {
 
 	err := s.orderRepository.Delete(id)
 	if err != nil {
@@ -120,7 +120,7 @@ func (s *orderServiceImpl) Delete(id uint64) error {
 	return nil
 }
 
-func (s *orderServiceImpl) ChangeStatusNext(id uint64) (*modelRes.Order, error) {
+func (s *orderServiceImpl) ChangeStatusNext(id string) (*modelRes.Order, error) {
 
 	order, err := s.orderRepository.FindByID(id)
 	if err != nil {
@@ -139,7 +139,7 @@ func (s *orderServiceImpl) ChangeStatusNext(id uint64) (*modelRes.Order, error) 
 
 	return s.orderEntityToModelRes(order), nil
 }
-func (s *orderServiceImpl) ChageStatusDone(id uint64) (*modelRes.Order, error) {
+func (s *orderServiceImpl) ChageStatusDone(id string) (*modelRes.Order, error) {
 
 	order, err := s.orderRepository.FindByID(id)
 	if err != nil {
@@ -170,7 +170,7 @@ func (s *orderServiceImpl) orderEntityToModelRes(order *entities.Order) *modelRe
 	return &modelRes.Order{
 		OrderID:       order.OrderID,
 		TransactionID: order.TransactionID,
-		ProductID:     order.ProductID,
-		Status:        order.Status,
+		//ProductID:     order.ProductID,
+		Status: order.Status,
 	}
 }

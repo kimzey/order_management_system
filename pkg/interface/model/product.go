@@ -6,7 +6,7 @@ import (
 )
 
 type Product struct {
-	ID        uint64    `gorm:"primaryKey;autoIncrement;"`
+	ID        string    `gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
 	Name      string    `gorm:"type:varchar(128);not null;" `
 	Price     uint      `gorm:"not null;"`
 	CreatedAt time.Time `gorm:"not null;autoCreateTime;" `

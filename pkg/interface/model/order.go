@@ -6,10 +6,10 @@ import (
 )
 
 type Order struct {
-	ID            uint64      `gorm:"primaryKey;autoIncrement;"`
-	TransactionID uint64      `gorm:"not null; unique;" `
+	ID            string      `gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
+	TransactionID string      `gorm:"not null; unique;" `
 	Transaction   Transaction `gorm:"foreignKey:TransactionID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	ProductID     uint64      `gorm:"not null;" `
+	ProductID     string      `gorm:"not null;" `
 	Product       Product     `gorm:"foreignKey:ProductID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Status        string      `gorm:"type:varchar(20);not null;default:New"`
 	CreatedAt     time.Time   `gorm:"not null;autoCreateTime;"`

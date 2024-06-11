@@ -54,7 +54,7 @@ func (s *transactionService) FindAll() (*[]modelRes.Transaction, error) {
 	return &allTransaction, nil
 }
 
-func (s *transactionService) FindByID(id uint64) (*modelRes.Transaction, error) {
+func (s *transactionService) FindByID(id string) (*modelRes.Transaction, error) {
 	transactionEntity, err := s.transactionRepository.FindByID(id)
 	if err != nil {
 		return nil, err
@@ -62,7 +62,7 @@ func (s *transactionService) FindByID(id uint64) (*modelRes.Transaction, error) 
 	return s.transactionEntityToRes(transactionEntity), nil
 }
 
-func (s *transactionService) Update(id uint64, transaction *modelReq.Transaction) (*modelRes.Transaction, error) {
+func (s *transactionService) Update(id string, transaction *modelReq.Transaction) (*modelRes.Transaction, error) {
 	product, err := s.productRepository.FindByID(transaction.ProductID)
 	if err != nil {
 		return nil, err
@@ -78,7 +78,7 @@ func (s *transactionService) Update(id uint64, transaction *modelReq.Transaction
 	return s.transactionEntityToRes(transactionEntity), nil
 }
 
-func (s *transactionService) Delete(id uint64) error {
+func (s *transactionService) Delete(id string) error {
 
 	err := s.transactionRepository.Delete(id)
 	if err != nil {

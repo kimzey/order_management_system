@@ -1,7 +1,7 @@
 package modelRes
 
 type Stock struct {
-	StockID   uint64 `json:"stockid"`
-	ProductID uint64 `json:"productid" `
+	StockID   string `json:"stockid"`
+	ProductID string `json:"productid" `
 	Quantity  uint   `json:"quantity" `
 }

@@ -38,7 +38,7 @@ func (s *stockServiceImpl) FindAll() (*[]modelRes.Stock, error) {
 	return &stockRes, nil
 }
 
-func (s *stockServiceImpl) CheckStockByProductId(id uint64) (*modelRes.Stock, error) {
+func (s *stockServiceImpl) CheckStockByProductId(id string) (*modelRes.Stock, error) {
 
 	stock, err := s.stockRepository.CheckStockByProductId(id)
 	if err != nil {
@@ -47,7 +47,7 @@ func (s *stockServiceImpl) CheckStockByProductId(id uint64) (*modelRes.Stock, er
 	return s.stockEntityToRes(stock), nil
 }
 
-func (s *stockServiceImpl) Update(id uint64, stock *modelReq.Stock) (*modelRes.Stock, error) {
+func (s *stockServiceImpl) Update(id string, stock *modelReq.Stock) (*modelRes.Stock, error) {
 
 	stockEntity := s.stockReqToEntity(stock)
 	stockEntity, err := s.stockRepository.Update(id, stockEntity)
@@ -57,7 +57,7 @@ func (s *stockServiceImpl) Update(id uint64, stock *modelReq.Stock) (*modelRes.S
 	return s.stockEntityToRes(stockEntity), nil
 }
 
-func (s *stockServiceImpl) Delete(id uint64) error {
+func (s *stockServiceImpl) Delete(id string) error {
 
 	err := s.stockRepository.Delete(id)
 	if err != nil {

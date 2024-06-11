@@ -37,7 +37,7 @@ func (r *stockRepositoryImpl) FindAll() (*[]entities.Stock, error) {
 	return allStock, nil
 }
 
-func (r *stockRepositoryImpl) CheckStockByProductId(productId uint64) (*entities.Stock, error) {
+func (r *stockRepositoryImpl) CheckStockByProductId(productId string) (*entities.Stock, error) {
 	stock := new(model.Stock)
 	//fmt.Println("productId: ", productId)
 	if err := r.db.Connect().Preload("Product").Where("product_id = ?", productId).First(stock).Error; err != nil {
@@ -47,7 +47,7 @@ func (r *stockRepositoryImpl) CheckStockByProductId(productId uint64) (*entities
 	return stock.ToStockEntity(), nil
 }
 
-func (r *stockRepositoryImpl) Update(stockid uint64, stock *entities.Stock) (*entities.Stock, error) {
+func (r *stockRepositoryImpl) Update(stockid string, stock *entities.Stock) (*entities.Stock, error) {
 	stocks := new(model.Stock)
 	modelStock := ToStockModel(stock)
 
@@ -62,8 +62,8 @@ func (r *stockRepositoryImpl) Update(stockid uint64, stock *entities.Stock) (*en
 	return stocks.ToStockEntity(), nil
 }
 
-func (r *stockRepositoryImpl) Delete(id uint64) error {
-	if err := r.db.Connect().Delete(&model.Stock{}, id).Error; err != nil {
+func (r *stockRepositoryImpl) Delete(id string) error {
+	if err := r.db.Connect().Where("id = ?", id).Delete(&model.Stock{}).Error; err != nil {
 		return errors.New(fmt.Sprintf("failed to delete stock: %s", err.Error()))
 	}
 	return nil

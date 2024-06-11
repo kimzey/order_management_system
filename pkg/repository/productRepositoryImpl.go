@@ -37,7 +37,7 @@ func (r *productRepositoryImpl) FindAll() (*[]entities.Product, error) {
 	return allProduct, nil
 }
 
-func (r *productRepositoryImpl) FindByID(id uint64) (*entities.Product, error) {
+func (r *productRepositoryImpl) FindByID(id string) (*entities.Product, error) {
 	product := new(model.Product)
 
 	if err := r.db.Connect().Where("id = ?", id).First(product).Error; err != nil {
@@ -46,7 +46,7 @@ func (r *productRepositoryImpl) FindByID(id uint64) (*entities.Product, error) {
 	return product.ToProductEntity(), nil
 }
 
-func (r *productRepositoryImpl) Update(id uint64, product *entities.Product) (*entities.Product, error) {
+func (r *productRepositoryImpl) Update(id string, product *entities.Product) (*entities.Product, error) {
 	newProduct := new(model.Product)
 	productModel := ToProductModel(product)
 
@@ -60,9 +60,9 @@ func (r *productRepositoryImpl) Update(id uint64, product *entities.Product) (*e
 	return newProduct.ToProductEntity(), nil
 }
 
-func (r *productRepositoryImpl) Delete(id uint64) error {
+func (r *productRepositoryImpl) Delete(id string) error {
 
-	if err := r.db.Connect().Delete(&model.Product{}, id).Error; err != nil {
+	if err := r.db.Connect().Where("id = ?", id).Delete(&model.Product{}).Error; err != nil {
 		return errors.New(fmt.Sprintf("failed to delete product: %s", err.Error()))
 	}
 	return nil

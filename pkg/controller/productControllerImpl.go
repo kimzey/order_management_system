@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	_productService "github.com/kizmey/order_management_system/pkg/service"
 	"github.com/kizmey/order_management_system/server/httpEchoServer/custom"
@@ -42,13 +43,14 @@ func (c *productController) FindAll(pctx echo.Context) error {
 }
 
 func (c *productController) FindByID(pctx echo.Context) error {
-	productid, err := custom.CheckParamId(pctx)
+	id := pctx.Param("id")
+	fmt.Println(id)
+	//id, err := custom.CheckParamId(pctx)
+	//if err != nil {
+	//	return custom.Error(pctx, http.StatusBadRequest, err)
+	//}
 
-	if err != nil {
-		return custom.Error(pctx, http.StatusBadRequest, err)
-	}
-
-	product, err := c.productService.FindByID(productid)
+	product, err := c.productService.FindByID(id)
 	if err != nil {
 		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
@@ -56,18 +58,19 @@ func (c *productController) FindByID(pctx echo.Context) error {
 }
 
 func (c *productController) Update(pctx echo.Context) error {
-	productid, err := custom.CheckParamId(pctx)
-
-	if err != nil {
-		return custom.Error(pctx, http.StatusBadRequest, err)
-	}
+	id := pctx.Param("id")
+	fmt.Println(id)
+	//id, err := custom.CheckParamId(pctx)
+	//if err != nil {
+	//	return custom.Error(pctx, http.StatusBadRequest, err)
+	//}
 	productReq := new(modelReq.Product)
 
 	validatingContext := custom.NewCustomEchoRequest(pctx)
 	if err := validatingContext.BindAndValidate(productReq); err != nil {
 		return custom.Error(pctx, http.StatusBadRequest, err)
 	}
-	product, err := c.productService.Update(productid, productReq)
+	product, err := c.productService.Update(id, productReq)
 	if err != nil {
 		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
@@ -76,13 +79,15 @@ func (c *productController) Update(pctx echo.Context) error {
 }
 
 func (c *productController) Delete(pctx echo.Context) error {
-	productid, err := custom.CheckParamId(pctx)
+	id := pctx.Param("id")
+	fmt.Println(id)
+	//productid, err := custom.CheckParamId(pctx)
+	//
+	//if err != nil {
+	//	return custom.Error(pctx, http.StatusBadRequest, err)
+	//}
 
-	if err != nil {
-		return custom.Error(pctx, http.StatusBadRequest, err)
-	}
-
-	err = c.productService.Delete(productid)
+	err := c.productService.Delete(id)
 	if err != nil {
 		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}

@@ -6,8 +6,8 @@ import (
 )
 
 type Stock struct {
-	ID        uint64    `gorm:"primaryKey;autoIncrement;"`
-	ProductID uint64    `gorm:"unique;not null;" `
+	ID        string    `gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
+	ProductID string    `gorm:"unique;not null;" `
 	Product   Product   `gorm:"foreignKey:ProductID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Quantity  uint      `gorm:"not null;" `
 	CreatedAt time.Time `gorm:"not null;autoCreateTime;" `

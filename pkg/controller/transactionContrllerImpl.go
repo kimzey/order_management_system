@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	_transactionService "github.com/kizmey/order_management_system/pkg/service"
 	"github.com/kizmey/order_management_system/server/httpEchoServer/custom"
@@ -43,10 +44,12 @@ func (c *transactionControllerImpl) FindAll(pctx echo.Context) error {
 }
 
 func (c *transactionControllerImpl) FindByID(pctx echo.Context) error {
-	id, err := custom.CheckParamId(pctx)
-	if err != nil {
-		return custom.Error(pctx, http.StatusBadRequest, err)
-	}
+	id := pctx.Param("id")
+	fmt.Println(id)
+	//id, err := custom.CheckParamId(pctx)
+	//if err != nil {
+	//	return custom.Error(pctx, http.StatusBadRequest, err)
+	//}
 
 	transaction, err := c.transaction.FindByID(id)
 	if err != nil {
@@ -57,11 +60,12 @@ func (c *transactionControllerImpl) FindByID(pctx echo.Context) error {
 }
 
 func (c *transactionControllerImpl) Update(pctx echo.Context) error {
-
-	id, err := custom.CheckParamId(pctx)
-	if err != nil {
-		return custom.Error(pctx, http.StatusBadRequest, err)
-	}
+	id := pctx.Param("id")
+	fmt.Println(id)
+	//id, err := custom.CheckParamId(pctx)
+	//if err != nil {
+	//	return custom.Error(pctx, http.StatusBadRequest, err)
+	//}
 
 	transactionReq := new(modelReq.Transaction)
 
@@ -79,12 +83,14 @@ func (c *transactionControllerImpl) Update(pctx echo.Context) error {
 }
 
 func (c *transactionControllerImpl) Delete(pctx echo.Context) error {
-	id, err := custom.CheckParamId(pctx)
-	if err != nil {
-		return custom.Error(pctx, http.StatusBadRequest, err)
-	}
+	id := pctx.Param("id")
+	fmt.Println(id)
+	//id, err := custom.CheckParamId(pctx)
+	//if err != nil {
+	//	return custom.Error(pctx, http.StatusBadRequest, err)
+	//}
 
-	err = c.transaction.Delete(id)
+	err := c.transaction.Delete(id)
 	if err != nil {
 		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}

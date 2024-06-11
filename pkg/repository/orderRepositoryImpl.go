@@ -26,7 +26,7 @@ func (r *orderRepositoryImpl) Create(order *entities.Order) (*entities.Order, er
 	//if err != nil {
 	//	return nil, errors.New("id not correct or not enough stock")
 	//}
-	if err := r.db.Connect().Create(&modelOrder).Preload("Transaction").First(&newOrder, modelOrder.ID).Error; err != nil {
+	if err := r.db.Connect().Create(&modelOrder).Preload("Transaction").Where("id = ?", modelOrder.ID).First(&newOrder).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("create order error : %s", err.Error()))
 	}
 	return newOrder.ToOrderEntity(), nil
@@ -42,31 +42,31 @@ func (r *orderRepositoryImpl) FindAll() (*[]entities.Order, error) {
 
 	return allOrder, nil
 }
-func (r *orderRepositoryImpl) FindByID(id uint64) (*entities.Order, error) {
+func (r *orderRepositoryImpl) FindByID(id string) (*entities.Order, error) {
 	order := new(model.Order)
-	if err := r.db.Connect().Preload("Product").Preload("Transaction").First(&order, id).Error; err != nil {
+	if err := r.db.Connect().Preload("Product").Preload("Transaction").Where("id = ?", id).First(&order).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("find by id order error : %s", err.Error()))
 	}
 	return order.ToOrderEntity(), nil
 }
 
-func (r *orderRepositoryImpl) Update(id uint64, order *entities.Order) (*entities.Order, error) {
+func (r *orderRepositoryImpl) Update(id string, order *entities.Order) (*entities.Order, error) {
 	orderModel := ToOrderModel(order)
 
-	if err := r.db.Connect().Model(&orderModel).Where("id = ?", id).Updates(&orderModel).Scan(orderModel).Preload("Product").Preload("Transaction").First(&orderModel, id).Error; err != nil {
+	if err := r.db.Connect().Model(&orderModel).Where("id = ?", id).Updates(&orderModel).Scan(orderModel).Preload("Product").Preload("Transaction").Where("id = ?", id).First(&orderModel).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("update order error : %s", err.Error()))
 	}
 	return orderModel.ToOrderEntity(), nil
 }
 
-func (r *orderRepositoryImpl) Delete(id uint64) error {
-	if err := r.db.Connect().Delete(&model.Order{}, id).Error; err != nil {
+func (r *orderRepositoryImpl) Delete(id string) error {
+	if err := r.db.Connect().Where("id = ?", id).Delete(&model.Order{}).Error; err != nil {
 		return errors.New(fmt.Sprintf("delete order error : %s", err.Error()))
 	}
 	return nil
 }
 
-func (r *orderRepositoryImpl) ChangeStatusNext(id uint64) (*entities.Order, error) {
+func (r *orderRepositoryImpl) ChangeStatusNext(id string) (*entities.Order, error) {
 	newOrder := new(model.Order)
 
 	if err := r.db.Connect().Preload("Product").Preload("Transaction").First(&newOrder, id).Error; err != nil {
@@ -80,7 +80,7 @@ func (r *orderRepositoryImpl) ChangeStatusNext(id uint64) (*entities.Order, erro
 	return newOrder.ToOrderEntity(), nil
 }
 
-func (r *orderRepositoryImpl) ChangeStatusDone(id uint64) (*entities.Order, error) {
+func (r *orderRepositoryImpl) ChangeStatusDone(id string) (*entities.Order, error) {
 	newOrder := new(model.Order)
 
 	if err := r.db.Connect().Preload("Product").Preload("Transaction").First(&newOrder, id).Error; err != nil {

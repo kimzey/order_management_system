@@ -6,8 +6,8 @@ import (
 )
 
 type Transaction struct {
-	ID         uint64    `gorm:"primaryKey;autoIncrement;"`
-	ProductID  uint64    `gorm:"not null;" `
+	ID         string    `gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
+	ProductID  string    `gorm:"not null;" `
 	Product    Product   `gorm:"foreignKey:ProductID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	IsDomestic bool      `gorm:"not null; default:false;"`
 	Quantity   uint      `gorm:"not null;" `

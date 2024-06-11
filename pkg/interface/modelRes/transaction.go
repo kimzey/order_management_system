@@ -1,8 +1,8 @@
 package modelRes
 
 type Transaction struct {
-	TransactionID uint64 `json:"transactionid" `
-	ProductID     uint64 `json:"productid" `
+	TransactionID string `json:"transactionid" `
+	ProductID     string `json:"productid" `
 	ProductName   string `json:"productName"`
 	Quantity      uint   `json:"quantity" `
 	IsDomestic    bool   `json:"isdomestic" `

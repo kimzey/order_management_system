@@ -40,7 +40,7 @@ func (s *productServiceImpl) FindAll() (*[]modelRes.Product, error) {
 	return &productsRes, nil
 }
 
-func (s *productServiceImpl) FindByID(id uint64) (*modelRes.Product, error) {
+func (s *productServiceImpl) FindByID(id string) (*modelRes.Product, error) {
 
 	product, err := s.productRepository.FindByID(id)
 	if err != nil {
@@ -48,7 +48,7 @@ func (s *productServiceImpl) FindByID(id uint64) (*modelRes.Product, error) {
 	}
 	return s.productEntityToRes(product), nil
 }
-func (s *productServiceImpl) Update(id uint64, product *modelReq.Product) (*modelRes.Product, error) {
+func (s *productServiceImpl) Update(id string, product *modelReq.Product) (*modelRes.Product, error) {
 
 	productEntity := s.productReqToEntity(product)
 	productEntity, err := s.productRepository.Update(id, productEntity)
@@ -58,7 +58,7 @@ func (s *productServiceImpl) Update(id uint64, product *modelReq.Product) (*mode
 	return s.productEntityToRes(productEntity), nil
 }
 
-func (s *productServiceImpl) Delete(id uint64) error {
+func (s *productServiceImpl) Delete(id string) error {
 
 	err := s.productRepository.Delete(id)
 	if err != nil {

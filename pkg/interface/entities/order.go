@@ -5,9 +5,9 @@ import (
 )
 
 type Order struct {
-	OrderID       uint64
-	TransactionID uint64
-	ProductID     uint64
+	OrderID       string
+	TransactionID string
+	ProductID     string
 	Status        string
 }
 

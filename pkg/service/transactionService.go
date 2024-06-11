@@ -8,7 +8,7 @@ import (
 type TransactionService interface {
 	Create(transaction *modelReq.Transaction) (*modelRes.Transaction, error)
 	FindAll() (*[]modelRes.Transaction, error)
-	FindByID(id uint64) (*modelRes.Transaction, error)
-	Update(id uint64, transaction *modelReq.Transaction) (*modelRes.Transaction, error)
-	Delete(id uint64) error
+	FindByID(id string) (*modelRes.Transaction, error)
+	Update(id string, transaction *modelReq.Transaction) (*modelRes.Transaction, error)
+	Delete(id string) error
 }
