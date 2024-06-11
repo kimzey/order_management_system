@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"github.com/kizmey/order_management_system/modelReq"
+	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	_transactionService "github.com/kizmey/order_management_system/pkg/service"
 	"github.com/kizmey/order_management_system/server/httpEchoServer/custom"
 	"github.com/labstack/echo/v4"
@@ -64,6 +64,7 @@ func (c *transactionControllerImpl) Update(pctx echo.Context) error {
 	}
 
 	transactionReq := new(modelReq.Transaction)
+
 	validatingContext := custom.NewCustomEchoRequest(pctx)
 	if err := validatingContext.BindAndValidate(transactionReq); err != nil {
 		return custom.Error(pctx, http.StatusBadRequest, err)

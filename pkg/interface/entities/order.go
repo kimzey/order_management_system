@@ -1,6 +1,8 @@
 package entities
 
-import "errors"
+import (
+	"errors"
+)
 
 type Order struct {
 	OrderID       uint64

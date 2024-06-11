@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"github.com/kizmey/order_management_system/modelReq"
+	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	_StockService "github.com/kizmey/order_management_system/pkg/service"
 	"github.com/kizmey/order_management_system/server/httpEchoServer/custom"
 	"github.com/labstack/echo/v4"

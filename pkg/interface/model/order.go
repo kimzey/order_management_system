@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/kizmey/order_management_system/entities"
+	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"time"
 )
 
@@ -19,7 +19,6 @@ type Order struct {
 func (m *Order) ToOrderEntity() *entities.Order {
 	return &entities.Order{
 		OrderID:       m.ID,
-		ProductID:     m.ProductID,
 		TransactionID: m.TransactionID,
 		Status:        m.Status,
 	}

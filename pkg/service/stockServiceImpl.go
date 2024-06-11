@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github.com/kizmey/order_management_system/entities"
-	"github.com/kizmey/order_management_system/modelReq"
-	"github.com/kizmey/order_management_system/modelRes"
+	"github.com/kizmey/order_management_system/pkg/interface/entities"
+	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
+	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
 	_StockRepository "github.com/kizmey/order_management_system/pkg/repository"
 )
 

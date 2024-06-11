@@ -2,9 +2,9 @@ package service
 
 import (
 	"errors"
-	"github.com/kizmey/order_management_system/entities"
-	"github.com/kizmey/order_management_system/modelReq"
-	"github.com/kizmey/order_management_system/modelRes"
+	"github.com/kizmey/order_management_system/pkg/interface/entities"
+	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
+	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
 	_transactionRepository "github.com/kizmey/order_management_system/pkg/repository"
 )
 
@@ -18,24 +18,22 @@ type orderServiceImpl struct {
 func NewOrderServiceImpl(orderRepository _transactionRepository.OrderRepository,
 	transactionRepository _transactionRepository.TransactionRepository,
 	stockRepository _transactionRepository.StockRepository,
-	productRepository _transactionRepository.ProductRepository,
 ) OrderService {
 	return &orderServiceImpl{
 		orderRepository:       orderRepository,
 		transactionRepository: transactionRepository,
 		stockRepository:       stockRepository,
-		productRepository:     productRepository,
 	}
 }
 
 func (s *orderServiceImpl) Create(order *modelReq.Order) (*modelRes.Order, error) {
 
-	stock, err := s.stockRepository.CheckStockByProductId(order.ProductID)
+	transaction, err := s.transactionRepository.FindByID(order.TransactionID)
 	if err != nil {
 		return nil, err
 	}
 
-	transaction, err := s.transactionRepository.FindByID(order.TransactionID)
+	stock, err := s.stockRepository.CheckStockByProductId(transaction.ProductID)
 	if err != nil {
 		return nil, err
 	}
@@ -44,14 +42,15 @@ func (s *orderServiceImpl) Create(order *modelReq.Order) (*modelRes.Order, error
 		return nil, errors.New("stock not enough")
 	}
 
-	stock.Quantity = stock.Quantity - transaction.Quantity
-	_, err = s.stockRepository.Update(stock.StockID, stock)
+	createOrder := s.orderReqToEntity(order)
+	createOrder.ProductID = transaction.ProductID
+	newOrder, err := s.orderRepository.Create(createOrder)
 	if err != nil {
 		return nil, err
 	}
 
-	createOrder := s.orderReqToEntity(order)
-	newOrder, err := s.orderRepository.Create(createOrder)
+	stock.Quantity = stock.Quantity - transaction.Quantity
+	_, err = s.stockRepository.Update(stock.StockID, stock)
 	if err != nil {
 		return nil, err
 	}
@@ -83,11 +82,32 @@ func (s *orderServiceImpl) FindByID(id uint64) (*modelRes.Order, error) {
 
 func (s *orderServiceImpl) Update(id uint64, order *modelReq.Order) (*modelRes.Order, error) {
 
-	orderEntity := s.orderReqToEntity(order)
-	orderEntity, err := s.orderRepository.Update(id, orderEntity)
+	transaction, err := s.transactionRepository.FindByID(order.TransactionID)
 	if err != nil {
 		return nil, err
 	}
+
+	stock, err := s.stockRepository.CheckStockByProductId(transaction.ProductID)
+	if err != nil {
+		return nil, err
+	}
+
+	if stock.Quantity < transaction.Quantity {
+		return nil, errors.New("stock not enough")
+	}
+
+	orderEntity := s.orderReqToEntity(order)
+	orderEntity, err = s.orderRepository.Update(id, orderEntity)
+	if err != nil {
+		return nil, err
+	}
+
+	stock.Quantity = stock.Quantity - transaction.Quantity
+	_, err = s.stockRepository.Update(stock.StockID, stock)
+	if err != nil {
+		return nil, err
+	}
+
 	return s.orderEntityToModelRes(orderEntity), nil
 }
 
@@ -142,7 +162,6 @@ func (s *orderServiceImpl) ChageStatusDone(id uint64) (*modelRes.Order, error) {
 func (s *orderServiceImpl) orderReqToEntity(orderReq *modelReq.Order) *entities.Order {
 	return &entities.Order{
 		TransactionID: orderReq.TransactionID,
-		ProductID:     orderReq.ProductID,
 		Status:        orderReq.Status,
 	}
 }

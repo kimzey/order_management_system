@@ -2,7 +2,7 @@ package controller
 
 import (
 	"fmt"
-	"github.com/kizmey/order_management_system/modelReq"
+	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	_orderService "github.com/kizmey/order_management_system/pkg/service"
 	"github.com/kizmey/order_management_system/server/httpEchoServer/custom"
 	"github.com/labstack/echo/v4"
@@ -33,6 +33,7 @@ func (c *orderControllerImpl) Create(pctx echo.Context) error {
 }
 
 func (c *orderControllerImpl) ChangeStatusNext(pctx echo.Context) error {
+
 	orderId, err := custom.CheckParamId(pctx)
 
 	if err != nil {

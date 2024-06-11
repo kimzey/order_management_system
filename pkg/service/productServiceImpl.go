@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github.com/kizmey/order_management_system/entities"
-	"github.com/kizmey/order_management_system/modelReq"
-	"github.com/kizmey/order_management_system/modelRes"
+	"github.com/kizmey/order_management_system/pkg/interface/entities"
+	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
+	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
 	_ProductRepository "github.com/kizmey/order_management_system/pkg/repository"
 )
 
@@ -67,7 +67,7 @@ func (s *productServiceImpl) Delete(id uint64) error {
 	return nil
 }
 
-func (r *productServiceImpl) productReqToEntity(product *modelReq.Product) *entities.Product {
+func (s *productServiceImpl) productReqToEntity(product *modelReq.Product) *entities.Product {
 	return &entities.Product{
 		ProductName:  product.ProductName,
 		ProductPrice: product.ProductPrice,
@@ -75,7 +75,7 @@ func (r *productServiceImpl) productReqToEntity(product *modelReq.Product) *enti
 
 }
 
-func (r *productServiceImpl) productEntityToRes(product *entities.Product) *modelRes.Product {
+func (s *productServiceImpl) productEntityToRes(product *entities.Product) *modelRes.Product {
 	return &modelRes.Product{
 		ProductID:    product.ProductID,
 		ProductName:  product.ProductName,

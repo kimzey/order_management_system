@@ -1,9 +1,11 @@
 package repository
 
 import (
+	"errors"
+	"fmt"
 	"github.com/kizmey/order_management_system/database"
-	"github.com/kizmey/order_management_system/entities"
-	"github.com/kizmey/order_management_system/model"
+	"github.com/kizmey/order_management_system/pkg/interface/entities"
+	"github.com/kizmey/order_management_system/pkg/interface/model"
 )
 
 type productRepositoryImpl struct {
@@ -20,7 +22,7 @@ func (r *productRepositoryImpl) Create(product *entities.Product) (*entities.Pro
 	newProduct := new(model.Product)
 
 	if err := r.db.Connect().Create(modelProduct).Scan(newProduct).Error; err != nil {
-		return nil, err
+		return nil, errors.New(fmt.Sprintf("failed to create product: %s", err.Error()))
 	}
 	return newProduct.ToProductEntity(), nil
 }
@@ -29,7 +31,7 @@ func (r *productRepositoryImpl) FindAll() (*[]entities.Product, error) {
 	products := new([]model.Product)
 
 	if err := r.db.Connect().Find(products).Error; err != nil {
-		return nil, err
+		return nil, errors.New(fmt.Sprintf("failed to find all products: %s", err.Error()))
 	}
 	allProduct := model.ConvertProductModelsToEntities(products)
 	return allProduct, nil
@@ -39,7 +41,7 @@ func (r *productRepositoryImpl) FindByID(id uint64) (*entities.Product, error) {
 	product := new(model.Product)
 
 	if err := r.db.Connect().Where("id = ?", id).First(product).Error; err != nil {
-		return nil, err
+		return nil, errors.New(fmt.Sprintf("failed to find product: %s", err.Error()))
 	}
 	return product.ToProductEntity(), nil
 }
@@ -53,13 +55,17 @@ func (r *productRepositoryImpl) Update(id uint64, product *entities.Product) (*e
 	).Updates(
 		productModel,
 	).Scan(newProduct).Error; err != nil {
-		return nil, err
+		return nil, errors.New(fmt.Sprintf("failed to update product: %s", err.Error()))
 	}
 	return newProduct.ToProductEntity(), nil
 }
 
 func (r *productRepositoryImpl) Delete(id uint64) error {
-	return r.db.Connect().Delete(&model.Product{}, id).Error
+
+	if err := r.db.Connect().Delete(&model.Product{}, id).Error; err != nil {
+		return errors.New(fmt.Sprintf("failed to delete product: %s", err.Error()))
+	}
+	return nil
 }
 
 func ToProductModel(e *entities.Product) *model.Product {

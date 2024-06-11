@@ -1,12 +1,12 @@
 package model
 
 import (
-	"github.com/kizmey/order_management_system/entities"
+	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"time"
 )
 
 type Product struct {
-	ID        uint64    `gorm:"primaryKey;autoIncrement;" `
+	ID        uint64    `gorm:"primaryKey;autoIncrement;"`
 	Name      string    `gorm:"type:varchar(128);not null;" `
 	Price     uint      `gorm:"not null;"`
 	CreatedAt time.Time `gorm:"not null;autoCreateTime;" `

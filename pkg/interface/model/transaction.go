@@ -1,12 +1,12 @@
 package model
 
 import (
-	"github.com/kizmey/order_management_system/entities"
+	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"time"
 )
 
 type Transaction struct {
-	ID         uint64    `gorm:"primaryKey;autoIncrement;" `
+	ID         uint64    `gorm:"primaryKey;autoIncrement;"`
 	ProductID  uint64    `gorm:"not null;" `
 	Product    Product   `gorm:"foreignKey:ProductID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	IsDomestic bool      `gorm:"not null; default:false;"`

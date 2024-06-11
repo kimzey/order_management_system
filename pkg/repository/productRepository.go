@@ -1,6 +1,8 @@
 package repository
 
-import "github.com/kizmey/order_management_system/entities"
+import (
+	"github.com/kizmey/order_management_system/pkg/interface/entities"
+)
 
 type ProductRepository interface {
 	Create(product *entities.Product) (*entities.Product, error)

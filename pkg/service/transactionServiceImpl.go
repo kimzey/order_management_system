@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github.com/kizmey/order_management_system/entities"
-	"github.com/kizmey/order_management_system/modelReq"
-	"github.com/kizmey/order_management_system/modelRes"
+	"github.com/kizmey/order_management_system/pkg/interface/entities"
+	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
+	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
 	_TransactionRepository "github.com/kizmey/order_management_system/pkg/repository"
 )
 
@@ -15,12 +15,10 @@ type transactionService struct {
 
 func NewTransactionServiceImpl(
 	transactionRepository _TransactionRepository.TransactionRepository,
-	stockRepository _TransactionRepository.StockRepository,
 	productRepository _TransactionRepository.ProductRepository,
 ) TransactionService {
 	return &transactionService{
 		transactionRepository: transactionRepository,
-		stockRepository:       stockRepository,
 		productRepository:     productRepository,
 	}
 }
@@ -28,31 +26,16 @@ func NewTransactionServiceImpl(
 func (s *transactionService) Create(transaction *modelReq.Transaction) (*modelRes.Transaction, error) {
 	transactionEntity := s.transactionReqToEntity(transaction)
 
-	stock, err := s.stockRepository.CheckStockByProductId(transaction.ProductID)
-	if err != nil {
-		return nil, err
-	}
-
-	if stock.Quantity < transaction.Quantity {
-		return nil, err
-	}
-
-	//stock.Quantity -= transaction.Quantity
-	//stock, err = s.stockRepository.Update(stock.StockID, stock)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//check product
 	product, err := s.productRepository.FindByID(transaction.ProductID)
 	if err != nil {
 		return nil, err
 	}
-
 	transactionEntity.SumPrice = transactionEntity.CalculatePrice(product.ProductPrice, transaction.Quantity, transaction.IsDomestic)
 	transactionEntity, err = s.transactionRepository.Create(transactionEntity)
 	if err != nil {
 		return nil, err
 	}
+
 	return s.transactionEntityToRes(transactionEntity), nil
 }
 
@@ -80,15 +63,6 @@ func (s *transactionService) FindByID(id uint64) (*modelRes.Transaction, error) 
 }
 
 func (s *transactionService) Update(id uint64, transaction *modelReq.Transaction) (*modelRes.Transaction, error) {
-
-	stock, err := s.stockRepository.CheckStockByProductId(transaction.ProductID)
-	if err != nil {
-		return nil, err
-	}
-	if stock.Quantity < transaction.Quantity {
-		return nil, err
-	}
-
 	product, err := s.productRepository.FindByID(transaction.ProductID)
 	if err != nil {
 		return nil, err

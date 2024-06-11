@@ -10,7 +10,6 @@ import (
 func CheckParamId(echoRequest echo.Context) (uint64, error) {
 	paramid := echoRequest.Param("id")
 	//check error
-	fmt.Println("check param id: ", paramid)
 	if paramid == "done/" {
 		return 0, errors.New("param id not found")
 

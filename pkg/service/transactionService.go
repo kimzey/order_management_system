@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/kizmey/order_management_system/modelReq"
-	"github.com/kizmey/order_management_system/modelRes"
+	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
+	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
 )
 
 type TransactionService interface {
