@@ -16,20 +16,13 @@ func NewOrderRepositoryImpl(db database.Database) OrderRepository {
 	return &orderRepositoryImpl{db: db}
 }
 
-func (r *orderRepositoryImpl) Create(order *entities.Order) (*entities.Order, error) {
+func (r *orderRepositoryImpl) Create(order *entities.Order, stock *entities.Stock) (*entities.Order, error) {
 	modelOrder := ToOrderModel(order)
-	newOrder := new(model.Order)
 
-	//err := r.db.Connect().Joins("JOIN stocks ON stocks.product_id = products.id").
-	//	Where("products.id = ? AND stocks.quantity >= ?", transaction.ProductID, transaction.Quantity).
-	//	First(&product).First(&stock).Error
-	//if err != nil {
-	//	return nil, errors.New("id not correct or not enough stock")
-	//}
-	if err := r.db.Connect().Create(&modelOrder).Preload("Transaction").Where("id = ?", modelOrder.ID).First(&newOrder).Error; err != nil {
+	if err := r.db.Connect().Create(&modelOrder).Preload("Transaction").Where("id = ?", modelOrder.ID).First(&modelOrder).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("create order error : %s", err.Error()))
 	}
-	return newOrder.ToOrderEntity(), nil
+	return modelOrder.ToOrderEntity(), nil
 }
 
 func (r *orderRepositoryImpl) FindAll() (*[]entities.Order, error) {
@@ -107,7 +100,6 @@ func ToOrderModel(e *entities.Order) *model.Order {
 	//fmt.Println("e: ", e.IsDomestic)
 	return &model.Order{
 		TransactionID: e.TransactionID,
-		ProductID:     e.ProductID,
 		Status:        e.Status,
 	}
 }

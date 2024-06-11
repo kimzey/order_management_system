@@ -7,7 +7,6 @@ import (
 type Order struct {
 	OrderID       string
 	TransactionID string
-	ProductID     string
 	Status        string
 }
 

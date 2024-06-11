@@ -41,19 +41,19 @@ func (s *orderServiceImpl) Create(order *modelReq.Order) (*modelRes.Order, error
 	if stock.Quantity < transaction.Quantity {
 		return nil, errors.New("stock not enough")
 	}
+	stock.Quantity = stock.Quantity - transaction.Quantity
 
 	createOrder := s.orderReqToEntity(order)
-	createOrder.ProductID = transaction.ProductID
-	newOrder, err := s.orderRepository.Create(createOrder)
+	newOrder, err := s.orderRepository.Create(createOrder, stock)
 	if err != nil {
 		return nil, err
 	}
 
-	stock.Quantity = stock.Quantity - transaction.Quantity
-	_, err = s.stockRepository.Update(stock.StockID, stock)
-	if err != nil {
-		return nil, err
-	}
+	//stock.Quantity = stock.Quantity - transaction.Quantity
+	//_, err = s.stockRepository.Update(stock.StockID, stock)
+	//if err != nil {
+	//	return nil, err
+	//}
 
 	return s.orderEntityToModelRes(newOrder), nil
 }
