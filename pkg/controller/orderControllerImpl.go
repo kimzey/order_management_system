@@ -2,8 +2,8 @@ package controller
 
 import (
 	"fmt"
-	"github.com/kizmey/order_management_system/pkg/modelReq"
-	_orderService "github.com/kizmey/order_management_system/pkg/order/service"
+	"github.com/kizmey/order_management_system/modelReq"
+	_orderService "github.com/kizmey/order_management_system/pkg/service"
 	"github.com/kizmey/order_management_system/server/httpEchoServer/custom"
 	"github.com/labstack/echo/v4"
 	"net/http"

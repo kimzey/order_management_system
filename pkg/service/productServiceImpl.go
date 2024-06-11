@@ -2,9 +2,9 @@ package service
 
 import (
 	"github.com/kizmey/order_management_system/entities"
-	"github.com/kizmey/order_management_system/pkg/modelReq"
-	"github.com/kizmey/order_management_system/pkg/modelRes"
-	_ProductRepository "github.com/kizmey/order_management_system/pkg/product/repository"
+	"github.com/kizmey/order_management_system/modelReq"
+	"github.com/kizmey/order_management_system/modelRes"
+	_ProductRepository "github.com/kizmey/order_management_system/pkg/repository"
 )
 
 type productServiceImpl struct {

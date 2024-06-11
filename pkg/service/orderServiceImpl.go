@@ -3,25 +3,22 @@ package service
 import (
 	"errors"
 	"github.com/kizmey/order_management_system/entities"
-	"github.com/kizmey/order_management_system/pkg/modelReq"
-	"github.com/kizmey/order_management_system/pkg/modelRes"
-	_orderRepository "github.com/kizmey/order_management_system/pkg/order/repository"
-	_productRepository "github.com/kizmey/order_management_system/pkg/product/repository"
-	_stockRepository "github.com/kizmey/order_management_system/pkg/stock/repository"
-	_transactionRepository "github.com/kizmey/order_management_system/pkg/transaction/repository"
+	"github.com/kizmey/order_management_system/modelReq"
+	"github.com/kizmey/order_management_system/modelRes"
+	_transactionRepository "github.com/kizmey/order_management_system/pkg/repository"
 )
 
 type orderServiceImpl struct {
-	orderRepository       _orderRepository.OrderRepository
+	orderRepository       _transactionRepository.OrderRepository
 	transactionRepository _transactionRepository.TransactionRepository
-	stockRepository       _stockRepository.StockRepository
-	productRepository     _productRepository.ProductRepository
+	stockRepository       _transactionRepository.StockRepository
+	productRepository     _transactionRepository.ProductRepository
 }
 
-func NewOrderServiceImpl(orderRepository _orderRepository.OrderRepository,
+func NewOrderServiceImpl(orderRepository _transactionRepository.OrderRepository,
 	transactionRepository _transactionRepository.TransactionRepository,
-	stockRepository _stockRepository.StockRepository,
-	productRepository _productRepository.ProductRepository,
+	stockRepository _transactionRepository.StockRepository,
+	productRepository _transactionRepository.ProductRepository,
 ) OrderService {
 	return &orderServiceImpl{
 		orderRepository:       orderRepository,

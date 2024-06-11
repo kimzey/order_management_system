@@ -2,28 +2,22 @@ package pkg
 
 import (
 	"github.com/kizmey/order_management_system/database"
-	_orderRepository "github.com/kizmey/order_management_system/pkg/order/repository"
-	_orderService "github.com/kizmey/order_management_system/pkg/order/service"
-	_productRepository "github.com/kizmey/order_management_system/pkg/product/repository"
-	_productService "github.com/kizmey/order_management_system/pkg/product/service"
-	_stockRepository "github.com/kizmey/order_management_system/pkg/stock/repository"
-	_stockService "github.com/kizmey/order_management_system/pkg/stock/service"
-	_transactionRepository "github.com/kizmey/order_management_system/pkg/transaction/repository"
-	_transactionService "github.com/kizmey/order_management_system/pkg/transaction/service"
+	_stockRepository "github.com/kizmey/order_management_system/pkg/repository"
+	"github.com/kizmey/order_management_system/pkg/service"
 )
 
 type Usecase struct {
-	TransactionService _transactionService.TransactionService
-	StockService       _stockService.StockService
-	ProductService     _productService.ProductService
-	OrderService       _orderService.OrderService
+	TransactionService service.TransactionService
+	StockService       service.StockService
+	ProductService     service.ProductService
+	OrderService       service.OrderService
 }
 
 func NewUsecase(
-	transactionService _transactionService.TransactionService,
-	stockService _stockService.StockService,
-	productService _productService.ProductService,
-	orderService _orderService.OrderService,
+	transactionService service.TransactionService,
+	stockService service.StockService,
+	productService service.ProductService,
+	orderService service.OrderService,
 ) *Usecase {
 	return &Usecase{
 		TransactionService: transactionService,
@@ -36,16 +30,16 @@ func NewUsecase(
 func InitUsecase(db database.Database) *Usecase {
 
 	// Init Repository
-	orderRepo := _orderRepository.NewOrderRepositoryImpl(db)
-	productRepo := _productRepository.NewProductRepositoryImpl(db)
+	orderRepo := _stockRepository.NewOrderRepositoryImpl(db)
+	productRepo := _stockRepository.NewProductRepositoryImpl(db)
 	stockRepo := _stockRepository.NewStockRepositoryImpl(db)
-	transactionRepo := _transactionRepository.NewTransactionController(db)
+	transactionRepo := _stockRepository.NewTransactionController(db)
 
 	// Init Service
-	productService := _productService.NewProductServiceImpl(productRepo)
-	stockService := _stockService.NewStockServiceImpl(stockRepo)
-	transactionService := _transactionService.NewTransactionServiceImpl(transactionRepo, stockRepo, productRepo)
-	orderService := _orderService.NewOrderServiceImpl(orderRepo, transactionRepo, stockRepo, productRepo)
+	productService := service.NewProductServiceImpl(productRepo)
+	stockService := service.NewStockServiceImpl(stockRepo)
+	transactionService := service.NewTransactionServiceImpl(transactionRepo, stockRepo, productRepo)
+	orderService := service.NewOrderServiceImpl(orderRepo, transactionRepo, stockRepo, productRepo)
 
 	usecase := NewUsecase(transactionService, stockService, productService, orderService)
 

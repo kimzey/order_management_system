@@ -2,23 +2,21 @@ package service
 
 import (
 	"github.com/kizmey/order_management_system/entities"
-	"github.com/kizmey/order_management_system/pkg/modelReq"
-	"github.com/kizmey/order_management_system/pkg/modelRes"
-	_productRepository "github.com/kizmey/order_management_system/pkg/product/repository"
-	_stockRepository "github.com/kizmey/order_management_system/pkg/stock/repository"
-	_TransactionRepository "github.com/kizmey/order_management_system/pkg/transaction/repository"
+	"github.com/kizmey/order_management_system/modelReq"
+	"github.com/kizmey/order_management_system/modelRes"
+	_TransactionRepository "github.com/kizmey/order_management_system/pkg/repository"
 )
 
 type transactionService struct {
 	transactionRepository _TransactionRepository.TransactionRepository
-	stockRepository       _stockRepository.StockRepository
-	productRepository     _productRepository.ProductRepository
+	stockRepository       _TransactionRepository.StockRepository
+	productRepository     _TransactionRepository.ProductRepository
 }
 
 func NewTransactionServiceImpl(
 	transactionRepository _TransactionRepository.TransactionRepository,
-	stockRepository _stockRepository.StockRepository,
-	productRepository _productRepository.ProductRepository,
+	stockRepository _TransactionRepository.StockRepository,
+	productRepository _TransactionRepository.ProductRepository,
 ) TransactionService {
 	return &transactionService{
 		transactionRepository: transactionRepository,
