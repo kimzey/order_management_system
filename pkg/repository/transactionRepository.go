@@ -13,4 +13,5 @@ type TransactionRepository interface {
 
 	Update(id string, transaction *_interface.TransactionEcommerce) (*entities.Transaction, error)
 	Delete(id string) error
+	FindProductsByTransactionID(id string) (*_interface.Ecommerce, error)
 }

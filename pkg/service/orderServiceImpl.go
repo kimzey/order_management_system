@@ -1,7 +1,6 @@
 package service
 
 import (
-	_interface "github.com/kizmey/order_management_system/pkg/interface"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
@@ -27,14 +26,13 @@ func NewOrderServiceImpl(orderRepository _transactionRepository.OrderRepository,
 }
 
 func (s *orderServiceImpl) Create(order *modelReq.Order) (*modelRes.Order, error) {
-
-	transaction, err := s.transactionRepository.FindByID(order.TransactionID)
+	ecommerce, err := s.transactionRepository.FindProductsByTransactionID(order.TransactionID)
 	if err != nil {
 		return nil, err
 	}
 
 	orderEntity := s.orderReqToEntity(order)
-	ecommerce := _interface.NewEcommerce(orderEntity, transaction.ProductID, transaction.Quantity)
+	ecommerce.Order = orderEntity
 
 	newOrder, err := s.orderRepository.Create(ecommerce)
 	if err != nil {
@@ -67,21 +65,36 @@ func (s *orderServiceImpl) FindByID(id string) (*modelRes.Order, error) {
 }
 
 func (s *orderServiceImpl) Update(id string, order *modelReq.Order) (*modelRes.Order, error) {
-
-	transaction, err := s.transactionRepository.FindByID(order.TransactionID)
+	ecommerce, err := s.transactionRepository.FindProductsByTransactionID(order.TransactionID)
 	if err != nil {
 		return nil, err
 	}
 
 	orderEntity := s.orderReqToEntity(order)
-	ecommerce := _interface.NewEcommerce(orderEntity, transaction.ProductID, transaction.Quantity)
+	ecommerce.Order = orderEntity
 
-	orderEntity, err = s.orderRepository.Update(id, ecommerce)
+	newOrder, err := s.orderRepository.Update(id, ecommerce)
 	if err != nil {
 		return nil, err
 	}
 
-	return s.orderEntityToModelRes(orderEntity), nil
+	return s.orderEntityToModelRes(newOrder), nil
+	//transaction, err := s.transactionRepository.FindByID(order.TransactionID)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//
+	//orderEntity := s.orderReqToEntity(order)
+	//ecommerce := _interface.NewEcommerce(orderEntity, transaction.ProductID, transaction.Quantity)
+	//
+	//orderEntity, err = s.orderRepository.Update(id, ecommerce)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//
+	//return s.orderEntityToModelRes(orderEntity), nil
+
+	return nil, nil
 }
 
 func (s *orderServiceImpl) Delete(id string) error {

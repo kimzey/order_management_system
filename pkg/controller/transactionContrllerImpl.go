@@ -62,7 +62,6 @@ func (c *transactionControllerImpl) FindByID(pctx echo.Context) error {
 
 func (c *transactionControllerImpl) Update(pctx echo.Context) error {
 	id := pctx.Param("id")
-	fmt.Println(id)
 	//id, err := custom.CheckParamId(pctx)
 	//if err != nil {
 	//	return custom.Error(pctx, http.StatusBadRequest, err)

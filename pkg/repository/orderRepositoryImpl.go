@@ -35,24 +35,33 @@ func (r *orderRepositoryImpl) Create(ecommerce *_interface.Ecommerce) (*entities
 	}()
 
 	modelOrder := ToOrderModel(ecommerce.Order)
-	stock := new(model.Stock)
 
-	if err := tx.Where("product_id = ?", ecommerce.ProductID).First(&stock).Error; err != nil {
-		return nil, errors.New(fmt.Sprintf("stock not found: %s", err.Error()))
+	if ecommerce.Quantity == nil {
+		return nil, errors.New("quantity is nil")
 	}
 
-	if stock.Quantity < ecommerce.TransactionQuantity {
-		return nil, errors.New("stock not enough")
-	}
-	stock.Quantity -= ecommerce.TransactionQuantity
+	for i, product := range *ecommerce.Product {
+		stock := new(model.Stock)
+		fmt.Println((*ecommerce.Quantity)[i])
+		if err := tx.Where("product_id = ?", product.ProductID).First(&stock).Error; err != nil {
+			return nil, errors.New(fmt.Sprintf("stock not found: %s", err.Error()))
+		}
 
-	if err := tx.Model(&stock).Where(
-		"id = ? AND quantity >= ?", stock.ID, ecommerce.TransactionQuantity).Updates(&stock).Error; err != nil {
-		return nil, errors.New(fmt.Sprintf("failed to update stock: %s", err.Error()))
+		if stock.Quantity < (*ecommerce.Quantity)[i] {
+			return nil, errors.New("stock not enough")
+		}
+		stock.Quantity -= (*ecommerce.Quantity)[i]
+
+		if err := tx.Model(&stock).Where(
+			"id = ? AND quantity >= ?", stock.ID, (*ecommerce.Quantity)[i]).Updates(&stock).Error; err != nil {
+			return nil, errors.New(fmt.Sprintf("failed to update stock: %s", err.Error()))
+		}
 	}
+
 	if err := tx.Create(&modelOrder).Preload("Transaction").Where("id = ?", modelOrder.ID).First(&modelOrder).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("create order error : %s", err.Error()))
 	}
+
 	return modelOrder.ToOrderEntity(), nil
 }
 
@@ -90,25 +99,33 @@ func (r *orderRepositoryImpl) Update(id string, ecommerce *_interface.Ecommerce)
 	}()
 
 	modelOrder := ToOrderModel(ecommerce.Order)
-	stock := new(model.Stock)
 
-	if err := tx.Where("product_id = ?", ecommerce.ProductID).First(&stock).Error; err != nil {
-		return nil, errors.New(fmt.Sprintf("stock not found: %s", err.Error()))
+	if ecommerce.Quantity == nil {
+		return nil, errors.New("quantity is nil")
 	}
 
-	if stock.Quantity < ecommerce.TransactionQuantity {
-		return nil, errors.New("stock not enough")
-	}
-	stock.Quantity -= ecommerce.TransactionQuantity
+	for i, product := range *ecommerce.Product {
+		stock := new(model.Stock)
+		fmt.Println((*ecommerce.Quantity)[i])
+		if err := tx.Where("product_id = ?", product.ProductID).First(&stock).Error; err != nil {
+			return nil, errors.New(fmt.Sprintf("stock not found: %s", err.Error()))
+		}
 
-	if err := tx.Model(&stock).Where(
-		"id = ? AND quantity >= ?", stock.ID, ecommerce.TransactionQuantity).Updates(&stock).Error; err != nil {
-		return nil, errors.New(fmt.Sprintf("failed to update stock: %s", err.Error()))
+		if stock.Quantity < (*ecommerce.Quantity)[i] {
+			return nil, errors.New("stock not enough")
+		}
+		stock.Quantity -= (*ecommerce.Quantity)[i]
+
+		if err := tx.Model(&stock).Where(
+			"id = ? AND quantity >= ?", stock.ID, (*ecommerce.Quantity)[i]).Updates(&stock).Error; err != nil {
+			return nil, errors.New(fmt.Sprintf("failed to update stock: %s", err.Error()))
+		}
 	}
 
 	if err := r.db.Connect().Model(&modelOrder).Where("id = ?", id).Updates(&modelOrder).Scan(modelOrder).Where("id = ?", id).First(&modelOrder).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("update order error : %s", err.Error()))
 	}
+
 	return modelOrder.ToOrderEntity(), nil
 }
 
