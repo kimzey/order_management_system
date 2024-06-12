@@ -2,9 +2,6 @@ package entities
 
 type Transaction struct {
 	TransactionID string
-	ProductID     string
-	ProductName   string
-	ProductPrice  uint
 	Quantity      uint
 	SumPrice      uint
 	IsDomestic    bool

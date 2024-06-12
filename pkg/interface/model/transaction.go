@@ -7,22 +7,28 @@ import (
 
 type Transaction struct {
 	ID         string    `gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
-	ProductID  string    `gorm:"not null;" `
-	Product    Product   `gorm:"foreignKey:ProductID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	IsDomestic bool      `gorm:"not null; default:false;"`
-	Quantity   uint      `gorm:"not null;" `
 	SumPrice   uint      `gorm:"not null;" `
+	ProductID  string    `gorm:"not null;" `
+	Products   []Product `gorm:"many2many:transaction_products;"`
 	CreatedAt  time.Time `gorm:"not null;autoCreateTime;"`
 	UpdatedAt  time.Time `gorm:"not null;autoUpdateTime;"`
+}
+
+type TransactionProduct struct {
+	ID            string      `gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
+	TransactionID string      `gorm:"not null;" `
+	Transaction   Transaction `gorm:"foreignKey:TransactionID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	ProductID     string      `gorm:"not null;" `
+	Product       Product     `gorm:"foreignKey:ProductID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Quantity      uint        `gorm:" not null; default:1" `
+	//CreatedAt     time.Time   `gorm:"not null;autoCreateTime;"`
+	//UpdatedAt     time.Time   `gorm:"not null;autoUpdateTime;"`
 }
 
 func (m *Transaction) ToTransactionEntity() *entities.Transaction {
 	return &entities.Transaction{
 		TransactionID: m.ID,
-		ProductID:     m.ProductID,
-		ProductName:   m.Product.Name,
-		ProductPrice:  m.Product.Price,
-		Quantity:      m.Quantity,
 		SumPrice:      m.SumPrice,
 		IsDomestic:    m.IsDomestic,
 	}
@@ -38,11 +44,3 @@ func ConvertModelsTransactionToEntities(transactions *[]Transaction) *[]entities
 
 	return entityTransaction
 }
-
-//func (m *Transaction) CalculatePrice(price uint, quantity uint, isDomestic bool) uint {
-//	if isDomestic {
-//		return (price * quantity) + 40
-//	} else {
-//		return (price * quantity) + 200
-//	}
-//}

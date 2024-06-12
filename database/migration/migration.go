@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/kizmey/order_management_system/config"
 	"github.com/kizmey/order_management_system/database"
-	model2 "github.com/kizmey/order_management_system/pkg/interface/model"
+	"github.com/kizmey/order_management_system/pkg/interface/model"
 	"gorm.io/gorm"
 )
 
@@ -16,6 +16,7 @@ func main() {
 	productMigration(tx)
 	stockMigration(tx)
 	transactionMigration(tx)
+	transactionproductMigration(tx)
 	orderMigration(tx)
 
 	if err := tx.Commit().Error; err != nil {
@@ -25,28 +26,34 @@ func main() {
 }
 
 func orderMigration(tx *gorm.DB) {
-	err := tx.Migrator().CreateTable(&model2.Order{})
+	err := tx.Migrator().CreateTable(&model.Order{})
 	if err != nil {
 		return
 	}
 }
 
 func productMigration(tx *gorm.DB) {
-	err := tx.Migrator().CreateTable(&model2.Product{})
+	err := tx.Migrator().CreateTable(&model.Product{})
 	if err != nil {
 		return
 	}
 }
 
 func stockMigration(tx *gorm.DB) {
-	err := tx.Migrator().CreateTable(&model2.Stock{})
+	err := tx.Migrator().CreateTable(&model.Stock{})
 	if err != nil {
 		return
 	}
 }
 
 func transactionMigration(tx *gorm.DB) {
-	err := tx.Migrator().CreateTable(&model2.Transaction{})
+	err := tx.Migrator().CreateTable(&model.Transaction{})
+	if err != nil {
+		return
+	}
+}
+func transactionproductMigration(tx *gorm.DB) {
+	err := tx.Migrator().CreateTable(&model.TransactionProduct{})
 	if err != nil {
 		return
 	}

@@ -15,3 +15,17 @@ func NewEcommerce(order *entities.Order, productid string, transactionQuantity u
 		TransactionQuantity: transactionQuantity,
 	}
 }
+
+type TransactionEcommerce struct {
+	Tranasaction  *entities.Transaction
+	Product       []entities.Product
+	AddessProduct map[string]uint
+}
+
+func NewTransactionEcommerce(tranasaction *entities.Transaction, product []entities.Product, addessProduct map[string]uint) *TransactionEcommerce {
+	return &TransactionEcommerce{
+		Tranasaction:  tranasaction,
+		Product:       product,
+		AddessProduct: addessProduct,
+	}
+}

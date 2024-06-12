@@ -32,6 +32,7 @@ func (c *transactionControllerImpl) Create(pctx echo.Context) error {
 		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
 
+	//return pctx.JSON(http.StatusCreated, transaction)
 	return pctx.JSON(http.StatusCreated, transaction)
 }
 

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/kizmey/order_management_system/database"
+	_interface "github.com/kizmey/order_management_system/pkg/interface"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/kizmey/order_management_system/pkg/interface/model"
 )
@@ -12,26 +13,24 @@ type transactionRepositoryImpl struct {
 	db database.Database
 }
 
-func NewTransactionController(db database.Database) TransactionRepository {
+func NewTransactionRepositoryImpl(db database.Database) TransactionRepository {
 	return &transactionRepositoryImpl{db: db}
 }
 
-func (r *transactionRepositoryImpl) Create(transaction *entities.Transaction) (*entities.Transaction, error) {
-	//var product = new(model.Product)
-	//var stock = new(model.Stock)
-	//
-	//err := r.db.Connect().Joins("JOIN stocks ON stocks.product_id = products.id").
-	//	Where("products.id = ? AND stocks.quantity >= ?", transaction.ProductID, transaction.Quantity).
-	//	First(&product).First(&stock).Error
-	//if err != nil {
-	//	return nil, errors.New("id not correct or not enough stock")
-	//}
-	//
-	//transaction.SumPrice = transaction.CalculatePrice(product.Price, transaction.Quantity, transaction.IsDomestic)
+func (r *transactionRepositoryImpl) Create(transaction *_interface.TransactionEcommerce) (*entities.Transaction, error) {
 	transactionModel := ToTransactionModel(transaction)
-	fmt.Println(" transactionModel: ", transactionModel)
-	if err := r.db.Connect().Create(transactionModel).Preload("Product").First(&transactionModel).Where("id = ?", transactionModel.ID).Error; err != nil {
+
+	if err := r.db.Connect().Create(&transactionModel).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to create transaction: %s", err))
+	}
+
+	fmt.Println("_______________________")
+	fmt.Println(transactionModel)
+
+	for productID, quantity := range transaction.AddessProduct {
+		if err := r.db.Connect().Model(&model.TransactionProduct{}).Where("transaction_id = ? AND product_id = ?", transactionModel.ID, productID).Update("quantity", quantity).Error; err != nil {
+			return nil, errors.New(fmt.Sprintf("failed to update transaction: %s", err))
+		}
 	}
 
 	return transactionModel.ToTransactionEntity(), nil
@@ -40,7 +39,7 @@ func (r *transactionRepositoryImpl) Create(transaction *entities.Transaction) (*
 func (r *transactionRepositoryImpl) FindAll() (*[]entities.Transaction, error) {
 	transactions := new([]model.Transaction)
 
-	if err := r.db.Connect().Preload("Product").Find(&transactions).Error; err != nil {
+	if err := r.db.Connect().Find(&transactions).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to find transactions: %s", err))
 	}
 	allTransactions := model.ConvertModelsTransactionToEntities(transactions)
@@ -56,17 +55,32 @@ func (r *transactionRepositoryImpl) FindByID(id string) (*entities.Transaction, 
 
 	return transaction.ToTransactionEntity(), nil
 }
-func (r *transactionRepositoryImpl) Update(id string, transaction *entities.Transaction) (*entities.Transaction, error) {
+func (r *transactionRepositoryImpl) Update(id string, transaction *_interface.TransactionEcommerce) (*entities.Transaction, error) {
 	transactionModel := ToTransactionModel(transaction)
 
-	if err := r.db.Connect().Model(&transactionModel).Where(
-		"id = ?", id,
-	).Updates(
-		transactionModel,
-	).Scan(transactionModel).Preload("Product").First(&transactionModel).Where("id = ?", id).Error; err != nil {
-		return nil, errors.New(fmt.Sprintf("failed to update transaction: %s", err))
+	if err := r.db.Connect().Model(&transactionModel).Where("id = ?", id).Updates(&transactionModel); err != nil {
+		return nil, errors.New(fmt.Sprintf("failed to create transaction: %s", err))
 	}
+
+	for productID, quantity := range transaction.AddessProduct {
+		if err := r.db.Connect().Model(&model.TransactionProduct{}).Where("transaction_id = ? AND product_id = ?", transactionModel.ID, productID).Update("quantity", quantity).Error; err != nil {
+			return nil, errors.New(fmt.Sprintf("failed to update transaction: %s", err))
+		}
+	}
+
 	return transactionModel.ToTransactionEntity(), nil
+
+	//transactionModel := ToTransactionModel(transaction)
+	//
+	//if err := r.db.Connect().Model(&transactionModel).Where(
+	//	"id = ?", id,
+	//).Updates(
+	//	transactionModel,
+	//).Scan(transactionModel).Preload("Product").First(&transactionModel).Where("id = ?", id).Error; err != nil {
+	//	return nil, errors.New(fmt.Sprintf("failed to update transaction: %s", err))
+	//}
+	//return transactionModel.ToTransactionEntity(), nil
+
 }
 
 func (r *transactionRepositoryImpl) Delete(id string) error {
@@ -80,11 +94,18 @@ func (r *transactionRepositoryImpl) Delete(id string) error {
 
 }
 
-func ToTransactionModel(e *entities.Transaction) *model.Transaction {
+func ToTransactionModel(e *_interface.TransactionEcommerce) *model.Transaction {
+	var productlist []model.Product
+	for _, v := range e.Product {
+		productlist = append(productlist, model.Product{
+			ID:    v.ProductID,
+			Name:  v.ProductName,
+			Price: v.ProductPrice,
+		})
+	}
 	return &model.Transaction{
-		ProductID:  e.ProductID,
-		Quantity:   e.Quantity,
-		SumPrice:   e.SumPrice,
-		IsDomestic: e.IsDomestic,
+		SumPrice:   e.Tranasaction.SumPrice,
+		IsDomestic: e.Tranasaction.IsDomestic,
+		Products:   productlist,
 	}
 }

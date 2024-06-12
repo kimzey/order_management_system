@@ -1,7 +1,6 @@
 package modelReq
 
 type Transaction struct {
-	ProductID  string `json:"productid" validate:"required"`
-	Quantity   uint   `json:"quantity" validate:"required"`
-	IsDomestic bool   `json:"isdomestic" validate:"required"`
+	Product    map[string]uint `json:"product" validate:"required"`
+	IsDomestic bool            `json:"isdomestic" `
 }

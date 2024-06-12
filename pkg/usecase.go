@@ -33,7 +33,7 @@ func InitUsecase(db database.Database) *Usecase {
 	orderRepo := _stockRepository.NewOrderRepositoryImpl(db)
 	productRepo := _stockRepository.NewProductRepositoryImpl(db)
 	stockRepo := _stockRepository.NewStockRepositoryImpl(db)
-	transactionRepo := _stockRepository.NewTransactionController(db)
+	transactionRepo := _stockRepository.NewTransactionRepositoryImpl(db)
 
 	// Init Service
 	productService := service.NewProductServiceImpl(productRepo)
