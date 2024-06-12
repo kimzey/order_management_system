@@ -1,7 +1,7 @@
 package service
 
 import (
-	"errors"
+	_interface "github.com/kizmey/order_management_system/pkg/interface"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
@@ -33,24 +33,10 @@ func (s *orderServiceImpl) Create(order *modelReq.Order) (*modelRes.Order, error
 		return nil, err
 	}
 
-	stock, err := s.stockRepository.CheckStockByProductId(transaction.ProductID)
-	if err != nil {
-		return nil, err
-	}
+	orderEntity := s.orderReqToEntity(order)
+	ecommerce := _interface.NewEcommerce(orderEntity, transaction.ProductID, transaction.Quantity)
 
-	if stock.Quantity < transaction.Quantity {
-		return nil, errors.New("stock not enough")
-	}
-
-	createOrder := s.orderReqToEntity(order)
-	createOrder.ProductID = transaction.ProductID
-	newOrder, err := s.orderRepository.Create(createOrder)
-	if err != nil {
-		return nil, err
-	}
-
-	stock.Quantity = stock.Quantity - transaction.Quantity
-	_, err = s.stockRepository.Update(stock.StockID, stock)
+	newOrder, err := s.orderRepository.Create(ecommerce)
 	if err != nil {
 		return nil, err
 	}
@@ -87,23 +73,10 @@ func (s *orderServiceImpl) Update(id string, order *modelReq.Order) (*modelRes.O
 		return nil, err
 	}
 
-	stock, err := s.stockRepository.CheckStockByProductId(transaction.ProductID)
-	if err != nil {
-		return nil, err
-	}
-
-	if stock.Quantity < transaction.Quantity {
-		return nil, errors.New("stock not enough")
-	}
-
 	orderEntity := s.orderReqToEntity(order)
-	orderEntity, err = s.orderRepository.Update(id, orderEntity)
-	if err != nil {
-		return nil, err
-	}
+	ecommerce := _interface.NewEcommerce(orderEntity, transaction.ProductID, transaction.Quantity)
 
-	stock.Quantity = stock.Quantity - transaction.Quantity
-	_, err = s.stockRepository.Update(stock.StockID, stock)
+	orderEntity, err = s.orderRepository.Update(id, ecommerce)
 	if err != nil {
 		return nil, err
 	}
@@ -132,7 +105,7 @@ func (s *orderServiceImpl) ChangeStatusNext(id string) (*modelRes.Order, error) 
 		return nil, err
 	}
 
-	_, err = s.orderRepository.Update(id, order)
+	_, err = s.orderRepository.UpdateStatus(id, order)
 	if err != nil {
 		return nil, err
 	}
@@ -151,7 +124,7 @@ func (s *orderServiceImpl) ChageStatusDone(id string) (*modelRes.Order, error) {
 		return nil, err
 	}
 
-	_, err = s.orderRepository.Update(id, order)
+	_, err = s.orderRepository.UpdateStatus(id, order)
 	if err != nil {
 		return nil, err
 	}
