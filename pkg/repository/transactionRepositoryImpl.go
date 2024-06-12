@@ -46,7 +46,7 @@ func (r *transactionRepositoryImpl) FindAll() (*[]entities.Transaction, error) {
 func (r *transactionRepositoryImpl) FindByID(id string) (*entities.Transaction, error) {
 
 	transaction := new(model.Transaction)
-	if err := r.db.Connect().Preload("Product").Where("id = ?", id).First(&transaction).Error; err != nil {
+	if err := r.db.Connect().Where("id = ?", id).First(&transaction).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to find transaction: %s", err))
 	}
 
