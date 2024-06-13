@@ -96,8 +96,8 @@ func (r *transactionRepositoryImpl) FindProductsByTransactionID(id string) (*_in
 		products = append(products, *transactionProduct.Product.ToProductEntity())
 		quantity = append(quantity, transactionProduct.Quantity)
 	}
-	ecommerceProducts := _interface.NewEcommerce(nil, &products, &quantity)
 
+	ecommerceProducts := _interface.NewEcommerce(nil, products, quantity)
 	return ecommerceProducts, nil
 
 }

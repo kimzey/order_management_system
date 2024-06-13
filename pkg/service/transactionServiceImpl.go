@@ -45,7 +45,22 @@ func (s *transactionService) Create(transaction *modelReq.Transaction) (*modelRe
 		return nil, err
 	}
 
-	return s.transactionEntityToRes(transactionEntity), nil
+	transactionRes := s.transactionEntityToRes(transactionEntity)
+	findproducs, err := s.transactionRepository.FindProductsByTransactionID(transactionEntity.TransactionID)
+	if err != nil {
+		return nil, err
+	}
+	for i, product := range findproducs.Product {
+		transactionRes.Products = append(transactionRes.Products, modelRes.Product{
+			ProductID:    product.ProductID,
+			ProductName:  product.ProductName,
+			ProductPrice: product.ProductPrice,
+			Quantity:     (findproducs.Quantity)[i],
+		})
+	}
+
+	return transactionRes, nil
+
 }
 
 func (s *transactionService) FindAll() (*[]modelRes.Transaction, error) {
@@ -54,7 +69,6 @@ func (s *transactionService) FindAll() (*[]modelRes.Transaction, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	allTransaction := make([]modelRes.Transaction, 0)
 	for _, transactionEntity := range *transactionEntities {
 		allTransaction = append(allTransaction, *s.transactionEntityToRes(&transactionEntity))
@@ -91,7 +105,21 @@ func (s *transactionService) Update(id string, transaction *modelReq.Transaction
 		return nil, err
 	}
 
-	return s.transactionEntityToRes(transactionEntity), nil
+	transactionRes := s.transactionEntityToRes(transactionEntity)
+	findproducs, err := s.transactionRepository.FindProductsByTransactionID(transactionEntity.TransactionID)
+	if err != nil {
+		return nil, err
+	}
+	for i, product := range findproducs.Product {
+		transactionRes.Products = append(transactionRes.Products, modelRes.Product{
+			ProductID:    product.ProductID,
+			ProductName:  product.ProductName,
+			ProductPrice: product.ProductPrice,
+			Quantity:     (findproducs.Quantity)[i],
+		})
+	}
+
+	return transactionRes, nil
 }
 
 func (s *transactionService) Delete(id string) error {

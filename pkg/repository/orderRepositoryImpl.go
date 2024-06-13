@@ -7,7 +7,6 @@ import (
 	_interface "github.com/kizmey/order_management_system/pkg/interface"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/kizmey/order_management_system/pkg/interface/model"
-	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
 )
 
 type orderRepositoryImpl struct {
@@ -40,20 +39,21 @@ func (r *orderRepositoryImpl) Create(ecommerce *_interface.Ecommerce) (*entities
 		return nil, errors.New("quantity is nil")
 	}
 
-	for i, product := range *ecommerce.Product {
+	for i, product := range ecommerce.Product {
+		quantityProduct := ecommerce.Quantity[i]
 		stock := new(model.Stock)
-		fmt.Println((*ecommerce.Quantity)[i])
+
 		if err := tx.Where("product_id = ?", product.ProductID).First(&stock).Error; err != nil {
 			return nil, errors.New(fmt.Sprintf("stock not found: %s", err.Error()))
 		}
 
-		if stock.Quantity < (*ecommerce.Quantity)[i] {
+		if stock.Quantity < quantityProduct {
 			return nil, errors.New("stock not enough")
 		}
-		stock.Quantity -= (*ecommerce.Quantity)[i]
+		stock.Quantity -= quantityProduct
 
 		if err := tx.Model(&stock).Where(
-			"id = ? AND quantity >= ?", stock.ID, (*ecommerce.Quantity)[i]).Updates(&stock).Error; err != nil {
+			"id = ? AND quantity >= ?", stock.ID, quantityProduct).Updates(&stock).Error; err != nil {
 			return nil, errors.New(fmt.Sprintf("failed to update stock: %s", err.Error()))
 		}
 	}
@@ -104,20 +104,21 @@ func (r *orderRepositoryImpl) Update(id string, ecommerce *_interface.Ecommerce)
 		return nil, errors.New("quantity is nil")
 	}
 
-	for i, product := range *ecommerce.Product {
+	for i, product := range ecommerce.Product {
+		quantityProduct := ecommerce.Quantity[i]
 		stock := new(model.Stock)
-		fmt.Println((*ecommerce.Quantity)[i])
+
 		if err := tx.Where("product_id = ?", product.ProductID).First(&stock).Error; err != nil {
 			return nil, errors.New(fmt.Sprintf("stock not found: %s", err.Error()))
 		}
 
-		if stock.Quantity < (*ecommerce.Quantity)[i] {
+		if stock.Quantity < quantityProduct {
 			return nil, errors.New("stock not enough")
 		}
-		stock.Quantity -= (*ecommerce.Quantity)[i]
+		stock.Quantity -= quantityProduct
 
 		if err := tx.Model(&stock).Where(
-			"id = ? AND quantity >= ?", stock.ID, (*ecommerce.Quantity)[i]).Updates(&stock).Error; err != nil {
+			"id = ? AND quantity >= ?", stock.ID, quantityProduct).Updates(&stock).Error; err != nil {
 			return nil, errors.New(fmt.Sprintf("failed to update stock: %s", err.Error()))
 		}
 	}
@@ -162,11 +163,11 @@ func ToOrderModel(e *entities.Order) *model.Order {
 	}
 }
 
-func ToOrderModelRes(e *entities.Order) *modelRes.Order {
-	return &modelRes.Order{
-		OrderID:       e.OrderID,
-		TransactionID: e.TransactionID,
-		//ProductID:     e.ProductID,
-		Status: e.Status,
-	}
-}
+//func ToOrderModelRes(e *entities.Order) *modelRes.Order {
+//	return &modelRes.Order{
+//		OrderID:       e.OrderID,
+//		TransactionID: e.TransactionID,
+//		//ProductID:     e.ProductID,
+//		Status: e.Status,
+//	}
+//}
