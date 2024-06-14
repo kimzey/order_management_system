@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/kizmey/order_management_system/database"
-	_interface "github.com/kizmey/order_management_system/pkg/interface"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/kizmey/order_management_system/pkg/interface/model"
 )
@@ -17,48 +16,10 @@ func NewOrderRepositoryImpl(db database.Database) OrderRepository {
 	return &orderRepositoryImpl{db: db}
 }
 
-func (r *orderRepositoryImpl) Create(ecommerce *_interface.Ecommerce) (*entities.Order, error) {
+func (r *orderRepositoryImpl) Create(order *entities.Order) (*entities.Order, error) {
 
-	tx := r.db.Connect().Begin()
-	if tx.Error != nil {
-		return nil, errors.New("failed to start transaction")
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
-		} else if tx.Error != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-		}
-	}()
-
-	modelOrder := ToOrderModel(ecommerce.Order)
-
-	if ecommerce.Quantity == nil {
-		return nil, errors.New("quantity is nil")
-	}
-
-	for i, product := range ecommerce.Product {
-		quantityProduct := ecommerce.Quantity[i]
-		stock := new(model.Stock)
-
-		if err := tx.Where("product_id = ?", product.ProductID).First(&stock).Error; err != nil {
-			return nil, errors.New(fmt.Sprintf("stock not found"))
-		}
-
-		if stock.Quantity < quantityProduct {
-			return nil, errors.New("stock not enough")
-		}
-		stock.Quantity -= quantityProduct
-
-		if err := tx.Model(&stock).Where(
-			"id = ? AND quantity >= ?", stock.ID, quantityProduct).Updates(&stock).Error; err != nil {
-			return nil, errors.New(fmt.Sprintf("failed to update stock"))
-		}
-	}
-
-	if err := tx.Create(&modelOrder).Preload("Transaction").Where("id = ?", modelOrder.ID).First(&modelOrder).Error; err != nil {
+	modelOrder := ToOrderModel(order)
+	if err := r.db.Connect().Create(&modelOrder).Preload("Transaction").Where("id = ?", modelOrder.ID).First(&modelOrder).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("create order error "))
 	}
 
@@ -83,46 +44,9 @@ func (r *orderRepositoryImpl) FindByID(id string) (*entities.Order, error) {
 	return order.ToOrderEntity(), nil
 }
 
-func (r *orderRepositoryImpl) Update(id string, ecommerce *_interface.Ecommerce) (*entities.Order, error) {
-	tx := r.db.Connect().Begin()
-	if tx.Error != nil {
-		return nil, errors.New("failed to start transaction")
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
-		} else if tx.Error != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-		}
-	}()
+func (r *orderRepositoryImpl) Update(id string, order *entities.Order) (*entities.Order, error) {
 
-	modelOrder := ToOrderModel(ecommerce.Order)
-
-	if ecommerce.Quantity == nil {
-		return nil, errors.New("quantity is nil")
-	}
-
-	for i, product := range ecommerce.Product {
-		quantityProduct := ecommerce.Quantity[i]
-		stock := new(model.Stock)
-
-		if err := tx.Where("product_id = ?", product.ProductID).First(&stock).Error; err != nil {
-			return nil, errors.New(fmt.Sprintf("stock not found:"))
-		}
-
-		if stock.Quantity < quantityProduct {
-			return nil, errors.New("stock not enough")
-		}
-		stock.Quantity -= quantityProduct
-
-		if err := tx.Model(&stock).Where(
-			"id = ? AND quantity >= ?", stock.ID, quantityProduct).Updates(&stock).Error; err != nil {
-			return nil, errors.New(fmt.Sprintf("failed to update stock "))
-		}
-	}
-
+	modelOrder := ToOrderModel(order)
 	if err := r.db.Connect().Model(&modelOrder).Where("id = ?", id).Updates(&modelOrder).Scan(modelOrder).Where("id = ?", id).First(&modelOrder).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("update order error "))
 	}

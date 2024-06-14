@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
@@ -27,16 +28,39 @@ func NewOrderServiceImpl(orderRepository _transactionRepository.OrderRepository,
 
 func (s *orderServiceImpl) Create(order *modelReq.Order) (*modelRes.Order, error) {
 	ecommerce, err := s.transactionRepository.FindProductsByTransactionID(order.TransactionID)
+
 	if err != nil {
 		return nil, err
 	}
 
 	orderEntity := s.orderReqToEntity(order)
-	ecommerce.Order = orderEntity
 
-	newOrder, err := s.orderRepository.Create(ecommerce)
+	if ecommerce.Quantity == nil {
+		return nil, errors.New("quantity is nil")
+	}
+
+	newOrder, err := s.orderRepository.Create(orderEntity)
 	if err != nil {
 		return nil, err
+	}
+
+	for i, product := range ecommerce.Product {
+		quantityProduct := ecommerce.Quantity[i]
+
+		stock, err := s.stockRepository.CheckStockByProductId(product.ProductID)
+		if err != nil {
+			return nil, err
+		}
+
+		if stock.Quantity < quantityProduct {
+			return nil, errors.New("stock not enough")
+		}
+		stock.Quantity -= quantityProduct
+
+		stock, err = s.stockRepository.Update(stock.StockID, stock)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return s.orderEntityToModelRes(newOrder), nil
@@ -71,30 +95,36 @@ func (s *orderServiceImpl) Update(id string, order *modelReq.Order) (*modelRes.O
 	}
 
 	orderEntity := s.orderReqToEntity(order)
-	ecommerce.Order = orderEntity
 
-	newOrder, err := s.orderRepository.Update(id, ecommerce)
+	if ecommerce.Quantity == nil {
+		return nil, errors.New("quantity is nil")
+	}
+
+	newOrder, err := s.orderRepository.Update(id, orderEntity)
 	if err != nil {
 		return nil, err
 	}
 
-	return s.orderEntityToModelRes(newOrder), nil
-	//transaction, err := s.transactionRepository.FindByID(order.TransactionID)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//
-	//orderEntity := s.orderReqToEntity(order)
-	//ecommerce := _interface.NewEcommerce(orderEntity, transaction.ProductID, transaction.Quantity)
-	//
-	//orderEntity, err = s.orderRepository.Update(id, ecommerce)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//
-	//return s.orderEntityToModelRes(orderEntity), nil
+	for i, product := range ecommerce.Product {
+		quantityProduct := ecommerce.Quantity[i]
 
-	return nil, nil
+		stock, err := s.stockRepository.CheckStockByProductId(product.ProductID)
+		if err != nil {
+			return nil, err
+		}
+
+		if stock.Quantity < quantityProduct {
+			return nil, errors.New("stock not enough")
+		}
+		stock.Quantity -= quantityProduct
+
+		stock, err = s.stockRepository.Update(stock.StockID, stock)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return s.orderEntityToModelRes(newOrder), nil
 }
 
 func (s *orderServiceImpl) Delete(id string) error {

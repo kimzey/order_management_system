@@ -30,6 +30,7 @@ func NewUsecase(
 func InitUsecase(db database.Database) *Usecase {
 
 	// Init Repository
+
 	orderRepo := _stockRepository.NewOrderRepositoryImpl(db)
 	productRepo := _stockRepository.NewProductRepositoryImpl(db)
 	stockRepo := _stockRepository.NewStockRepositoryImpl(db)
