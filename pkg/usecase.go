@@ -30,6 +30,7 @@ func NewUsecase(
 func InitUsecase(db database.Database) *Usecase {
 
 	// Init Repository
+	transactionManager := _stockRepository.NewGormTransactionManager(db.Connect())
 
 	orderRepo := _stockRepository.NewOrderRepositoryImpl(db)
 	productRepo := _stockRepository.NewProductRepositoryImpl(db)
@@ -40,7 +41,7 @@ func InitUsecase(db database.Database) *Usecase {
 	productService := service.NewProductServiceImpl(productRepo)
 	stockService := service.NewStockServiceImpl(stockRepo)
 	transactionService := service.NewTransactionServiceImpl(transactionRepo, productRepo)
-	orderService := service.NewOrderServiceImpl(orderRepo, transactionRepo, stockRepo)
+	orderService := service.NewOrderServiceImpl(orderRepo, transactionRepo, stockRepo, *transactionManager)
 
 	usecase := NewUsecase(transactionService, stockService, productService, orderService)
 

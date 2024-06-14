@@ -6,61 +6,75 @@ import (
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
 	_transactionRepository "github.com/kizmey/order_management_system/pkg/repository"
+	"gorm.io/gorm"
 )
 
 type orderServiceImpl struct {
-	orderRepository       _transactionRepository.OrderRepository
-	transactionRepository _transactionRepository.TransactionRepository
-	stockRepository       _transactionRepository.StockRepository
-	productRepository     _transactionRepository.ProductRepository
+	orderRepository        _transactionRepository.OrderRepository
+	transactionRepository  _transactionRepository.TransactionRepository
+	stockRepository        _transactionRepository.StockRepository
+	productRepository      _transactionRepository.ProductRepository
+	gormTransactionManager _transactionRepository.GormTransactionManager
 }
 
 func NewOrderServiceImpl(orderRepository _transactionRepository.OrderRepository,
 	transactionRepository _transactionRepository.TransactionRepository,
 	stockRepository _transactionRepository.StockRepository,
+	gormTransactionManager _transactionRepository.GormTransactionManager,
 ) OrderService {
 	return &orderServiceImpl{
-		orderRepository:       orderRepository,
-		transactionRepository: transactionRepository,
-		stockRepository:       stockRepository,
+		orderRepository:        orderRepository,
+		transactionRepository:  transactionRepository,
+		stockRepository:        stockRepository,
+		gormTransactionManager: gormTransactionManager,
 	}
 }
 
 func (s *orderServiceImpl) Create(order *modelReq.Order) (*modelRes.Order, error) {
-	ecommerce, err := s.transactionRepository.FindProductsByTransactionID(order.TransactionID)
+	newOrder := new(entities.Order)
+	err := s.gormTransactionManager.DoInTransaction(func(tx *gorm.DB) error {
+		ecommerce, err := s.transactionRepository.FindProductsByTransactionID(order.TransactionID)
+
+		if err != nil {
+			return err
+		}
+
+		orderEntity := s.orderReqToEntity(order)
+
+		if ecommerce.Quantity == nil {
+			return errors.New("quantity is nil")
+		}
+
+		if err != nil {
+			return err
+		}
+
+		for i, product := range ecommerce.Product {
+			quantityProduct := ecommerce.Quantity[i]
+
+			stock, err := s.stockRepository.CheckStockByProductId(product.ProductID)
+			if err != nil {
+				return err
+			}
+
+			if stock.Quantity < quantityProduct {
+				return errors.New("stock not enough")
+			}
+			stock.Quantity -= quantityProduct
+
+			stock, err = s.stockRepository.Update(stock.StockID, stock)
+			if err != nil {
+				return err
+			}
+
+		}
+
+		newOrder, err = s.orderRepository.Create(orderEntity)
+		return err
+	})
 
 	if err != nil {
 		return nil, err
-	}
-
-	orderEntity := s.orderReqToEntity(order)
-
-	if ecommerce.Quantity == nil {
-		return nil, errors.New("quantity is nil")
-	}
-
-	newOrder, err := s.orderRepository.Create(orderEntity)
-	if err != nil {
-		return nil, err
-	}
-
-	for i, product := range ecommerce.Product {
-		quantityProduct := ecommerce.Quantity[i]
-
-		stock, err := s.stockRepository.CheckStockByProductId(product.ProductID)
-		if err != nil {
-			return nil, err
-		}
-
-		if stock.Quantity < quantityProduct {
-			return nil, errors.New("stock not enough")
-		}
-		stock.Quantity -= quantityProduct
-
-		stock, err = s.stockRepository.Update(stock.StockID, stock)
-		if err != nil {
-			return nil, err
-		}
 	}
 
 	return s.orderEntityToModelRes(newOrder), nil
