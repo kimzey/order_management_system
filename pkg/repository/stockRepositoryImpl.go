@@ -21,7 +21,7 @@ func (r *stockRepositoryImpl) Create(stock *entities.Stock) (*entities.Stock, er
 	newStock := new(model.Stock)
 
 	if err := r.db.Connect().Create(modelStock).Scan(newStock).Error; err != nil {
-		return nil, errors.New(fmt.Sprintf("failed to create stock: %s", err.Error()))
+		return nil, errors.New(fmt.Sprintf("failed to create stock",))
 	}
 
 	return newStock.ToStockEntity(), nil
@@ -31,7 +31,7 @@ func (r *stockRepositoryImpl) FindAll() (*[]entities.Stock, error) {
 	stocks := new([]model.Stock)
 
 	if err := r.db.Connect().Find(stocks).Error; err != nil {
-		return nil, errors.New(fmt.Sprintf("failed to find all stock: %s", err.Error()))
+		return nil, errors.New(fmt.Sprintf("failed to find all stock"))
 	}
 	allStock := model.ConvertStockModelsToEntities(stocks)
 	return allStock, nil
@@ -41,7 +41,7 @@ func (r *stockRepositoryImpl) CheckStockByProductId(productId string) (*entities
 	stock := new(model.Stock)
 	//fmt.Println("productId: ", productId)
 	if err := r.db.Connect().Preload("Product").Where("product_id = ?", productId).First(stock).Error; err != nil {
-		return nil, errors.New(fmt.Sprintf("failed to find stock: %s", err.Error()))
+		return nil, errors.New(fmt.Sprintf("failed to find stock"))
 	}
 	//fmt.Println("stock: ", stock)
 	return stock.ToStockEntity(), nil
@@ -56,7 +56,7 @@ func (r *stockRepositoryImpl) Update(stockid string, stock *entities.Stock) (*en
 	).Updates(
 		modelStock,
 	).Scan(stocks).Error; err != nil {
-		return nil, errors.New(fmt.Sprintf("failed to update stock: %s", err.Error()))
+		return nil, errors.New(fmt.Sprintf("failed to update stock"))
 	}
 	//fmt.Println("stocks: ", stocks)
 	return stocks.ToStockEntity(), nil
@@ -64,7 +64,7 @@ func (r *stockRepositoryImpl) Update(stockid string, stock *entities.Stock) (*en
 
 func (r *stockRepositoryImpl) Delete(id string) error {
 	if err := r.db.Connect().Where("id = ?", id).Delete(&model.Stock{}).Error; err != nil {
-		return errors.New(fmt.Sprintf("failed to delete stock: %s", err.Error()))
+		return errors.New(fmt.Sprintf("failed to delete stock"))
 	}
 	return nil
 }

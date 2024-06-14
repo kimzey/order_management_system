@@ -44,7 +44,7 @@ func (r *orderRepositoryImpl) Create(ecommerce *_interface.Ecommerce) (*entities
 		stock := new(model.Stock)
 
 		if err := tx.Where("product_id = ?", product.ProductID).First(&stock).Error; err != nil {
-			return nil, errors.New(fmt.Sprintf("stock not found: %s", err.Error()))
+			return nil, errors.New(fmt.Sprintf("stock not found"))
 		}
 
 		if stock.Quantity < quantityProduct {
@@ -54,12 +54,12 @@ func (r *orderRepositoryImpl) Create(ecommerce *_interface.Ecommerce) (*entities
 
 		if err := tx.Model(&stock).Where(
 			"id = ? AND quantity >= ?", stock.ID, quantityProduct).Updates(&stock).Error; err != nil {
-			return nil, errors.New(fmt.Sprintf("failed to update stock: %s", err.Error()))
+			return nil, errors.New(fmt.Sprintf("failed to update stock"))
 		}
 	}
 
 	if err := tx.Create(&modelOrder).Preload("Transaction").Where("id = ?", modelOrder.ID).First(&modelOrder).Error; err != nil {
-		return nil, errors.New(fmt.Sprintf("create order error : %s", err.Error()))
+		return nil, errors.New(fmt.Sprintf("create order error "))
 	}
 
 	return modelOrder.ToOrderEntity(), nil
@@ -69,7 +69,7 @@ func (r *orderRepositoryImpl) FindAll() (*[]entities.Order, error) {
 	orders := new([]model.Order)
 
 	if err := r.db.Connect().Preload("Transaction").Find(orders).Error; err != nil {
-		return nil, errors.New(fmt.Sprintf("find all order error : %s", err.Error()))
+		return nil, errors.New(fmt.Sprintf("find all order error "))
 	}
 	allOrder := ConvertOrderModelsToEntities(orders)
 
@@ -78,7 +78,7 @@ func (r *orderRepositoryImpl) FindAll() (*[]entities.Order, error) {
 func (r *orderRepositoryImpl) FindByID(id string) (*entities.Order, error) {
 	order := new(model.Order)
 	if err := r.db.Connect().Preload("Transaction").Where("id = ?", id).First(&order).Error; err != nil {
-		return nil, errors.New(fmt.Sprintf("find by id order error : %s", err.Error()))
+		return nil, errors.New(fmt.Sprintf("find by id order error "))
 	}
 	return order.ToOrderEntity(), nil
 }
@@ -109,7 +109,7 @@ func (r *orderRepositoryImpl) Update(id string, ecommerce *_interface.Ecommerce)
 		stock := new(model.Stock)
 
 		if err := tx.Where("product_id = ?", product.ProductID).First(&stock).Error; err != nil {
-			return nil, errors.New(fmt.Sprintf("stock not found: %s", err.Error()))
+			return nil, errors.New(fmt.Sprintf("stock not found:"))
 		}
 
 		if stock.Quantity < quantityProduct {
@@ -119,12 +119,12 @@ func (r *orderRepositoryImpl) Update(id string, ecommerce *_interface.Ecommerce)
 
 		if err := tx.Model(&stock).Where(
 			"id = ? AND quantity >= ?", stock.ID, quantityProduct).Updates(&stock).Error; err != nil {
-			return nil, errors.New(fmt.Sprintf("failed to update stock: %s", err.Error()))
+			return nil, errors.New(fmt.Sprintf("failed to update stock "))
 		}
 	}
 
 	if err := r.db.Connect().Model(&modelOrder).Where("id = ?", id).Updates(&modelOrder).Scan(modelOrder).Where("id = ?", id).First(&modelOrder).Error; err != nil {
-		return nil, errors.New(fmt.Sprintf("update order error : %s", err.Error()))
+		return nil, errors.New(fmt.Sprintf("update order error "))
 	}
 
 	return modelOrder.ToOrderEntity(), nil
@@ -134,14 +134,14 @@ func (r *orderRepositoryImpl) UpdateStatus(id string, order *entities.Order) (*e
 	orderModel := ToOrderModel(order)
 
 	if err := r.db.Connect().Model(&orderModel).Where("id = ?", id).Updates(&orderModel).Scan(orderModel).Preload("Transaction").Where("id = ?", id).First(&orderModel).Error; err != nil {
-		return nil, errors.New(fmt.Sprintf("update order error : %s", err.Error()))
+		return nil, errors.New(fmt.Sprintf("update order error "))
 	}
 	return orderModel.ToOrderEntity(), nil
 }
 
 func (r *orderRepositoryImpl) Delete(id string) error {
 	if err := r.db.Connect().Where("id = ?", id).Delete(&model.Order{}).Error; err != nil {
-		return errors.New(fmt.Sprintf("delete order error : %s", err.Error()))
+		return errors.New(fmt.Sprintf("delete order error "))
 	}
 	return nil
 }

@@ -21,12 +21,12 @@ func (r *transactionRepositoryImpl) Create(transaction *_interface.TransactionEc
 	transactionModel := ToTransactionModel(transaction)
 
 	if err := r.db.Connect().Create(&transactionModel).Error; err != nil {
-		return nil, errors.New(fmt.Sprintf("failed to create transaction: %s", err))
+		return nil, errors.New(fmt.Sprintf("failed to create transaction"))
 	}
 
 	for productID, quantity := range transaction.AddessProduct {
 		if err := r.db.Connect().Model(&model.TransactionProduct{}).Where("transaction_id = ? AND product_id = ?", transactionModel.ID, productID).Update("quantity", quantity).Error; err != nil {
-			return nil, errors.New(fmt.Sprintf("failed to update transaction: %s", err))
+			return nil, errors.New(fmt.Sprintf("failed to update transaction"))
 		}
 	}
 
@@ -37,7 +37,7 @@ func (r *transactionRepositoryImpl) FindAll() (*[]entities.Transaction, error) {
 	transactions := new([]model.Transaction)
 
 	if err := r.db.Connect().Find(&transactions).Error; err != nil {
-		return nil, errors.New(fmt.Sprintf("failed to find transactions: %s", err))
+		return nil, errors.New(fmt.Sprintf("failed to find transactions"))
 	}
 	allTransactions := model.ConvertModelsTransactionToEntities(transactions)
 	return allTransactions, nil
@@ -47,7 +47,7 @@ func (r *transactionRepositoryImpl) FindByID(id string) (*entities.Transaction, 
 
 	transaction := new(model.Transaction)
 	if err := r.db.Connect().Where("id = ?", id).First(&transaction).Error; err != nil {
-		return nil, errors.New(fmt.Sprintf("failed to find transaction: %s", err))
+		return nil, errors.New(fmt.Sprintf("failed to find transaction"))
 	}
 
 	return transaction.ToTransactionEntity(), nil
@@ -59,14 +59,14 @@ func (r *transactionRepositoryImpl) Update(id string, transaction *_interface.Tr
 	transactionModel.ID = id
 	fmt.Println(transactionModel)
 	if err := r.db.Connect().Model(&model.Transaction{}).Where("id = ?", id).Updates(&transactionModel).Error; err != nil {
-		return nil, errors.New(fmt.Sprintf("failed to update transaction: %s", err))
+		return nil, errors.New(fmt.Sprintf("failed to update transaction"))
 	}
 
 	for productID, quantity := range transaction.AddessProduct {
 		if err := r.db.Connect().Model(&model.TransactionProduct{}).
 			Where("transaction_id = ? AND product_id = ?", id, productID).
 			Update("quantity", quantity).Error; err != nil {
-			return nil, errors.New(fmt.Sprintf("failed to update transaction: %s", err))
+			return nil, errors.New(fmt.Sprintf("failed to update transaction"))
 		}
 	}
 
@@ -77,7 +77,7 @@ func (r *transactionRepositoryImpl) Delete(id string) error {
 
 	err := r.db.Connect().Where("id = ?", id).Delete(&model.Transaction{}).Error
 	if err != nil {
-		return errors.New(fmt.Sprintf("failed to delete transaction: %s", err))
+		return errors.New(fmt.Sprintf("failed to delete transaction"))
 	}
 	fmt.Println(err)
 	return nil
@@ -87,7 +87,7 @@ func (r *transactionRepositoryImpl) Delete(id string) error {
 func (r *transactionRepositoryImpl) FindProductsByTransactionID(id string) (*_interface.Ecommerce, error) {
 	var transactionProducts []model.TransactionProduct
 	if err := r.db.Connect().Where("transaction_id = ?", id).Preload("Product").Find(&transactionProducts).Error; err != nil {
-		return nil, errors.New(fmt.Sprintf("failed to find transaction: %s", err))
+		return nil, errors.New(fmt.Sprintf("failed to find transaction"))
 	}
 
 	var products []entities.Product

@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"fmt"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	_orderService "github.com/kizmey/order_management_system/pkg/service"
@@ -35,7 +36,9 @@ func (c *orderControllerImpl) Create(pctx echo.Context) error {
 func (c *orderControllerImpl) ChangeStatusNext(pctx echo.Context) error {
 
 	orderId := pctx.Param("id")
-	fmt.Println(orderId)
+	if orderId == "" {
+		return custom.Error(pctx, http.StatusBadRequest, errors.New("order id not found"))
+	}
 
 	//orderId, err := custom.CheckParamId(pctx)
 	//if err != nil {
