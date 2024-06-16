@@ -35,13 +35,14 @@ func NewCustomEchoRequest(echoRequest echo.Context) EchoRequest {
 }
 
 func (r *customEchoRequest) BindAndValidate(obj any) error {
+
 	if err := r.ctx.Bind(obj); err != nil {
 		//fmt.Errorf("invalid validate request : %s", err.Error())
-		return errors.New(fmt.Sprintf("invalid request body: %s", err))
+		return errors.New(fmt.Sprintf("invalid request "))
 	}
 
 	if err := r.validator.Struct(obj); err != nil {
-		return errors.New(fmt.Sprintf("invalid validate request : %s", err))
+		return errors.New(fmt.Sprintf("invalid validate request "))
 	}
 
 	return nil

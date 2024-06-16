@@ -101,5 +101,7 @@ func (c *stockControllerImpl) Delete(pctx echo.Context) error {
 	if err != nil {
 		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
-	return pctx.JSON(http.StatusOK, "deleted successfully")
+	return pctx.JSON(http.StatusOK, map[string]string{
+		"message": "order deleted successfully",
+	})
 }

@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	_productService "github.com/kizmey/order_management_system/pkg/service"
 	"github.com/kizmey/order_management_system/server/httpEchoServer/custom"
@@ -44,7 +43,6 @@ func (c *productController) FindAll(pctx echo.Context) error {
 
 func (c *productController) FindByID(pctx echo.Context) error {
 	id := pctx.Param("id")
-	fmt.Println(id)
 	//id, err := custom.CheckParamId(pctx)
 	//if err != nil {
 	//	return custom.Error(pctx, http.StatusBadRequest, err)
@@ -59,7 +57,6 @@ func (c *productController) FindByID(pctx echo.Context) error {
 
 func (c *productController) Update(pctx echo.Context) error {
 	id := pctx.Param("id")
-	fmt.Println(id)
 	//id, err := custom.CheckParamId(pctx)
 	//if err != nil {
 	//	return custom.Error(pctx, http.StatusBadRequest, err)
@@ -80,17 +77,13 @@ func (c *productController) Update(pctx echo.Context) error {
 
 func (c *productController) Delete(pctx echo.Context) error {
 	id := pctx.Param("id")
-	fmt.Println(id)
-	//productid, err := custom.CheckParamId(pctx)
-	//
-	//if err != nil {
-	//	return custom.Error(pctx, http.StatusBadRequest, err)
-	//}
 
 	err := c.productService.Delete(id)
 	if err != nil {
 		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
 
-	return pctx.JSON(http.StatusOK, "deleted")
+	return pctx.JSON(http.StatusOK, map[string]string{
+		"message": "order deleted successfully",
+	})
 }

@@ -110,7 +110,9 @@ func (c *orderControllerImpl) Delete(pctx echo.Context) error {
 	if err != nil {
 		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
-	return pctx.JSON(http.StatusOK, "deleted")
+	return pctx.JSON(http.StatusOK, map[string]string{
+		"message": "order deleted successfully",
+	})
 }
 
 func (c *orderControllerImpl) ChageStatusDone(pctx echo.Context) error {
