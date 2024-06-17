@@ -73,15 +73,14 @@ func (r *transactionRepositoryImpl) Update(id string, transaction *_interface.Tr
 	return transactionModel.ToTransactionEntity(), nil
 }
 
-func (r *transactionRepositoryImpl) Delete(id string) error {
+func (r *transactionRepositoryImpl) Delete(id string) (*entities.Transaction, error) {
 
-	err := r.db.Connect().Where("id = ?", id).Delete(&model.Transaction{}).Error
-	if err != nil {
-		return errors.New(fmt.Sprintf("failed to delete transaction"))
+	transaction := new(model.Transaction)
+	if err := r.db.Connect().Where("id = ?", id).First(&transaction).Delete(&transaction).Error; err != nil {
+		return nil, errors.New(fmt.Sprintf("failed to delete transaction"))
 	}
-	fmt.Println(err)
-	return nil
 
+	return transaction.ToTransactionEntity(), nil
 }
 
 func (r *transactionRepositoryImpl) FindProductsByTransactionID(id string) (*_interface.Ecommerce, error) {

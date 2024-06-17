@@ -122,13 +122,14 @@ func (s *transactionService) Update(id string, transaction *modelReq.Transaction
 	return transactionRes, nil
 }
 
-func (s *transactionService) Delete(id string) error {
+func (s *transactionService) Delete(id string) (*modelRes.Transaction, error) {
 
-	err := s.transactionRepository.Delete(id)
+	transaction, err := s.transactionRepository.Delete(id)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+
+	return s.transactionEntityToRes(transaction), nil
 }
 
 func (s *transactionService) transactionReqToEntity(transactionReq *modelReq.Transaction) *entities.Transaction {

@@ -57,13 +57,14 @@ func (s *stockServiceImpl) Update(id string, stock *modelReq.Stock) (*modelRes.S
 	return s.stockEntityToRes(stockEntity), nil
 }
 
-func (s *stockServiceImpl) Delete(id string) error {
+func (s *stockServiceImpl) Delete(id string) (*modelRes.Stock, error) {
 
-	err := s.stockRepository.Delete(id)
+	stock, err := s.stockRepository.Delete(id)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+
+	return s.stockEntityToRes(stock), nil
 }
 
 func (s *stockServiceImpl) stockReqToEntity(stockReq *modelReq.Stock) *entities.Stock {

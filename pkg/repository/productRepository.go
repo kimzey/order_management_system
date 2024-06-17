@@ -9,5 +9,5 @@ type ProductRepository interface {
 	FindAll() (*[]entities.Product, error)
 	FindByID(id string) (*entities.Product, error)
 	Update(id string, product *entities.Product) (*entities.Product, error)
-	Delete(id string) error
+	Delete(id string) (*entities.Product, error)
 }

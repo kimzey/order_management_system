@@ -59,7 +59,7 @@ func (s *orderServiceImpl) Create(order *modelReq.Order) (*modelRes.Order, error
 
 		stock, err = s.stockRepository.Update(stock.StockID, stock)
 		if err != nil {
-			_ = s.orderRepository.Delete(newOrder.OrderID)
+			_, _ = s.orderRepository.Delete(newOrder.OrderID)
 			return nil, err
 		}
 	}
@@ -121,7 +121,7 @@ func (s *orderServiceImpl) Update(id string, order *modelReq.Order) (*modelRes.O
 
 		stock, err = s.stockRepository.Update(stock.StockID, stock)
 		if err != nil {
-			_ = s.orderRepository.Delete(newOrder.OrderID)
+			_, _ = s.orderRepository.Delete(newOrder.OrderID)
 			return nil, err
 		}
 	}
@@ -129,13 +129,13 @@ func (s *orderServiceImpl) Update(id string, order *modelReq.Order) (*modelRes.O
 	return s.orderEntityToModelRes(newOrder), nil
 }
 
-func (s *orderServiceImpl) Delete(id string) error {
+func (s *orderServiceImpl) Delete(id string) (*modelRes.Order, error) {
 
-	err := s.orderRepository.Delete(id)
+	order, err := s.orderRepository.Delete(id)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return s.orderEntityToModelRes(order), err
 }
 
 func (s *orderServiceImpl) ChangeStatusNext(id string) (*modelRes.Order, error) {

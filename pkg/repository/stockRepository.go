@@ -9,5 +9,5 @@ type StockRepository interface {
 	FindAll() (*[]entities.Stock, error)
 	CheckStockByProductId(id string) (*entities.Stock, error)
 	Update(id string, stock *entities.Stock) (*entities.Stock, error)
-	Delete(id string) error
+	Delete(id string) (*entities.Stock, error)
 }

@@ -63,13 +63,14 @@ func (r *orderRepositoryImpl) UpdateStatus(id string, order *entities.Order) (*e
 	return orderModel.ToOrderEntity(), nil
 }
 
-func (r *orderRepositoryImpl) Delete(id string) error {
-	if err := r.db.Connect().Where("id = ?", id).Delete(&model.Order{}).Error; err != nil {
-		return errors.New(fmt.Sprintf("delete order error "))
+func (r *orderRepositoryImpl) Delete(id string) (*entities.Order, error) {
+	order := new(model.Order)
+	if err := r.db.Connect().Where("id = ?", id).First(&order).Delete(&order).Error; err != nil {
+		return nil, errors.New(fmt.Sprintf("failed to delete order"))
 	}
-	return nil
-}
 
+	return order.ToOrderEntity(), nil
+}
 func ConvertOrderModelsToEntities(orders *[]model.Order) *[]entities.Order {
 	entityOrders := new([]entities.Order)
 

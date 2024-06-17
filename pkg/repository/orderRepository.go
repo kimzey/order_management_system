@@ -10,5 +10,5 @@ type OrderRepository interface {
 	FindByID(id string) (*entities.Order, error)
 	Update(id string, order *entities.Order) (*entities.Order, error)
 	UpdateStatus(id string, order *entities.Order) (*entities.Order, error)
-	Delete(id string) error
+	Delete(id string) (*entities.Order, error)
 }

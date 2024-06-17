@@ -10,5 +10,5 @@ type ProductService interface {
 	FindAll() (*[]modelRes.Product, error)
 	FindByID(id string) (*modelRes.Product, error)
 	Update(id string, product *modelReq.Product) (*modelRes.Product, error)
-	Delete(id string) error
+	Delete(id string) (*modelRes.Product, error)
 }

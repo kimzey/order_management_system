@@ -21,7 +21,7 @@ func (r *stockRepositoryImpl) Create(stock *entities.Stock) (*entities.Stock, er
 	newStock := new(model.Stock)
 
 	if err := r.db.Connect().Create(modelStock).Scan(newStock).Error; err != nil {
-		return nil, errors.New(fmt.Sprintf("failed to create stock",))
+		return nil, errors.New(fmt.Sprintf("failed to create stock"))
 	}
 
 	return newStock.ToStockEntity(), nil
@@ -62,11 +62,13 @@ func (r *stockRepositoryImpl) Update(stockid string, stock *entities.Stock) (*en
 	return stocks.ToStockEntity(), nil
 }
 
-func (r *stockRepositoryImpl) Delete(id string) error {
-	if err := r.db.Connect().Where("id = ?", id).Delete(&model.Stock{}).Error; err != nil {
-		return errors.New(fmt.Sprintf("failed to delete stock"))
+func (r *stockRepositoryImpl) Delete(id string) (*entities.Stock, error) {
+	stock := new(model.Stock)
+	if err := r.db.Connect().Where("id = ?", id).First(&stock).Delete(&stock).Error; err != nil {
+		return nil, errors.New(fmt.Sprintf("failed to delete stock"))
 	}
-	return nil
+
+	return stock.ToStockEntity(), nil
 }
 
 func ToStockModel(e *entities.Stock) *model.Stock {

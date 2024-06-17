@@ -10,5 +10,5 @@ type TransactionService interface {
 	FindAll() (*[]modelRes.Transaction, error)
 	FindByID(id string) (*modelRes.Transaction, error)
 	Update(id string, transaction *modelReq.Transaction) (*modelRes.Transaction, error)
-	Delete(id string) error
+	Delete(id string) (*modelRes.Transaction, error)
 }

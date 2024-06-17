@@ -78,12 +78,10 @@ func (c *productController) Update(pctx echo.Context) error {
 func (c *productController) Delete(pctx echo.Context) error {
 	id := pctx.Param("id")
 
-	err := c.productService.Delete(id)
+	product, err := c.productService.Delete(id)
 	if err != nil {
 		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
 
-	return pctx.JSON(http.StatusOK, map[string]string{
-		"message": "order deleted successfully",
-	})
+	return pctx.JSON(http.StatusOK, product)
 }

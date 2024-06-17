@@ -10,5 +10,5 @@ type StockService interface {
 	FindAll() (*[]modelRes.Stock, error)
 	CheckStockByProductId(id string) (*modelRes.Stock, error)
 	Update(id string, stock *modelReq.Stock) (*modelRes.Stock, error)
-	Delete(id string) error
+	Delete(id string) (*modelRes.Stock, error)
 }

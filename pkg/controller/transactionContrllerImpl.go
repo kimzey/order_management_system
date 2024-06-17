@@ -91,12 +91,10 @@ func (c *transactionControllerImpl) Delete(pctx echo.Context) error {
 	//	return custom.Error(pctx, http.StatusBadRequest, err)
 	//}
 
-	err := c.transaction.Delete(id)
+	transaction, err := c.transaction.Delete(id)
 	if err != nil {
 		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
 
-	return pctx.JSON(http.StatusOK, map[string]string{
-		"message": "order deleted successfully",
-	})
+	return pctx.JSON(http.StatusOK, transaction)
 }

@@ -58,13 +58,13 @@ func (s *productServiceImpl) Update(id string, product *modelReq.Product) (*mode
 	return s.productEntityToRes(productEntity), nil
 }
 
-func (s *productServiceImpl) Delete(id string) error {
+func (s *productServiceImpl) Delete(id string) (*modelRes.Product, error) {
 
-	err := s.productRepository.Delete(id)
+	product, err := s.productRepository.Delete(id)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return s.productEntityToRes(product), nil
 }
 
 func (s *productServiceImpl) productReqToEntity(product *modelReq.Product) *entities.Product {

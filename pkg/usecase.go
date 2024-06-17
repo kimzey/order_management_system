@@ -2,7 +2,7 @@ package pkg
 
 import (
 	"github.com/kizmey/order_management_system/database"
-	_stockRepository "github.com/kizmey/order_management_system/pkg/repository"
+	"github.com/kizmey/order_management_system/pkg/repository"
 	"github.com/kizmey/order_management_system/pkg/service"
 )
 
@@ -31,10 +31,10 @@ func InitUsecase(db database.Database) *Usecase {
 
 	// Init Repository
 
-	orderRepo := _stockRepository.NewOrderRepositoryImpl(db)
-	productRepo := _stockRepository.NewProductRepositoryImpl(db)
-	stockRepo := _stockRepository.NewStockRepositoryImpl(db)
-	transactionRepo := _stockRepository.NewTransactionRepositoryImpl(db)
+	orderRepo := repository.NewOrderRepositoryImpl(db)
+	productRepo := repository.NewProductRepositoryImpl(db)
+	stockRepo := repository.NewStockRepositoryImpl(db)
+	transactionRepo := repository.NewTransactionRepositoryImpl(db)
 
 	// Init Service
 	productService := service.NewProductServiceImpl(productRepo)

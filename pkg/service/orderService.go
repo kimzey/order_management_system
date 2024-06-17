@@ -12,5 +12,5 @@ type OrderService interface {
 	FindAll() (*[]modelRes.Order, error)
 	FindByID(id string) (*modelRes.Order, error)
 	Update(id string, order *modelReq.Order) (*modelRes.Order, error)
-	Delete(id string) error
+	Delete(id string) (*modelRes.Order, error)
 }
