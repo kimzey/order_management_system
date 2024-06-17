@@ -1,6 +1,5 @@
 package config
 
-//
 //import (
 //	"os"
 //	"strconv"
@@ -37,7 +36,6 @@ package config
 //)
 //
 //func GettingConfig() *Config {
-//	// Load .env file
 //	if err := godotenv.Load(); err != nil {
 //		panic(err)
 //	}
@@ -47,14 +45,6 @@ package config
 //
 //	configInstance := &Config{}
 //
-//	// You may add additional logic here to determine the path of the .env file
-//	// if it's not in the root directory.
-//	// For example:
-//	// if err := godotenv.Load("../../.env"); err != nil {
-//	//     panic(err)
-//	// }
-//
-//	// Database configuration
 //	configInstance.Database = &Database{
 //		Host:     os.Getenv("DB_HOST"),
 //		Port:     viper.GetInt("DB_PORT"),
