@@ -3,6 +3,7 @@ package httpEchoServer
 import (
 	"fmt"
 	"github.com/kizmey/order_management_system/config"
+	logger "github.com/kizmey/order_management_system/logs"
 	"github.com/kizmey/order_management_system/server"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -35,6 +36,10 @@ func (s *echoServer) Start() {
 	s.app.GET("/v1/health", s.healthCheck)
 	s.app.Use(middleware.Recover())
 	s.app.Use(middleware.Logger())
+
+	s.app.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Output: logger.LogFile,
+	}))
 
 	s.initStockRouter()
 	s.initProductRouter()

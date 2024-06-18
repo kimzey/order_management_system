@@ -40,11 +40,6 @@ func (c *orderControllerImpl) ChangeStatusNext(pctx echo.Context) error {
 		return custom.Error(pctx, http.StatusBadRequest, errors.New("order id not found"))
 	}
 
-	//orderId, err := custom.CheckParamId(pctx)
-	//if err != nil {
-	//	return custom.Error(pctx, http.StatusBadRequest, err)
-	//}
-
 	order, err := c.orderService.ChangeStatusNext(orderId)
 	if err != nil {
 		return custom.Error(pctx, http.StatusInternalServerError, err)
@@ -63,12 +58,6 @@ func (c *orderControllerImpl) FindAll(pctx echo.Context) error {
 
 func (c *orderControllerImpl) FindByID(pctx echo.Context) error {
 	id := pctx.Param("id")
-	fmt.Println(id)
-
-	//id, err := custom.CheckParamId(pctx)
-	//if err != nil {
-	//	return custom.Error(pctx, http.StatusBadRequest, err)
-	//}
 
 	order, err := c.orderService.FindByID(id)
 	if err != nil {
@@ -78,11 +67,6 @@ func (c *orderControllerImpl) FindByID(pctx echo.Context) error {
 }
 func (c *orderControllerImpl) Update(pctx echo.Context) error {
 	id := pctx.Param("id")
-	fmt.Println(id)
-	//id, err := custom.CheckParamId(pctx)
-	//if err != nil {
-	//	return custom.Error(pctx, http.StatusBadRequest, err)
-	//}
 
 	orderReq := new(modelReq.Order)
 	validatingContext := custom.NewCustomEchoRequest(pctx)
@@ -100,11 +84,6 @@ func (c *orderControllerImpl) Update(pctx echo.Context) error {
 
 func (c *orderControllerImpl) Delete(pctx echo.Context) error {
 	id := pctx.Param("id")
-	fmt.Println(id)
-	//id, err := custom.CheckParamId(pctx)
-	//if err != nil {
-	//	return custom.Error(pctx, http.StatusBadRequest, err)
-	//}
 
 	order, err := c.orderService.Delete(id)
 	if err != nil {
@@ -115,11 +94,6 @@ func (c *orderControllerImpl) Delete(pctx echo.Context) error {
 
 func (c *orderControllerImpl) ChageStatusDone(pctx echo.Context) error {
 	id := pctx.Param("id")
-	fmt.Println(id)
-	//id, err := custom.CheckParamId(pctx)
-	//if err != nil {
-	//	return custom.Error(pctx, http.StatusBadRequest, err)
-	//}
 
 	fmt.Println("test")
 	order, err := c.orderService.ChageStatusDone(id)

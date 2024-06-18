@@ -43,10 +43,6 @@ func (c *productController) FindAll(pctx echo.Context) error {
 
 func (c *productController) FindByID(pctx echo.Context) error {
 	id := pctx.Param("id")
-	//id, err := custom.CheckParamId(pctx)
-	//if err != nil {
-	//	return custom.Error(pctx, http.StatusBadRequest, err)
-	//}
 
 	product, err := c.productService.FindByID(id)
 	if err != nil {
@@ -57,10 +53,7 @@ func (c *productController) FindByID(pctx echo.Context) error {
 
 func (c *productController) Update(pctx echo.Context) error {
 	id := pctx.Param("id")
-	//id, err := custom.CheckParamId(pctx)
-	//if err != nil {
-	//	return custom.Error(pctx, http.StatusBadRequest, err)
-	//}
+
 	productReq := new(modelReq.Product)
 
 	validatingContext := custom.NewCustomEchoRequest(pctx)

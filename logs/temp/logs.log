@@ -1,0 +1,10 @@
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-18T17:13:04+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-18T17:13:50+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-18T17:21:29+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-18T17:22:16+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-18T17:22:35+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-18T17:23:24+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-18T17:24:27+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-18T17:25:05+07:00"}
+{"time":"2024-06-18T17:25:11.532356072+07:00","id":"","remote_ip":"::1","host":"localhost:8080","method":"GET","uri":"/v1/product","user_agent":"PostmanRuntime/7.37.3","status":200,"error":"","latency":3407142,"latency_human":"3.407142ms","bytes_in":0,"bytes_out":182}
+{"time":"2024-06-18T17:25:12.811165025+07:00","id":"","remote_ip":"::1","host":"localhost:8080","method":"GET","uri":"/v1/product","user_agent":"PostmanRuntime/7.37.3","status":200,"error":"","latency":2236781,"latency_human":"2.236781ms","bytes_in":0,"bytes_out":182}

@@ -22,8 +22,6 @@ type TransactionProduct struct {
 	ProductID     string      `gorm:"not null;" `
 	Product       Product     `gorm:"foreignKey:ProductID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Quantity      uint        `gorm:" not null; default:1" `
-	//CreatedAt     time.Time   `gorm:"not null;autoCreateTime;"`
-	//UpdatedAt     time.Time   `gorm:"not null;autoUpdateTime;"`
 }
 
 func (m *Transaction) ToTransactionEntity() *entities.Transaction {

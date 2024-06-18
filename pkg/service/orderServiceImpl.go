@@ -28,17 +28,15 @@ func NewOrderServiceImpl(orderRepository _transactionRepository.OrderRepository,
 
 func (s *orderServiceImpl) Create(order *modelReq.Order) (*modelRes.Order, error) {
 	ecommerce, err := s.transactionRepository.FindProductsByTransactionID(order.TransactionID)
-
 	if err != nil {
 		return nil, err
 	}
-
-	orderEntity := s.orderReqToEntity(order)
 
 	if ecommerce.Quantity == nil {
 		return nil, errors.New("quantity is nil")
 	}
 
+	orderEntity := s.orderReqToEntity(order)
 	newOrder, err := s.orderRepository.Create(orderEntity)
 	if err != nil {
 		return nil, err

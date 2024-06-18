@@ -42,7 +42,7 @@ func InitUsecase(db database.Database) *Usecase {
 	transactionService := service.NewTransactionServiceImpl(transactionRepo, productRepo)
 	orderService := service.NewOrderServiceImpl(orderRepo, transactionRepo, stockRepo)
 
-	usecase := NewUsecase(transactionService, stockService, productService, orderService)
+	usecases := NewUsecase(transactionService, stockService, productService, orderService)
 
-	return usecase
+	return usecases
 }

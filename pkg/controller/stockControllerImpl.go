@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	_StockService "github.com/kizmey/order_management_system/pkg/service"
 	"github.com/kizmey/order_management_system/server/httpEchoServer/custom"
@@ -46,12 +45,6 @@ func (c *stockControllerImpl) FindAll(pctx echo.Context) error {
 
 func (c *stockControllerImpl) CheckStockByProductId(pctx echo.Context) error {
 	id := pctx.Param("id")
-	fmt.Println(id)
-	//id, err := custom.CheckParamId(pctx)
-	//
-	//if err != nil {
-	//	return custom.Error(pctx, http.StatusBadRequest, err)
-	//}
 
 	stockListingResult, err := c.stockService.CheckStockByProductId(id)
 
@@ -63,12 +56,6 @@ func (c *stockControllerImpl) CheckStockByProductId(pctx echo.Context) error {
 
 func (c *stockControllerImpl) Update(pctx echo.Context) error {
 	id := pctx.Param("id")
-	fmt.Println(id)
-	//stockid, err := custom.CheckParamId(pctx)
-	//
-	//if err != nil {
-	//	return custom.Error(pctx, http.StatusBadRequest, err)
-	//}
 
 	stockReq := new(modelReq.Stock)
 
@@ -89,12 +76,6 @@ func (c *stockControllerImpl) Update(pctx echo.Context) error {
 
 func (c *stockControllerImpl) Delete(pctx echo.Context) error {
 	id := pctx.Param("id")
-	fmt.Println(id)
-	//stockid, err := custom.CheckParamId(pctx)
-	//
-	//if err != nil {
-	//	return custom.Error(pctx, http.StatusBadRequest, err)
-	//}
 
 	stock, err := c.stockService.Delete(id)
 
