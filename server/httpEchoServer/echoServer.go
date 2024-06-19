@@ -8,7 +8,9 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
+	"github.com/sirupsen/logrus"
 	"net/http"
+	"time"
 
 	"github.com/kizmey/order_management_system/pkg"
 )
@@ -36,10 +38,11 @@ func (s *echoServer) Start() {
 	s.app.GET("/v1/health", s.healthCheck)
 	s.app.Use(middleware.Recover())
 	s.app.Use(middleware.Logger())
+	s.app.Use(LoggerMiddleware)
 
-	s.app.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-		Output: logger.LogFile,
-	}))
+	//s.app.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+	//	Output: logger.LogFile,
+	//}))
 
 	s.initStockRouter()
 	s.initProductRouter()
@@ -62,4 +65,32 @@ func (s *echoServer) httpListening() {
 // path : /v1/health method : GET FOR check server
 func (s *echoServer) healthCheck(c echo.Context) error {
 	return c.String(http.StatusOK, "Ok")
+}
+
+func LoggerMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		start := time.Now()
+
+		if err := next(c); err != nil {
+			c.Error(err)
+		}
+
+		fields := logrus.Fields{
+			"method":   c.Request().Method,
+			"path":     c.Path(),
+			"query":    c.QueryString(),
+			"remoteIP": c.RealIP(),
+		}
+
+		// Log HTTP request
+		logger.LogInfo("HTTP request", fields)
+
+		// Log HTTP response
+		fields["status"] = c.Response().Status
+		fields["latency"] = time.Since(start).Seconds()
+
+		logger.LogInfo("HTTP response", fields)
+
+		return nil
+	}
 }
