@@ -1,7 +1,7 @@
 package httpEchoServer
 
 import (
-	_transactionController "github.com/kizmey/order_management_system/pkg/controller"
+	_transactionController "github.com/kizmey/order_management_system/pkg/controller/transaction"
 )
 
 func (s *echoServer) inittransactionRouter() {

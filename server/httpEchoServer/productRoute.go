@@ -1,7 +1,7 @@
 package httpEchoServer
 
 import (
-	_productController "github.com/kizmey/order_management_system/pkg/controller"
+	_productController "github.com/kizmey/order_management_system/pkg/controller/product"
 )
 
 func (s *echoServer) initProductRouter() {
