@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
@@ -15,7 +16,7 @@ func NewProductServiceImpl(productRepository _ProductRepository.ProductRepositor
 	return &productServiceImpl{productRepository: productRepository}
 }
 
-func (s *productServiceImpl) Create(product *modelReq.Product) (*modelRes.Product, error) {
+func (s *productServiceImpl) Create(ctx context.Context, product *modelReq.Product) (*modelRes.Product, error) {
 
 	productEntity := s.productReqToEntity(product)
 
@@ -26,7 +27,7 @@ func (s *productServiceImpl) Create(product *modelReq.Product) (*modelRes.Produc
 	return s.productEntityToRes(productEntity), nil
 }
 
-func (s *productServiceImpl) FindAll() (*[]modelRes.Product, error) {
+func (s *productServiceImpl) FindAll(ctx context.Context) (*[]modelRes.Product, error) {
 
 	products, err := s.productRepository.FindAll()
 	if err != nil {
@@ -40,7 +41,7 @@ func (s *productServiceImpl) FindAll() (*[]modelRes.Product, error) {
 	return &productsRes, nil
 }
 
-func (s *productServiceImpl) FindByID(id string) (*modelRes.Product, error) {
+func (s *productServiceImpl) FindByID(ctx context.Context, id string) (*modelRes.Product, error) {
 
 	product, err := s.productRepository.FindByID(id)
 	if err != nil {
@@ -48,7 +49,7 @@ func (s *productServiceImpl) FindByID(id string) (*modelRes.Product, error) {
 	}
 	return s.productEntityToRes(product), nil
 }
-func (s *productServiceImpl) Update(id string, product *modelReq.Product) (*modelRes.Product, error) {
+func (s *productServiceImpl) Update(ctx context.Context, id string, product *modelReq.Product) (*modelRes.Product, error) {
 
 	productEntity := s.productReqToEntity(product)
 	productEntity, err := s.productRepository.Update(id, productEntity)
@@ -58,7 +59,7 @@ func (s *productServiceImpl) Update(id string, product *modelReq.Product) (*mode
 	return s.productEntityToRes(productEntity), nil
 }
 
-func (s *productServiceImpl) Delete(id string) (*modelRes.Product, error) {
+func (s *productServiceImpl) Delete(ctx context.Context, id string) (*modelRes.Product, error) {
 
 	product, err := s.productRepository.Delete(id)
 	if err != nil {

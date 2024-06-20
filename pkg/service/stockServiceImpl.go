@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
@@ -15,7 +16,7 @@ func NewStockServiceImpl(stockRepository _StockRepository.StockRepository) Stock
 	return &stockServiceImpl{stockRepository: stockRepository}
 }
 
-func (s *stockServiceImpl) Create(stock *modelReq.Stock) (*modelRes.Stock, error) {
+func (s *stockServiceImpl) Create(ctx context.Context, stock *modelReq.Stock) (*modelRes.Stock, error) {
 
 	stockEntity := s.stockReqToEntity(stock)
 	stockEntity, err := s.stockRepository.Create(stockEntity)
@@ -25,7 +26,7 @@ func (s *stockServiceImpl) Create(stock *modelReq.Stock) (*modelRes.Stock, error
 	return s.stockEntityToRes(stockEntity), nil
 }
 
-func (s *stockServiceImpl) FindAll() (*[]modelRes.Stock, error) {
+func (s *stockServiceImpl) FindAll(ctx context.Context) (*[]modelRes.Stock, error) {
 
 	stockEntities, err := s.stockRepository.FindAll()
 	if err != nil {
@@ -38,7 +39,7 @@ func (s *stockServiceImpl) FindAll() (*[]modelRes.Stock, error) {
 	return &stockRes, nil
 }
 
-func (s *stockServiceImpl) CheckStockByProductId(id string) (*modelRes.Stock, error) {
+func (s *stockServiceImpl) CheckStockByProductId(ctx context.Context, id string) (*modelRes.Stock, error) {
 
 	stock, err := s.stockRepository.CheckStockByProductId(id)
 	if err != nil {
@@ -47,7 +48,7 @@ func (s *stockServiceImpl) CheckStockByProductId(id string) (*modelRes.Stock, er
 	return s.stockEntityToRes(stock), nil
 }
 
-func (s *stockServiceImpl) Update(id string, stock *modelReq.Stock) (*modelRes.Stock, error) {
+func (s *stockServiceImpl) Update(ctx context.Context, id string, stock *modelReq.Stock) (*modelRes.Stock, error) {
 
 	stockEntity := s.stockReqToEntity(stock)
 	stockEntity, err := s.stockRepository.Update(id, stockEntity)
@@ -57,7 +58,7 @@ func (s *stockServiceImpl) Update(id string, stock *modelReq.Stock) (*modelRes.S
 	return s.stockEntityToRes(stockEntity), nil
 }
 
-func (s *stockServiceImpl) Delete(id string) (*modelRes.Stock, error) {
+func (s *stockServiceImpl) Delete(ctx context.Context, id string) (*modelRes.Stock, error) {
 
 	stock, err := s.stockRepository.Delete(id)
 	if err != nil {

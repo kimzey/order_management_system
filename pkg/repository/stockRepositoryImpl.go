@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"context"
+
 	"errors"
 	"fmt"
 	"github.com/kizmey/order_management_system/database"
@@ -16,7 +18,7 @@ func NewStockRepositoryImpl(db database.Database) StockRepository {
 	return &stockRepositoryImpl{db: db}
 }
 
-func (r *stockRepositoryImpl) Create(stock *entities.Stock) (*entities.Stock, error) {
+func (r *stockRepositoryImpl) Create(ctx context.Context, stock *entities.Stock) (*entities.Stock, error) {
 	modelStock := ToStockModel(stock)
 	newStock := new(model.Stock)
 
@@ -27,7 +29,7 @@ func (r *stockRepositoryImpl) Create(stock *entities.Stock) (*entities.Stock, er
 	return newStock.ToStockEntity(), nil
 }
 
-func (r *stockRepositoryImpl) FindAll() (*[]entities.Stock, error) {
+func (r *stockRepositoryImpl) FindAll(ctx context.Context) (*[]entities.Stock, error) {
 	stocks := new([]model.Stock)
 
 	if err := r.db.Connect().Find(stocks).Error; err != nil {
@@ -37,7 +39,7 @@ func (r *stockRepositoryImpl) FindAll() (*[]entities.Stock, error) {
 	return allStock, nil
 }
 
-func (r *stockRepositoryImpl) CheckStockByProductId(productId string) (*entities.Stock, error) {
+func (r *stockRepositoryImpl) CheckStockByProductId(ctx context.Context, productId string) (*entities.Stock, error) {
 	stock := new(model.Stock)
 	//fmt.Println("productId: ", productId)
 	if err := r.db.Connect().Preload("Product").Where("product_id = ?", productId).First(stock).Error; err != nil {
@@ -47,7 +49,7 @@ func (r *stockRepositoryImpl) CheckStockByProductId(productId string) (*entities
 	return stock.ToStockEntity(), nil
 }
 
-func (r *stockRepositoryImpl) Update(stockid string, stock *entities.Stock) (*entities.Stock, error) {
+func (r *stockRepositoryImpl) Update(ctx context.Context, stockid string, stock *entities.Stock) (*entities.Stock, error) {
 	stocks := new(model.Stock)
 	modelStock := ToStockModel(stock)
 
@@ -62,7 +64,7 @@ func (r *stockRepositoryImpl) Update(stockid string, stock *entities.Stock) (*en
 	return stocks.ToStockEntity(), nil
 }
 
-func (r *stockRepositoryImpl) Delete(id string) (*entities.Stock, error) {
+func (r *stockRepositoryImpl) Delete(ctx context.Context, id string) (*entities.Stock, error) {
 	stock := new(model.Stock)
 	if err := r.db.Connect().Where("id = ?", id).First(&stock).Delete(&stock).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to delete stock"))

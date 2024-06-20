@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
@@ -26,7 +27,7 @@ func NewOrderServiceImpl(orderRepository _transactionRepository.OrderRepository,
 	}
 }
 
-func (s *orderServiceImpl) Create(order *modelReq.Order) (*modelRes.Order, error) {
+func (s *orderServiceImpl) Create(ctx context.Context, order *modelReq.Order) (*modelRes.Order, error) {
 	ecommerce, err := s.transactionRepository.FindProductsByTransactionID(order.TransactionID)
 	if err != nil {
 		return nil, err
@@ -65,7 +66,7 @@ func (s *orderServiceImpl) Create(order *modelReq.Order) (*modelRes.Order, error
 	return s.orderEntityToModelRes(newOrder), nil
 }
 
-func (s *orderServiceImpl) FindAll() (*[]modelRes.Order, error) {
+func (s *orderServiceImpl) FindAll(ctx context.Context) (*[]modelRes.Order, error) {
 	orders, err := s.orderRepository.FindAll()
 	if err != nil {
 		return nil, err
@@ -78,7 +79,7 @@ func (s *orderServiceImpl) FindAll() (*[]modelRes.Order, error) {
 	return &allOrder, nil
 }
 
-func (s *orderServiceImpl) FindByID(id string) (*modelRes.Order, error) {
+func (s *orderServiceImpl) FindByID(ctx context.Context, id string) (*modelRes.Order, error) {
 
 	order, err := s.orderRepository.FindByID(id)
 	if err != nil {
@@ -87,7 +88,7 @@ func (s *orderServiceImpl) FindByID(id string) (*modelRes.Order, error) {
 	return s.orderEntityToModelRes(order), nil
 }
 
-func (s *orderServiceImpl) Update(id string, order *modelReq.Order) (*modelRes.Order, error) {
+func (s *orderServiceImpl) Update(ctx context.Context, id string, order *modelReq.Order) (*modelRes.Order, error) {
 	ecommerce, err := s.transactionRepository.FindProductsByTransactionID(order.TransactionID)
 	if err != nil {
 		return nil, err
@@ -127,7 +128,7 @@ func (s *orderServiceImpl) Update(id string, order *modelReq.Order) (*modelRes.O
 	return s.orderEntityToModelRes(newOrder), nil
 }
 
-func (s *orderServiceImpl) Delete(id string) (*modelRes.Order, error) {
+func (s *orderServiceImpl) Delete(ctx context.Context, id string) (*modelRes.Order, error) {
 
 	order, err := s.orderRepository.Delete(id)
 	if err != nil {
@@ -136,7 +137,7 @@ func (s *orderServiceImpl) Delete(id string) (*modelRes.Order, error) {
 	return s.orderEntityToModelRes(order), err
 }
 
-func (s *orderServiceImpl) ChangeStatusNext(id string) (*modelRes.Order, error) {
+func (s *orderServiceImpl) ChangeStatusNext(ctx context.Context, id string) (*modelRes.Order, error) {
 
 	order, err := s.orderRepository.FindByID(id)
 	if err != nil {
@@ -155,7 +156,7 @@ func (s *orderServiceImpl) ChangeStatusNext(id string) (*modelRes.Order, error) 
 
 	return s.orderEntityToModelRes(order), nil
 }
-func (s *orderServiceImpl) ChageStatusDone(id string) (*modelRes.Order, error) {
+func (s *orderServiceImpl) ChageStatusDone(ctx context.Context, id string) (*modelRes.Order, error) {
 
 	order, err := s.orderRepository.FindByID(id)
 	if err != nil {

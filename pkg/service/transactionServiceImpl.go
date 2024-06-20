@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	_interface "github.com/kizmey/order_management_system/pkg/interface"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
@@ -24,7 +25,7 @@ func NewTransactionServiceImpl(
 	}
 }
 
-func (s *transactionService) Create(transaction *modelReq.Transaction) (*modelRes.Transaction, error) {
+func (s *transactionService) Create(ctx context.Context, transaction *modelReq.Transaction) (*modelRes.Transaction, error) {
 
 	transactionEntity := s.transactionReqToEntity(transaction)
 
@@ -63,7 +64,7 @@ func (s *transactionService) Create(transaction *modelReq.Transaction) (*modelRe
 
 }
 
-func (s *transactionService) FindAll() (*[]modelRes.Transaction, error) {
+func (s *transactionService) FindAll(ctx context.Context) (*[]modelRes.Transaction, error) {
 
 	transactionEntities, err := s.transactionRepository.FindAll()
 	if err != nil {
@@ -77,7 +78,7 @@ func (s *transactionService) FindAll() (*[]modelRes.Transaction, error) {
 	return &allTransaction, nil
 }
 
-func (s *transactionService) FindByID(id string) (*modelRes.Transaction, error) {
+func (s *transactionService) FindByID(ctx context.Context, id string) (*modelRes.Transaction, error) {
 	transactionEntity, err := s.transactionRepository.FindByID(id)
 	if err != nil {
 		return nil, err
@@ -85,7 +86,7 @@ func (s *transactionService) FindByID(id string) (*modelRes.Transaction, error) 
 	return s.transactionEntityToRes(transactionEntity), nil
 }
 
-func (s *transactionService) Update(id string, transaction *modelReq.Transaction) (*modelRes.Transaction, error) {
+func (s *transactionService) Update(ctx context.Context, id string, transaction *modelReq.Transaction) (*modelRes.Transaction, error) {
 	transactionEntity := s.transactionReqToEntity(transaction)
 
 	var products []entities.Product
@@ -122,7 +123,7 @@ func (s *transactionService) Update(id string, transaction *modelReq.Transaction
 	return transactionRes, nil
 }
 
-func (s *transactionService) Delete(id string) (*modelRes.Transaction, error) {
+func (s *transactionService) Delete(ctx context.Context, id string) (*modelRes.Transaction, error) {
 
 	transaction, err := s.transactionRepository.Delete(id)
 	if err != nil {

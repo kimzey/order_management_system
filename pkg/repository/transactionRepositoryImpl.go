@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"context"
+
 	"errors"
 	"fmt"
 	"github.com/kizmey/order_management_system/database"
@@ -17,7 +19,7 @@ func NewTransactionRepositoryImpl(db database.Database) TransactionRepository {
 	return &transactionRepositoryImpl{db: db}
 }
 
-func (r *transactionRepositoryImpl) Create(transaction *_interface.TransactionEcommerce) (*entities.Transaction, error) {
+func (r *transactionRepositoryImpl) Create(ctx context.Context, transaction *_interface.TransactionEcommerce) (*entities.Transaction, error) {
 	transactionModel := ToTransactionModel(transaction)
 
 	if err := r.db.Connect().Create(&transactionModel).Error; err != nil {
@@ -33,7 +35,7 @@ func (r *transactionRepositoryImpl) Create(transaction *_interface.TransactionEc
 	return transactionModel.ToTransactionEntity(), nil
 }
 
-func (r *transactionRepositoryImpl) FindAll() (*[]entities.Transaction, error) {
+func (r *transactionRepositoryImpl) FindAll(ctx context.Context) (*[]entities.Transaction, error) {
 	transactions := new([]model.Transaction)
 
 	if err := r.db.Connect().Find(&transactions).Error; err != nil {
@@ -43,7 +45,7 @@ func (r *transactionRepositoryImpl) FindAll() (*[]entities.Transaction, error) {
 	return allTransactions, nil
 }
 
-func (r *transactionRepositoryImpl) FindByID(id string) (*entities.Transaction, error) {
+func (r *transactionRepositoryImpl) FindByID(ctx context.Context, id string) (*entities.Transaction, error) {
 
 	transaction := new(model.Transaction)
 	if err := r.db.Connect().Where("id = ?", id).First(&transaction).Error; err != nil {
@@ -53,7 +55,7 @@ func (r *transactionRepositoryImpl) FindByID(id string) (*entities.Transaction, 
 	return transaction.ToTransactionEntity(), nil
 }
 
-func (r *transactionRepositoryImpl) Update(id string, transaction *_interface.TransactionEcommerce) (*entities.Transaction, error) {
+func (r *transactionRepositoryImpl) Update(ctx context.Context, id string, transaction *_interface.TransactionEcommerce) (*entities.Transaction, error) {
 	transactionModel := ToTransactionModel(transaction)
 
 	transactionModel.ID = id
@@ -73,7 +75,7 @@ func (r *transactionRepositoryImpl) Update(id string, transaction *_interface.Tr
 	return transactionModel.ToTransactionEntity(), nil
 }
 
-func (r *transactionRepositoryImpl) Delete(id string) (*entities.Transaction, error) {
+func (r *transactionRepositoryImpl) Delete(ctx context.Context, id string) (*entities.Transaction, error) {
 
 	transaction := new(model.Transaction)
 	if err := r.db.Connect().Where("id = ?", id).First(&transaction).Delete(&transaction).Error; err != nil {
@@ -83,7 +85,7 @@ func (r *transactionRepositoryImpl) Delete(id string) (*entities.Transaction, er
 	return transaction.ToTransactionEntity(), nil
 }
 
-func (r *transactionRepositoryImpl) FindProductsByTransactionID(id string) (*_interface.Ecommerce, error) {
+func (r *transactionRepositoryImpl) FindProductsByTransactionID(ctx context.Context, id string) (*_interface.Ecommerce, error) {
 	var transactionProducts []model.TransactionProduct
 	if err := r.db.Connect().Where("transaction_id = ?", id).Preload("Product").Find(&transactionProducts).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to find transaction"))

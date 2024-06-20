@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"context"
+
 	"errors"
 	"fmt"
 	"github.com/kizmey/order_management_system/database"
@@ -16,7 +18,7 @@ func NewOrderRepositoryImpl(db database.Database) OrderRepository {
 	return &orderRepositoryImpl{db: db}
 }
 
-func (r *orderRepositoryImpl) Create(order *entities.Order) (*entities.Order, error) {
+func (r *orderRepositoryImpl) Create(ctx context.Context, order *entities.Order) (*entities.Order, error) {
 
 	modelOrder := ToOrderModel(order)
 	if err := r.db.Connect().Create(&modelOrder).Preload("Transaction").Where("id = ?", modelOrder.ID).First(&modelOrder).Error; err != nil {
@@ -26,7 +28,7 @@ func (r *orderRepositoryImpl) Create(order *entities.Order) (*entities.Order, er
 	return modelOrder.ToOrderEntity(), nil
 }
 
-func (r *orderRepositoryImpl) FindAll() (*[]entities.Order, error) {
+func (r *orderRepositoryImpl) FindAll(ctx context.Context) (*[]entities.Order, error) {
 	orders := new([]model.Order)
 
 	if err := r.db.Connect().Preload("Transaction").Find(orders).Error; err != nil {
@@ -36,7 +38,7 @@ func (r *orderRepositoryImpl) FindAll() (*[]entities.Order, error) {
 
 	return allOrder, nil
 }
-func (r *orderRepositoryImpl) FindByID(id string) (*entities.Order, error) {
+func (r *orderRepositoryImpl) FindByID(ctx context.Context, id string) (*entities.Order, error) {
 	order := new(model.Order)
 	if err := r.db.Connect().Preload("Transaction").Where("id = ?", id).First(&order).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("find by id order error "))
@@ -44,7 +46,7 @@ func (r *orderRepositoryImpl) FindByID(id string) (*entities.Order, error) {
 	return order.ToOrderEntity(), nil
 }
 
-func (r *orderRepositoryImpl) Update(id string, order *entities.Order) (*entities.Order, error) {
+func (r *orderRepositoryImpl) Update(ctx context.Context, id string, order *entities.Order) (*entities.Order, error) {
 
 	modelOrder := ToOrderModel(order)
 	if err := r.db.Connect().Model(&modelOrder).Where("id = ?", id).Updates(&modelOrder).Scan(modelOrder).Where("id = ?", id).First(&modelOrder).Error; err != nil {
@@ -54,7 +56,7 @@ func (r *orderRepositoryImpl) Update(id string, order *entities.Order) (*entitie
 	return modelOrder.ToOrderEntity(), nil
 }
 
-func (r *orderRepositoryImpl) UpdateStatus(id string, order *entities.Order) (*entities.Order, error) {
+func (r *orderRepositoryImpl) UpdateStatus(ctx context.Context, id string, order *entities.Order) (*entities.Order, error) {
 	orderModel := ToOrderModel(order)
 
 	if err := r.db.Connect().Model(&orderModel).Where("id = ?", id).Updates(&orderModel).Scan(orderModel).Preload("Transaction").Where("id = ?", id).First(&orderModel).Error; err != nil {
@@ -63,7 +65,7 @@ func (r *orderRepositoryImpl) UpdateStatus(id string, order *entities.Order) (*e
 	return orderModel.ToOrderEntity(), nil
 }
 
-func (r *orderRepositoryImpl) Delete(id string) (*entities.Order, error) {
+func (r *orderRepositoryImpl) Delete(ctx context.Context, id string) (*entities.Order, error) {
 	order := new(model.Order)
 	if err := r.db.Connect().Where("id = ?", id).First(&order).Delete(&order).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to delete order"))

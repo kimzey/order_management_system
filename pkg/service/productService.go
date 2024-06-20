@@ -1,14 +1,15 @@
 package service
 
 import (
+	"context"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
 )
 
 type ProductService interface {
-	Create(product *modelReq.Product) (*modelRes.Product, error)
-	FindAll() (*[]modelRes.Product, error)
-	FindByID(id string) (*modelRes.Product, error)
-	Update(id string, product *modelReq.Product) (*modelRes.Product, error)
-	Delete(id string) (*modelRes.Product, error)
+	Create(ctx context.Context, product *modelReq.Product) (*modelRes.Product, error)
+	FindAll(ctx context.Context) (*[]modelRes.Product, error)
+	FindByID(ctx context.Context, id string) (*modelRes.Product, error)
+	Update(ctx context.Context, id string, product *modelReq.Product) (*modelRes.Product, error)
+	Delete(ctx context.Context, id string) (*modelRes.Product, error)
 }

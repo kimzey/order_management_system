@@ -1,13 +1,15 @@
 package repository
 
 import (
+	"context"
+
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 )
 
 type StockRepository interface {
-	Create(stock *entities.Stock) (*entities.Stock, error)
-	FindAll() (*[]entities.Stock, error)
-	CheckStockByProductId(id string) (*entities.Stock, error)
-	Update(id string, stock *entities.Stock) (*entities.Stock, error)
-	Delete(id string) (*entities.Stock, error)
+	Create(ctx context.Context, stock *entities.Stock) (*entities.Stock, error)
+	FindAll(ctx context.Context) (*[]entities.Stock, error)
+	CheckStockByProductId(ctx context.Context, id string) (*entities.Stock, error)
+	Update(ctx context.Context, id string, stock *entities.Stock) (*entities.Stock, error)
+	Delete(ctx context.Context, id string) (*entities.Stock, error)
 }
