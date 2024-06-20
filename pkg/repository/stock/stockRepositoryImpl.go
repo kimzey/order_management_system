@@ -2,6 +2,7 @@ package stock
 
 import (
 	"context"
+	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
 
 	"errors"
 	"fmt"
@@ -37,10 +38,10 @@ func (r *stockRepositoryImpl) FindAll(ctx context.Context) (*[]entities.Stock, e
 	defer sp.End()
 
 	stocks := new([]model.Stock)
-
 	if err := r.db.Connect().Find(stocks).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to find all stock"))
 	}
+
 	allStock := model.ConvertStockModelsToEntities(stocks)
 	return allStock, nil
 }
@@ -90,6 +91,14 @@ func (r *stockRepositoryImpl) Delete(ctx context.Context, id string) (*entities.
 
 func ToStockModel(e *entities.Stock) *model.Stock {
 	return &model.Stock{
+		ProductID: e.ProductID,
+		Quantity:  e.Quantity,
+	}
+}
+
+func ToStockModelRes(e *entities.Stock) *modelRes.Stock {
+	return &modelRes.Stock{
+		StockID:   e.StockID,
 		ProductID: e.ProductID,
 		Quantity:  e.Quantity,
 	}

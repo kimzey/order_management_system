@@ -1,7 +1,6 @@
 package stock
 
 import (
-	"fmt"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	_StockService "github.com/kizmey/order_management_system/pkg/service/stock"
 	"github.com/kizmey/order_management_system/server/httpEchoServer/custom"
@@ -40,7 +39,7 @@ func (c *stockControllerImpl) Create(pctx echo.Context) error {
 
 func (c *stockControllerImpl) FindAll(pctx echo.Context) error {
 	ctx, sp := tracer.Start(pctx.Request().Context(), "stockFindAllController")
-	fmt.Println("sp", sp)
+
 	defer sp.End()
 
 	stockListingResult, err := c.stockService.FindAll(ctx)

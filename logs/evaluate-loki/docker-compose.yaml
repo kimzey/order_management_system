@@ -104,6 +104,10 @@ services:
             type: loki
             access: proxy
             url: http://gateway:3100
+          - name: Tempo
+            type: tempo
+            access: proxy
+            url: http://tempo:3200
         EOF
         /run.sh
     ports:
@@ -215,3 +219,37 @@ services:
       - loki
     depends_on:
       - gateway
+
+  tempo:
+    image: grafana/tempo:latest
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    ports:
+#      - "14268:14268"    # Jaeger ingest
+      - "3200:3200"      # Tempo
+      - "9095:9095"      # Tempo gRPC
+      - "4317:4317"      # OTLP gRPC
+      - "4318:4318"      # OTLP HTTP
+#      - "9411:9411"      # Zipkin
+    depends_on:
+      - gateway
+    user: root
+    networks:
+      - loki
+#    healthcheck:
+#      test: [ "CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:4317/ready || exit 1" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+    environment:
+      - TEMPO_STORAGE_COMPACT_STRATEGY=blocks
+      - TEMPO_STORAGE_COMPACT_RETENTION=12h
+      - TEMPO_STORAGE_COMPACT_BLOCK_SIZE=15m
+      - TEMPO_STORAGE_COMPACT_COMPRESSION_LEVEL=9
+      - TEMPO_RECEIVER_OTLP_PROTOCOL_PORT=4318    # ต้องตรงกับ OTLP HTTP พอร์ต
+      - TEMPO_RECEIVER_OTLP_PROTOCOL_HOST=0.0.0.0  # หรือ IP ของเครื่องที่ Tempo รันอยู่
+      - TEMPO_STORAGE_LOCAL_DIRECTORY=/var/tempo  # กำหนดโฟลเดอร์ที่ใช้เก็บข้อมูล Tempo
+    volumes:
+      - ./tempo.yaml:/etc/tempo.yaml  # mount ไฟล์ config ของ Tempo
+      - ./tempo-data:/var/tempo       # mount โฟลเดอร์ที่ใช้เก็บข้อมูล Tempo
+    # เพิ่ม healthcheck เพื่อตรวจสอบสถานะของ Tempo
+

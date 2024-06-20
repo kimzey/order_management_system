@@ -35,7 +35,7 @@ func TracingMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			trace.WithAttributes(semconv.NetTransportTCP),
 			trace.WithSpanKind(trace.SpanKindServer),
 		}
-		fmt.Println("spanOptions", spanOptions)
+		//fmt.Println("spanOptions", spanOptions)
 		// Start a new span for tracing
 		ctx, span := Tracer.Start(c.Request().Context(), fmt.Sprintf("%s %s", c.Request().Method, c.Path()), spanOptions...)
 		defer span.End()
@@ -50,10 +50,9 @@ func TracingMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 				c.Response().Header().Set(k, carrier.Get(k))
 			}
 		}
-		fmt.Println("Tracing", span)
+		//fmt.Println("Tracing", span)
 
 		fmt.Println("TracingMiddleware", span.SpanContext().TraceID())
-
 		// Proceed to the next middleware/handler
 		if err := next(c); err != nil {
 			c.Error(err)
