@@ -47,18 +47,18 @@ services:
     networks:
       <<: *loki-dns
 
-  alloy:
-    image: grafana/alloy-dev:latest
-    volumes:
-      - ./alloy-local-config.yaml:/etc/alloy/config.alloy:ro
-      - /var/run/docker.sock:/var/run/docker.sock
-    command:  run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
-    ports:
-      - 12345:12345
-    depends_on:
-      - gateway
-    networks:
-      - loki
+#  alloy:
+#    image: grafana/alloy-dev:latest
+#    volumes:
+#      - ./alloy-local-config.yaml:/etc/alloy/config.alloy:ro
+#      - /var/run/docker.sock:/var/run/docker.sock
+#    command:  run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
+#    ports:
+#      - 12345:12345
+#    depends_on:
+#      - gateway
+#    networks:
+#      - loki
 
   minio:
     image: minio/minio
@@ -198,14 +198,12 @@ services:
       retries: 5
     networks:
       - loki
-  
 
-  flog:
-    image: mingrammer/flog
-    command: -f json -d 200ms -l
-    networks:
-      - loki
-
+#  flog:
+#    image: mingrammer/flog
+#    command: -f json -d 200ms -l
+#    networks:
+#      - loki
 
   promtail:
     image: grafana/promtail:3.0.0

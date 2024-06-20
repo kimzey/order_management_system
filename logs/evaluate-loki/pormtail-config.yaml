@@ -18,4 +18,4 @@ scrape_configs:
           - localhost
         labels:
           job: ordermanager
-          __path__: /var/log/*log
+          __path__: /var/log/logs.log
