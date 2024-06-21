@@ -249,3 +249,76 @@
 {"level":"info","msg":"Retrieved order list successfully","time":"2024-06-20T23:04:06+07:00"}
 {"level":"info","method":"GET","msg":"HTTP request","path":"/v1/order","query":"","remoteIP":"::1","time":"2024-06-20T23:04:06+07:00"}
 {"latency":0.011835518,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/order","query":"","remoteIP":"::1","status":200,"time":"2024-06-20T23:04:06+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-21T10:56:37+07:00"}
+{"level":"info","msg":"Retrieved order list successfully","time":"2024-06-21T10:57:16+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/order","query":"","remoteIP":"::1","time":"2024-06-21T10:57:16+07:00"}
+{"latency":0.022986872,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/order","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T10:57:16+07:00"}
+{"level":"info","msg":"Retrieved order list successfully","time":"2024-06-21T10:57:29+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/order","query":"","remoteIP":"::1","time":"2024-06-21T10:57:29+07:00"}
+{"latency":0.003369025,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/order","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T10:57:29+07:00"}
+{"level":"info","msg":"Retrieved order list successfully","time":"2024-06-21T10:57:30+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/order","query":"","remoteIP":"::1","time":"2024-06-21T10:57:30+07:00"}
+{"latency":0.001764692,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/order","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T10:57:30+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/stock","query":"","remoteIP":"::1","time":"2024-06-21T10:57:33+07:00"}
+{"latency":0.004742428,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/stock","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T10:57:33+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/stock","query":"","remoteIP":"::1","time":"2024-06-21T10:57:34+07:00"}
+{"latency":0.002316741,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/stock","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T10:57:34+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-21T11:20:44+07:00"}
+{"level":"info","msg":"Trace ID: 00000000000000000000000000000000","time":"2024-06-21T11:21:08+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/stock","query":"","remoteIP":"::1","time":"2024-06-21T11:21:08+07:00"}
+{"latency":0.004181707,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/stock","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T11:21:08+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-21T11:21:54+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/stock","query":"","remoteIP":"::1","time":"2024-06-21T11:21:57+07:00"}
+{"latency":0.004399938,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/stock","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T11:21:57+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-21T11:24:08+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/stock","query":"","remoteIP":"::1","time":"2024-06-21T11:24:11+07:00"}
+{"latency":0.005521286,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/stock","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T11:24:11+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/stock","query":"","remoteIP":"::1","time":"2024-06-21T11:24:26+07:00"}
+{"latency":0.002602341,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/stock","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T11:24:26+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-21T11:24:35+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/stock","query":"","remoteIP":"::1","time":"2024-06-21T11:24:38+07:00"}
+{"latency":0.005829053,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/stock","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T11:24:38+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-21T11:24:51+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/stock","query":"","remoteIP":"::1","time":"2024-06-21T11:24:52+07:00"}
+{"latency":0.003962713,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/stock","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T11:24:52+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-21T11:25:10+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/stock","query":"","remoteIP":"::1","time":"2024-06-21T11:25:10+07:00"}
+{"latency":0.004163596,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/stock","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T11:25:10+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-21T11:25:22+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/stock","query":"","remoteIP":"::1","time":"2024-06-21T11:25:23+07:00"}
+{"latency":0.004508103,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/stock","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T11:25:23+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-21T11:25:42+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/stock","query":"","remoteIP":"::1","time":"2024-06-21T11:25:42+07:00"}
+{"latency":0.004760439,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/stock","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T11:25:42+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-21T11:26:12+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/stock","query":"","remoteIP":"::1","time":"2024-06-21T11:26:13+07:00"}
+{"latency":0.005340289,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/stock","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T11:26:13+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-21T11:26:57+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/stock","query":"","remoteIP":"::1","time":"2024-06-21T11:27:00+07:00"}
+{"latency":0.005423847,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/stock","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T11:27:00+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/stock","query":"","remoteIP":"::1","time":"2024-06-21T11:27:28+07:00"}
+{"latency":0.002368614,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/stock","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T11:27:28+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-21T11:33:18+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/stock","query":"","remoteIP":"::1","time":"2024-06-21T11:33:20+07:00"}
+{"latency":0.005851394,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/stock","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T11:33:20+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-21T12:57:52+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/stock","query":"","remoteIP":"::1","time":"2024-06-21T12:57:57+07:00"}
+{"latency":0.00509841,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/stock","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T12:57:57+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-21T13:08:20+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/stock","query":"","remoteIP":"::1","time":"2024-06-21T13:08:23+07:00"}
+{"latency":0.003891832,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/stock","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T13:08:23+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/stock","query":"","remoteIP":"::1","time":"2024-06-21T13:08:35+07:00"}
+{"latency":0.002260675,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/stock","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T13:08:35+07:00"}
+{"level":"info","msg":"Retrieved order list successfully","time":"2024-06-21T13:09:16+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/order","query":"","remoteIP":"::1","time":"2024-06-21T13:09:16+07:00"}
+{"latency":0.005919463,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/order","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T13:09:16+07:00"}
+{"level":"info","msg":"Retrieved order list successfully","time":"2024-06-21T13:09:28+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/order","query":"","remoteIP":"::1","time":"2024-06-21T13:09:28+07:00"}
+{"latency":0.003511439,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/order","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T13:09:28+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-21T13:12:00+07:00"}
+{"level":"info","msg":"Retrieved order list successfully","time":"2024-06-21T13:12:03+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/order","query":"","remoteIP":"::1","time":"2024-06-21T13:12:03+07:00"}
+{"latency":0.006510003,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/order","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T13:12:03+07:00"}
+{"level":"info","msg":"Retrieved order list successfully","time":"2024-06-21T13:12:04+07:00"}
+{"level":"info","method":"GET","msg":"HTTP request","path":"/v1/order","query":"","remoteIP":"::1","time":"2024-06-21T13:12:04+07:00"}
+{"latency":0.001812422,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/order","query":"","remoteIP":"::1","status":200,"time":"2024-06-21T13:12:04+07:00"}

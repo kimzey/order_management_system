@@ -14,7 +14,9 @@ import (
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	"go.opentelemetry.io/otel/semconv/v1.21.0" // Import semconv package
 	"log"
 	"os"
 )
@@ -70,8 +72,15 @@ func InitOpenTelemetry() error {
 	if err != nil {
 		return err
 	}
+
+	res := resource.NewWithAttributes(
+		semconv.SchemaURL,
+		semconv.ServiceNameKey.String("order_management_system"),
+	)
+
 	tp := sdktrace.NewTracerProvider(
 		sdktrace.WithBatcher(traceExporter),
+		sdktrace.WithResource(res),
 	)
 	otel.SetTracerProvider(tp)
 	return nil

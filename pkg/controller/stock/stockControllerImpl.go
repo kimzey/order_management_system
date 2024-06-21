@@ -1,10 +1,12 @@
 package stock
 
 import (
+	"fmt"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	_StockService "github.com/kizmey/order_management_system/pkg/service/stock"
 	"github.com/kizmey/order_management_system/server/httpEchoServer/custom"
 	"github.com/labstack/echo/v4"
+	"go.opentelemetry.io/otel/trace"
 	"net/http"
 )
 
@@ -39,8 +41,11 @@ func (c *stockControllerImpl) Create(pctx echo.Context) error {
 
 func (c *stockControllerImpl) FindAll(pctx echo.Context) error {
 	ctx, sp := tracer.Start(pctx.Request().Context(), "stockFindAllController")
-
 	defer sp.End()
+
+	// ตรวจสอบ Trace ID
+	traceID := trace.SpanContextFromContext(ctx).TraceID()
+	fmt.Println("Trace ID Controller: ", traceID)
 
 	stockListingResult, err := c.stockService.FindAll(ctx)
 
