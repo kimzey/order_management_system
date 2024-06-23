@@ -9,6 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"time"
@@ -32,11 +33,15 @@ func NewEchoServer(conf *config.Config, usecase *pkg.Usecase) server.Server {
 		usecase: usecase,
 	}
 
+	server.InitMetrics()
+
 	return serverEcho
 }
 
 func (s *echoServer) Start() {
 	s.app.GET("/v1/health", s.healthCheck)
+	s.app.GET("/metrics", echo.WrapHandler(promhttp.Handler()))
+
 	s.app.Use(middleware.Recover())
 	s.app.Use(middleware.Logger())
 	s.app.Use(LoggerMiddleware)

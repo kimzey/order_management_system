@@ -108,6 +108,10 @@ services:
             type: tempo
             access: proxy
             url: http://tempo:3200
+          - name: Prometheus
+            type: prometheus
+            access: proxy
+            url: http://prometheus:9090
         EOF
         /run.sh
     ports:
@@ -245,11 +249,46 @@ services:
       - TEMPO_STORAGE_COMPACT_RETENTION=12h
       - TEMPO_STORAGE_COMPACT_BLOCK_SIZE=15m
       - TEMPO_STORAGE_COMPACT_COMPRESSION_LEVEL=9
-      - TEMPO_RECEIVER_OTLP_PROTOCOL_PORT=4318    # ต้องตรงกับ OTLP HTTP พอร์ต
-      - TEMPO_RECEIVER_OTLP_PROTOCOL_HOST=0.0.0.0  # หรือ IP ของเครื่องที่ Tempo รันอยู่
-      - TEMPO_STORAGE_LOCAL_DIRECTORY=/var/tempo  # กำหนดโฟลเดอร์ที่ใช้เก็บข้อมูล Tempo
+      - TEMPO_RECEIVER_OTLP_PROTOCOL_PORT=4318
+      - TEMPO_RECEIVER_OTLP_PROTOCOL_HOST=0.0.0.0
+      - TEMPO_STORAGE_LOCAL_DIRECTORY=/var/tempo
     volumes:
-      - ./tempo.yaml:/etc/tempo.yaml  # mount ไฟล์ config ของ Tempo
-      - ./tempo-data:/var/tempo       # mount โฟลเดอร์ที่ใช้เก็บข้อมูล Tempo
-    # เพิ่ม healthcheck เพื่อตรวจสอบสถานะของ Tempo
+      - ./tempo.yaml:/etc/tempo.yaml
+      - ./tempo-data:/var/tempo
 
+  prometheus:
+    image: prom/prometheus:v2.30.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./:/etc/prometheus
+      - ./prometheus-data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yaml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.enable-lifecycle"
+    depends_on:
+      - gateway
+    networks:
+      - loki
+    user: root
+
+
+  node-exporter:
+    image: prom/node-exporter:v1.2.2
+    ports:
+      - "9100:9100"
+    networks:
+      - loki
+    environment:
+      - NODE_ID={{.Node.ID}}
+    volumes:
+      - ./node/proc:/host/proc:ro
+      - ./node/sys:/host/sys:ro
+      - ./node:/rootfs:ro
+    command:
+      - "--path.procfs=/host/proc"
+      - "--path.sysfs=/host/sys"
+      - "--collector.filesystem.ignored-mount-points"
+      - "^/(sys|proc|dev|host|etc)($|/)"
+    restart: unless-stopped
