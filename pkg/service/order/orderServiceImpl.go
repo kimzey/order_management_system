@@ -9,6 +9,7 @@ import (
 	_orderRepository "github.com/kizmey/order_management_system/pkg/repository/order"
 	_stockRepository "github.com/kizmey/order_management_system/pkg/repository/stock"
 	_transactionRepository "github.com/kizmey/order_management_system/pkg/repository/transaction"
+	customTracer "github.com/kizmey/order_management_system/tracer"
 )
 
 type orderServiceImpl struct {
@@ -55,9 +56,6 @@ func (s *orderServiceImpl) Create(ctx context.Context, order *modelReq.Order) (*
 			return nil, err
 		}
 
-		if stock.Quantity < quantityProduct {
-			return nil, errors.New("stock not enough")
-		}
 		stock.Quantity -= quantityProduct
 
 		stock, err = s.stockRepository.Update(ctx, stock.StockID, stock)
@@ -66,6 +64,8 @@ func (s *orderServiceImpl) Create(ctx context.Context, order *modelReq.Order) (*
 			return nil, err
 		}
 	}
+
+	customTracer.SetSubAttributesWithJson(newOrder, sp)
 
 	return s.orderEntityToModelRes(newOrder), nil
 }

@@ -2,6 +2,7 @@ package order
 
 import (
 	"context"
+	customTracer "github.com/kizmey/order_management_system/tracer"
 
 	"errors"
 	"fmt"
@@ -26,6 +27,8 @@ func (r *orderRepositoryImpl) Create(ctx context.Context, order *entities.Order)
 	if err := r.db.Connect().Create(&modelOrder).Preload("Transaction").Where("id = ?", modelOrder.ID).First(&modelOrder).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("create order error "))
 	}
+
+	customTracer.SetSubAttributesWithJson(modelOrder.ToOrderEntity(), sp)
 
 	return modelOrder.ToOrderEntity(), nil
 }

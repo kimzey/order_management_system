@@ -1,6 +1,7 @@
 package transaction
 
 import (
+	"fmt"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	_transactionService "github.com/kizmey/order_management_system/pkg/service/transaction"
 	"github.com/kizmey/order_management_system/server/httpEchoServer/custom"
@@ -29,6 +30,8 @@ func (c *transactionControllerImpl) Create(pctx echo.Context) error {
 		return custom.Error(pctx, http.StatusBadRequest, err)
 	}
 
+	fmt.Println("transactionReq: ", *transactionReq)
+
 	transaction, err := c.transaction.Create(ctx, transactionReq)
 	if err != nil {
 		return custom.Error(pctx, http.StatusInternalServerError, err)
@@ -36,7 +39,16 @@ func (c *transactionControllerImpl) Create(pctx echo.Context) error {
 
 	return pctx.JSON(http.StatusCreated, transaction)
 }
-
+func checkDuplicateKeys(product map[string]uint) error {
+	seen := make(map[string]bool)
+	for key := range product {
+		if seen[key] {
+			return fmt.Errorf("duplicate key found: %s", key)
+		}
+		seen[key] = true
+	}
+	return nil
+}
 func (c *transactionControllerImpl) FindAll(pctx echo.Context) error {
 	ctx, sp := tracer.Start(pctx.Request().Context(), "transactionFindAllController")
 	defer sp.End()

@@ -40,7 +40,7 @@ func InitMetrics() {
 	go func() {
 		for {
 			updateMetrics()
-			time.Sleep(15 * time.Second)
+			time.Sleep(1 * time.Second)
 		}
 	}()
 }

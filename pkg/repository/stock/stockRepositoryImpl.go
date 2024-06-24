@@ -66,14 +66,21 @@ func (r *stockRepositoryImpl) Update(ctx context.Context, stockid string, stock 
 	stocks := new(model.Stock)
 	modelStock := ToStockModel(stock)
 
-	if err := r.db.Connect().Model(&modelStock).Where(
-		"id = ?", stockid,
-	).Updates(
-		modelStock,
-	).Scan(stocks).Error; err != nil {
-		return nil, errors.New(fmt.Sprintf("failed to update stock"))
+	if modelStock.Quantity == 0 {
+		if err := r.db.Connect().Model(&modelStock).
+			Where("id = ?", stockid).
+			Update("quantity", modelStock.Quantity).
+			Scan(stocks).Error; err != nil {
+			return nil, errors.New(fmt.Sprintf("failed to update stock"))
+		}
+	} else {
+		if err := r.db.Connect().Model(&modelStock).
+			Where("id = ? AND ? >= 0", stockid, modelStock.Quantity).
+			Update("quantity", modelStock.Quantity).
+			Scan(stocks).Error; err != nil {
+			return nil, errors.New(fmt.Sprintf("failed to update stock"))
+		}
 	}
-	//fmt.Println("stocks: ", stocks)
 	return stocks.ToStockEntity(), nil
 }
 

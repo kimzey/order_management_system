@@ -1,10 +1,13 @@
 package product
 
 import (
+	"encoding/json"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	_productService "github.com/kizmey/order_management_system/pkg/service/product"
 	"github.com/kizmey/order_management_system/server/httpEchoServer/custom"
+	customTracer "github.com/kizmey/order_management_system/tracer"
 	"github.com/labstack/echo/v4"
+	"go.opentelemetry.io/otel/attribute"
 	"net/http"
 )
 
@@ -32,8 +35,10 @@ func (c *productController) Create(pctx echo.Context) error {
 	if err != nil {
 		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
-	return pctx.JSON(http.StatusCreated, product)
 
+	customTracer.SetSubAttributesWithJson(product, sp)
+
+	return pctx.JSON(http.StatusCreated, product)
 }
 
 func (c *productController) FindAll(pctx echo.Context) error {
@@ -44,6 +49,16 @@ func (c *productController) FindAll(pctx echo.Context) error {
 	if err != nil {
 		return custom.Error(pctx, http.StatusInternalServerError, err)
 	}
+
+	productJSON, err := json.Marshal(productListingResult)
+	if err != nil {
+		return custom.Error(pctx, http.StatusInternalServerError, err)
+	}
+
+	sp.SetAttributes(
+		attribute.String("product.listing", string(productJSON)),
+	)
+
 	return pctx.JSON(http.StatusOK, productListingResult)
 }
 

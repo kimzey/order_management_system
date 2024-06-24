@@ -37,10 +37,6 @@ func TracingMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		// Set the context with the new span in the request
 		c.SetRequest(c.Request().WithContext(ctx))
 
-		// Debugging - Print the Trace ID in middleware
-		traceID := trace.SpanContextFromContext(ctx).TraceID()
-		fmt.Println("Middleware Trace ID: ", traceID)
-
 		// Proceed to the next middleware/handler
 		if err := next(c); err != nil {
 			c.Error(err)
@@ -66,13 +62,13 @@ func TracingMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 //import (
 //"fmt"
 //"github.com/labstack/echo/v4"
-//"go.opentelemetry.io/otel"
-//"go.opentelemetry.io/otel/propagation"
-//semconv "go.opentelemetry.io/otel/semconv/v1.21.0"
-//"go.opentelemetry.io/otel/trace"
+//"go.opentelemetry.io/tracer"
+//"go.opentelemetry.io/tracer/propagation"
+//semconv "go.opentelemetry.io/tracer/semconv/v1.21.0"
+//"go.opentelemetry.io/tracer/trace"
 //)
 //
-//var Tracer = otel.GetTracerProvider().Tracer("echo-server")
+//var Tracer = tracer.GetTracerProvider().Tracer("echo-server")
 //
 //func TracingMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 //	return func(c echo.Context) error {

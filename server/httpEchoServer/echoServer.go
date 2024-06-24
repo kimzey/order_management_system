@@ -1,20 +1,20 @@
 package httpEchoServer
 
 import (
+	"context"
 	"fmt"
 	"github.com/kizmey/order_management_system/config"
-	logger "github.com/kizmey/order_management_system/logs"
+	"github.com/kizmey/order_management_system/pkg"
 	"github.com/kizmey/order_management_system/server"
 	customMiddleware "github.com/kizmey/order_management_system/server/httpEchoServer/middleware"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/sirupsen/logrus"
 	"net/http"
-	"time"
-
-	"github.com/kizmey/order_management_system/pkg"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 type echoServer struct {
@@ -44,9 +44,10 @@ func (s *echoServer) Start() {
 
 	s.app.Use(middleware.Recover())
 	s.app.Use(middleware.Logger())
-	s.app.Use(LoggerMiddleware)
 
+	s.app.Use(customMiddleware.LoggerMiddleware)
 	s.app.Use(customMiddleware.TracingMiddleware)
+
 	//s.app.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 	//	Output: logger.LogFile,
 	//}))
@@ -56,7 +57,23 @@ func (s *echoServer) Start() {
 	s.initOrderRouter()
 	s.inittransactionRouter()
 
+	// Graceful shutdown
+	quitCh := make(chan os.Signal, 1)
+	signal.Notify(quitCh, syscall.SIGINT, syscall.SIGTERM)
+	go s.gracefullyShutdown(quitCh)
+
 	s.httpListening()
+}
+
+func (s *echoServer) gracefullyShutdown(quitCh <-chan os.Signal) {
+	ctx := context.Background()
+
+	<-quitCh
+	s.app.Logger.Infof("Shutting down service...")
+
+	if err := s.app.Shutdown(ctx); err != nil {
+		s.app.Logger.Fatalf("Error: %s", err.Error())
+	}
 }
 
 func (s *echoServer) httpListening() {
@@ -72,32 +89,4 @@ func (s *echoServer) httpListening() {
 // path : /v1/health method : GET FOR check server
 func (s *echoServer) healthCheck(c echo.Context) error {
 	return c.String(http.StatusOK, "Ok")
-}
-
-func LoggerMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		start := time.Now()
-
-		if err := next(c); err != nil {
-			c.Error(err)
-		}
-
-		fields := logrus.Fields{
-			"method":   c.Request().Method,
-			"path":     c.Path(),
-			"query":    c.QueryString(),
-			"remoteIP": c.RealIP(),
-		}
-
-		// Log HTTP request
-		logger.LogInfo("HTTP request", fields)
-
-		// Log HTTP response
-		fields["status"] = c.Response().Status
-		fields["latency"] = time.Since(start).Seconds()
-
-		logger.LogInfo("HTTP response", fields)
-
-		return nil
-	}
 }
