@@ -9,7 +9,7 @@ services:
     image: grafana/loki:3.0.0
     command: "-config.file=/etc/loki/config.yaml -target=read"
     ports:
-      - 3101:3100
+      - 3100:3100
       - 7946
       - 9095
     volumes:
@@ -274,21 +274,21 @@ services:
     user: root
 
 
-  node-exporter:
-    image: prom/node-exporter:v1.2.2
-    ports:
-      - "9100:9100"
-    networks:
-      - loki
-    environment:
-      - NODE_ID={{.Node.ID}}
-    volumes:
-      - ./node/proc:/host/proc:ro
-      - ./node/sys:/host/sys:ro
-      - ./node:/rootfs:ro
-    command:
-      - "--path.procfs=/host/proc"
-      - "--path.sysfs=/host/sys"
-      - "--collector.filesystem.ignored-mount-points"
-      - "^/(sys|proc|dev|host|etc)($|/)"
-    restart: unless-stopped
+#  node-exporter:
+#    image: prom/node-exporter:v1.2.2
+#    ports:
+#      - "9100:9100"
+#    networks:
+#      - loki
+#    environment:
+#      - NODE_ID={{.Node.ID}}
+#    volumes:
+#      - ./node/proc:/host/proc:ro
+#      - ./node/sys:/host/sys:ro
+#      - ./node:/rootfs:ro
+#    command:
+#      - "--path.procfs=/host/proc"
+#      - "--path.sysfs=/host/sys"
+#      - "--collector.filesystem.ignored-mount-points"
+#      - "^/(sys|proc|dev|host|etc)($|/)"
+#    restart: unless-stopped
