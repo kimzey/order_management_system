@@ -29,11 +29,11 @@ func (c *productController) Create(pctx echo.Context) error {
 
 	validatingContext := custom.NewCustomEchoRequest(pctx)
 	if err := validatingContext.BindAndValidate(productReq); err != nil {
-		return custom.Error(pctx, http.StatusBadRequest, err)
+		return custom.Error(pctx, http.StatusBadRequest, custom.ErrFailedToValidateProductRequest)
 	}
 	product, err := c.productService.Create(ctx, productReq)
 	if err != nil {
-		return custom.Error(pctx, http.StatusInternalServerError, err)
+		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToCreateProduct)
 	}
 
 	customTracer.SetSubAttributesWithJson(product, sp)
@@ -47,12 +47,12 @@ func (c *productController) FindAll(pctx echo.Context) error {
 
 	productListingResult, err := c.productService.FindAll(ctx)
 	if err != nil {
-		return custom.Error(pctx, http.StatusInternalServerError, err)
+		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToRetrieveProducts)
 	}
 
 	productJSON, err := json.Marshal(productListingResult)
 	if err != nil {
-		return custom.Error(pctx, http.StatusInternalServerError, err)
+		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToRetrieveProducts)
 	}
 
 	sp.SetAttributes(
@@ -70,7 +70,7 @@ func (c *productController) FindByID(pctx echo.Context) error {
 
 	product, err := c.productService.FindByID(ctx, id)
 	if err != nil {
-		return custom.Error(pctx, http.StatusInternalServerError, err)
+		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrProductNotFound)
 	}
 	return pctx.JSON(http.StatusOK, product)
 }
@@ -85,11 +85,11 @@ func (c *productController) Update(pctx echo.Context) error {
 
 	validatingContext := custom.NewCustomEchoRequest(pctx)
 	if err := validatingContext.BindAndValidate(productReq); err != nil {
-		return custom.Error(pctx, http.StatusBadRequest, err)
+		return custom.Error(pctx, http.StatusBadRequest, custom.ErrFailedToValidateProductRequest)
 	}
 	product, err := c.productService.Update(ctx, id, productReq)
 	if err != nil {
-		return custom.Error(pctx, http.StatusInternalServerError, err)
+		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToUpdateProduct)
 	}
 
 	return pctx.JSON(http.StatusOK, product)
@@ -103,7 +103,7 @@ func (c *productController) Delete(pctx echo.Context) error {
 
 	product, err := c.productService.Delete(ctx, id)
 	if err != nil {
-		return custom.Error(pctx, http.StatusInternalServerError, err)
+		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToDeleteProduct)
 	}
 
 	return pctx.JSON(http.StatusOK, product)

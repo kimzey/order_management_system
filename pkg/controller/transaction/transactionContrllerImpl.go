@@ -27,35 +27,26 @@ func (c *transactionControllerImpl) Create(pctx echo.Context) error {
 
 	validatingContext := custom.NewCustomEchoRequest(pctx)
 	if err := validatingContext.BindAndValidate(transactionReq); err != nil {
-		return custom.Error(pctx, http.StatusBadRequest, err)
+		return custom.Error(pctx, http.StatusBadRequest, custom.ErrFailedToValidateTransactionRequest)
 	}
 
 	fmt.Println("transactionReq: ", *transactionReq)
 
 	transaction, err := c.transaction.Create(ctx, transactionReq)
 	if err != nil {
-		return custom.Error(pctx, http.StatusInternalServerError, err)
+		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToCreateTransaction)
 	}
 
 	return pctx.JSON(http.StatusCreated, transaction)
 }
-func checkDuplicateKeys(product map[string]uint) error {
-	seen := make(map[string]bool)
-	for key := range product {
-		if seen[key] {
-			return fmt.Errorf("duplicate key found: %s", key)
-		}
-		seen[key] = true
-	}
-	return nil
-}
+
 func (c *transactionControllerImpl) FindAll(pctx echo.Context) error {
 	ctx, sp := tracer.Start(pctx.Request().Context(), "transactionFindAllController")
 	defer sp.End()
 
 	transactions, err := c.transaction.FindAll(ctx)
 	if err != nil {
-		return custom.Error(pctx, http.StatusInternalServerError, err)
+		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToRetrieveTransactions)
 	}
 	return pctx.JSON(http.StatusOK, transactions)
 }
@@ -68,7 +59,7 @@ func (c *transactionControllerImpl) FindByID(pctx echo.Context) error {
 
 	transaction, err := c.transaction.FindByID(ctx, id)
 	if err != nil {
-		return custom.Error(pctx, http.StatusInternalServerError, err)
+		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrTransactionNotFound)
 	}
 
 	return pctx.JSON(http.StatusOK, transaction)
@@ -84,12 +75,12 @@ func (c *transactionControllerImpl) Update(pctx echo.Context) error {
 
 	validatingContext := custom.NewCustomEchoRequest(pctx)
 	if err := validatingContext.BindAndValidate(transactionReq); err != nil {
-		return custom.Error(pctx, http.StatusBadRequest, err)
+		return custom.Error(pctx, http.StatusBadRequest, custom.ErrFailedToValidateTransactionRequest)
 	}
 
 	transaction, err := c.transaction.Update(ctx, id, transactionReq)
 	if err != nil {
-		return custom.Error(pctx, http.StatusInternalServerError, err)
+		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToUpdateTransaction)
 	}
 
 	return pctx.JSON(http.StatusOK, transaction)
@@ -103,7 +94,7 @@ func (c *transactionControllerImpl) Delete(pctx echo.Context) error {
 
 	transaction, err := c.transaction.Delete(ctx, id)
 	if err != nil {
-		return custom.Error(pctx, http.StatusInternalServerError, err)
+		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToDeleteTransaction)
 	}
 
 	return pctx.JSON(http.StatusOK, transaction)

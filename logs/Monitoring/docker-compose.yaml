@@ -4,6 +4,10 @@ version: "3"
 networks:
   loki:
 
+  hostnet:
+    external:
+      name: host
+
 services:
   read:
     image: grafana/loki:3.0.0
@@ -271,7 +275,8 @@ services:
     depends_on:
       - gateway
     networks:
-      - loki
+      - hostnet
+    #      - loki
     user: root
 
 
