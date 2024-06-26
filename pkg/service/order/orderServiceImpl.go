@@ -48,6 +48,7 @@ func (s *orderServiceImpl) Create(ctx context.Context, order *modelReq.Order) (*
 		return nil, err
 	}
 
+	stockRollback := make([]entities.Stock, 0)
 	for i, product := range ecommerce.Product {
 		quantityProduct := ecommerce.Quantity[i]
 
@@ -60,13 +61,18 @@ func (s *orderServiceImpl) Create(ctx context.Context, order *modelReq.Order) (*
 
 		stock, err = s.stockRepository.Update(ctx, stock.StockID, stock)
 		if err != nil {
+			//for rollback
 			_, _ = s.orderRepository.Delete(ctx, newOrder.OrderID)
+			for _, rollback := range stockRollback {
+				_, _ = s.stockRepository.Update(ctx, rollback.StockID, &rollback)
+			}
 			return nil, err
 		}
+		stock.Quantity += quantityProduct
+		stockRollback = append(stockRollback, *stock)
 	}
 
 	customTracer.SetSubAttributesWithJson(newOrder, sp)
-
 	return s.orderEntityToModelRes(newOrder), nil
 }
 
@@ -117,6 +123,7 @@ func (s *orderServiceImpl) Update(ctx context.Context, id string, order *modelRe
 		return nil, err
 	}
 
+	stockRollback := make([]entities.Stock, 0)
 	for i, product := range ecommerce.Product {
 		quantityProduct := ecommerce.Quantity[i]
 
@@ -130,8 +137,13 @@ func (s *orderServiceImpl) Update(ctx context.Context, id string, order *modelRe
 		stock, err = s.stockRepository.Update(ctx, stock.StockID, stock)
 		if err != nil {
 			_, _ = s.orderRepository.Delete(ctx, newOrder.OrderID)
+			for _, rollback := range stockRollback {
+				_, _ = s.stockRepository.Update(ctx, rollback.StockID, &rollback)
+			}
 			return nil, err
 		}
+		stock.Quantity += quantityProduct
+		stockRollback = append(stockRollback, *stock)
 	}
 
 	return s.orderEntityToModelRes(newOrder), nil

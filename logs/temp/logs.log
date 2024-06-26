@@ -13,3 +13,19 @@
 {"latency":0.002246951,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/stock","query":"","remoteIP":"::1","status":200,"time":"2024-06-26T18:34:01+07:00"}
 {"latency":0.004058741,"level":"info","method":"POST","msg":"HTTP response","path":"/v1/stock","query":"","remoteIP":"::1","status":500,"time":"2024-06-26T18:34:20+07:00"}
 {"latency":0.01824289,"level":"info","method":"POST","msg":"HTTP response","path":"/v1/transaction","query":"","remoteIP":"::1","status":201,"time":"2024-06-26T18:34:27+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-26T23:08:37+07:00"}
+{"latency":0.033935955,"level":"info","method":"POST","msg":"HTTP response","path":"/v1/transaction","query":"","remoteIP":"::1","status":201,"time":"2024-06-26T23:08:52+07:00"}
+{"level":"info","msg":"Order created successfully","order_id":"1d93c1eb-3a89-415c-9221-1b1961bdb69d","time":"2024-06-26T23:09:03+07:00"}
+{"latency":0.020223201,"level":"info","method":"POST","msg":"HTTP response","path":"/v1/order","query":"","remoteIP":"::1","status":201,"time":"2024-06-26T23:09:03+07:00"}
+{"latency":0.003541216,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/stock","query":"","remoteIP":"::1","status":200,"time":"2024-06-26T23:09:09+07:00"}
+{"error":"create order error ","level":"error","msg":"Failed to create order","time":"2024-06-26T23:09:19+07:00"}
+{"latency":0.004394726,"level":"info","method":"POST","msg":"HTTP response","path":"/v1/order","query":"","remoteIP":"::1","status":500,"time":"2024-06-26T23:09:19+07:00"}
+{"level":"info","msg":"Order status changed successfully","new_status":"Paid","order_id":"1d93c1eb-3a89-415c-9221-1b1961bdb69d","time":"2024-06-26T23:09:24+07:00"}
+{"latency":0.009293449,"level":"info","method":"PUT","msg":"HTTP response","path":"/v1/order/next/:id","query":"","remoteIP":"::1","status":200,"time":"2024-06-26T23:09:24+07:00"}
+{"level":"info","msg":"Changing order status to done","order_id":"1d93c1eb-3a89-415c-9221-1b1961bdb69d","time":"2024-06-26T23:09:29+07:00"}
+{"level":"info","msg":"Order status changed to done successfully","order_id":"1d93c1eb-3a89-415c-9221-1b1961bdb69d","time":"2024-06-26T23:09:29+07:00"}
+{"latency":0.006659995,"level":"info","method":"PUT","msg":"HTTP response","path":"/v1/order/done/:id","query":"","remoteIP":"::1","status":200,"time":"2024-06-26T23:09:29+07:00"}
+{"level":"info","msg":"Changing order status to done","order_id":"1d93c1eb-3a89-415c-9221-1b1961bdb69d","time":"2024-06-26T23:09:31+07:00"}
+{"error":"invalid order status","level":"error","msg":"Failed to change order status to done","order_id":"1d93c1eb-3a89-415c-9221-1b1961bdb69d","time":"2024-06-26T23:09:31+07:00"}
+{"latency":0.002540159,"level":"info","method":"PUT","msg":"HTTP response","path":"/v1/order/done/:id","query":"","remoteIP":"::1","status":500,"time":"2024-06-26T23:09:31+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-06-26T23:10:40+07:00"}

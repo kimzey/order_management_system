@@ -4,6 +4,7 @@
     <inspection_tool class="GoDfaErrorMayBeNotNil" enabled="true" level="WARNING" enabled_by_default="true">
       <methods>
         <method importPath="github.com/kizmey/order_management_system/pkg/repository" receiver="OrderRepository" name="Create" />
+        <method importPath="github.com/kizmey/order_management_system/pkg/repository/stock" receiver="StockRepository" name="Update" />
       </methods>
     </inspection_tool>
     <inspection_tool class="GoPrintFunctions" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
