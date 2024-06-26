@@ -40,10 +40,8 @@ func (r *customEchoRequest) BindAndValidate(obj any) error {
 		//fmt.Errorf("invalid validate request : %s", err.Error())
 		return errors.New(fmt.Sprintf("invalid request "))
 	}
-
 	if err := r.validator.Struct(obj); err != nil {
 		return errors.New(fmt.Sprintf("invalid validate request "))
 	}
-
 	return nil
 }

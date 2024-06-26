@@ -125,9 +125,6 @@ func (s *orderServiceImpl) Update(ctx context.Context, id string, order *modelRe
 			return nil, err
 		}
 
-		if stock.Quantity < quantityProduct {
-			return nil, errors.New("stock not enough")
-		}
 		stock.Quantity -= quantityProduct
 
 		stock, err = s.stockRepository.Update(ctx, stock.StockID, stock)

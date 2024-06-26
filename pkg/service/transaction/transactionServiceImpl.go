@@ -29,11 +29,16 @@ func (s *transactionService) Create(ctx context.Context, transaction *modelReq.T
 	ctx, sp := tracer.Start(ctx, "transactionCreateService")
 	defer sp.End()
 
+	productMap := make(map[string]uint)
+	for _, item := range transaction.Product {
+		productMap[item.ProductID] = item.Quantity
+	}
+
 	transactionEntity := s.transactionReqToEntity(transaction)
 
 	var products []entities.Product
 
-	for productID, quantity := range transaction.Product {
+	for productID, quantity := range productMap {
 
 		product, err := s.productRepository.FindByID(ctx, productID)
 		if err != nil {
@@ -43,7 +48,7 @@ func (s *transactionService) Create(ctx context.Context, transaction *modelReq.T
 		transactionEntity.SumPrice += transactionEntity.CalculatePrice(product.ProductPrice, quantity, transactionEntity.IsDomestic)
 	}
 
-	transactionEcommerce := _interface.NewTransactionEcommerce(transactionEntity, products, transaction.Product)
+	transactionEcommerce := _interface.NewTransactionEcommerce(transactionEntity, products, productMap)
 	transactionEntity, err := s.transactionRepository.Create(ctx, transactionEcommerce)
 	if err != nil {
 		return nil, err
@@ -98,11 +103,16 @@ func (s *transactionService) Update(ctx context.Context, id string, transaction 
 	ctx, sp := tracer.Start(ctx, "transactionUpdateService")
 	defer sp.End()
 
+	productMap := make(map[string]uint)
+	for _, item := range transaction.Product {
+		productMap[item.ProductID] = item.Quantity
+	}
+
 	transactionEntity := s.transactionReqToEntity(transaction)
 
 	var products []entities.Product
 
-	for productID, quantity := range transaction.Product {
+	for productID, quantity := range productMap {
 		product, err := s.productRepository.FindByID(ctx, productID)
 		if err != nil {
 			return nil, err
@@ -111,7 +121,7 @@ func (s *transactionService) Update(ctx context.Context, id string, transaction 
 		transactionEntity.SumPrice += transactionEntity.CalculatePrice(product.ProductPrice, quantity, transactionEntity.IsDomestic)
 	}
 
-	transactionEcommerce := _interface.NewTransactionEcommerce(transactionEntity, products, transaction.Product)
+	transactionEcommerce := _interface.NewTransactionEcommerce(transactionEntity, products, productMap)
 	transactionEntity, err := s.transactionRepository.Update(ctx, id, transactionEcommerce)
 	if err != nil {
 		return nil, err
@@ -151,9 +161,9 @@ func (s *transactionService) transactionReqToEntity(transactionReq *modelReq.Tra
 	productid := make([]string, 0, len(transactionReq.Product))
 	quantity := make([]uint, 0, len(transactionReq.Product))
 
-	for key, value := range transactionReq.Product {
-		productid = append(productid, key)
-		quantity = append(quantity, value)
+	for _, item := range transactionReq.Product {
+		productid = append(productid, item.ProductID)
+		quantity = append(quantity, item.Quantity)
 	}
 
 	entityProduct := &entities.Transaction{
