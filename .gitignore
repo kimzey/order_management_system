@@ -24,4 +24,7 @@ go.work.sum
 # env file
 config/.env
 logs/temp/logs.log
-logs/Monitoring/
+logs/Monitoring/.data
+logs/Monitoring/node
+logs/Monitoring/prometheus-data
+logs/Monitoring/tempo-data
