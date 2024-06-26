@@ -88,5 +88,5 @@ func (s *echoServer) httpListening() {
 
 // path : /v1/health method : GET FOR check server
 func (s *echoServer) healthCheck(c echo.Context) error {
-	return c.String(http.StatusOK, "Ok")
+	return c.String(http.StatusOK, "OK")
 }

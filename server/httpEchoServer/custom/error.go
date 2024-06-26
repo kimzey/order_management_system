@@ -6,8 +6,8 @@ import (
 )
 
 type ErrorMessage struct {
-	ErrorCode int    `json:"ErrorCode"`
-	Message   string `json:"error"`
+	ErrorCode int    `json:"StatusCode"`
+	Message   string `json:"Error"`
 }
 
 func Error(c echo.Context, statusCode int, err error) error {
