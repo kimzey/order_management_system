@@ -4,7 +4,6 @@ import (
 	"context"
 	_interface "github.com/kizmey/order_management_system/pkg/interface"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
-	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
 	_productRepository "github.com/kizmey/order_management_system/pkg/repository/product"
 	_transactionRepository "github.com/kizmey/order_management_system/pkg/repository/transaction"
 )
@@ -24,48 +23,37 @@ func NewTransactionServiceImpl(
 	}
 }
 
-func (s *transactionService) Create(ctx context.Context, transaction *entities.Transaction) (*entities.Transaction, error) {
+func (s *transactionService) Create(ctx context.Context, transaction *_interface.TransactionEcommerce,
+) (*_interface.TransactionEcommerce, error) {
 	ctx, sp := tracer.Start(ctx, "transactionCreateService")
 	defer sp.End()
 
-	productMap := make(map[string]uint)
-	for _, item := range transaction.Product {
-		productMap[item.ProductID] = item.Quantity
-	}
-
 	var products []entities.Product
 
-	for productID, quantity := range productMap {
-
+	for productID, quantity := range transaction.AddessProduct {
 		product, err := s.productRepository.FindByID(ctx, productID)
 		if err != nil {
 			return nil, err
 		}
 		products = append(products, *product)
-		transactionEntity.SumPrice += transactionEntity.CalculatePrice(product.ProductPrice, quantity, transactionEntity.IsDomestic)
+		transaction.Tranasaction.SumPrice += transaction.Tranasaction.CalculatePrice(product.ProductPrice, quantity, transaction.Tranasaction.IsDomestic)
 	}
 
-	transactionEcommerce := _interface.NewTransactionEcommerce(transactionEntity, products, productMap)
+	transactionEcommerce := _interface.NewTransactionEcommerce(transaction.Tranasaction, products, transaction.AddessProduct)
 	transactionEntity, err := s.transactionRepository.Create(ctx, transactionEcommerce)
 	if err != nil {
 		return nil, err
 	}
-
-	transactionRes := s.transactionEntityToRes(transactionEntity)
+	transaction.Tranasaction = transactionEntity
 	findproducs, err := s.transactionRepository.FindProductsByTransactionID(ctx, transactionEntity.TransactionID)
 	if err != nil {
 		return nil, err
 	}
-	for i, product := range findproducs.Product {
-		transactionRes.Products = append(transactionRes.Products, modelRes.Product{
-			ProductID:    product.ProductID,
-			ProductName:  product.ProductName,
-			ProductPrice: product.ProductPrice,
-			Quantity:     (findproducs.Quantity)[i],
-		})
+	for _, product := range findproducs.Product {
+		transaction.Product = append(transaction.Product, product)
 	}
 
-	return transactionRes, nil
+	return transaction, nil
 
 }
 
@@ -92,49 +80,38 @@ func (s *transactionService) FindByID(ctx context.Context, id string) (*entities
 	return transactionEntity, nil
 }
 
-func (s *transactionService) Update(ctx context.Context, id string, transaction *entities.Transaction) (*entities.Transaction, error) {
+func (s *transactionService) Update(ctx context.Context, id string, transaction *_interface.TransactionEcommerce,
+) (*_interface.TransactionEcommerce, error) {
 	ctx, sp := tracer.Start(ctx, "transactionUpdateService")
 	defer sp.End()
 
-	productMap := make(map[string]uint)
-	for _, item := range transaction.Product {
-		productMap[item.ProductID] = item.Quantity
-	}
-
-	transactionEntity := s.transactionReqToEntity(transaction)
-
 	var products []entities.Product
 
-	for productID, quantity := range productMap {
+	for productID, quantity := range transaction.AddessProduct {
 		product, err := s.productRepository.FindByID(ctx, productID)
 		if err != nil {
 			return nil, err
 		}
 		products = append(products, *product)
-		transactionEntity.SumPrice += transactionEntity.CalculatePrice(product.ProductPrice, quantity, transactionEntity.IsDomestic)
+		transaction.Tranasaction.SumPrice += transaction.Tranasaction.CalculatePrice(product.ProductPrice, quantity, transaction.Tranasaction.IsDomestic)
 	}
 
-	transactionEcommerce := _interface.NewTransactionEcommerce(transactionEntity, products, productMap)
+	transactionEcommerce := _interface.NewTransactionEcommerce(transaction.Tranasaction, products, transaction.AddessProduct)
 	transactionEntity, err := s.transactionRepository.Update(ctx, id, transactionEcommerce)
 	if err != nil {
 		return nil, err
 	}
 
-	transactionRes := s.transactionEntityToRes(transactionEntity)
-	findproducs, err := s.transactionRepository.FindProductsByTransactionID(ctx, transactionEntity.TransactionID)
+	transaction.Tranasaction = transactionEntity
+	findproducs, err := s.transactionRepository.FindProductsByTransactionID(ctx, transaction.Tranasaction.TransactionID)
 	if err != nil {
 		return nil, err
 	}
-	for i, product := range findproducs.Product {
-		transactionRes.Products = append(transactionRes.Products, modelRes.Product{
-			ProductID:    product.ProductID,
-			ProductName:  product.ProductName,
-			ProductPrice: product.ProductPrice,
-			Quantity:     (findproducs.Quantity)[i],
-		})
+	for _, product := range findproducs.Product {
+		transaction.Product = append(transaction.Product, product)
 	}
 
-	return transactionRes, nil
+	return transaction, nil
 }
 
 func (s *transactionService) Delete(ctx context.Context, id string) (*entities.Transaction, error) {
@@ -148,27 +125,3 @@ func (s *transactionService) Delete(ctx context.Context, id string) (*entities.T
 
 	return transaction, nil
 }
-
-//func (s *transactionService) transactionReqToEntity(transactionReq *modelReq.Transaction) *entities.Transaction {
-//
-//	productid := make([]string, 0, len(transactionReq.Product))
-//	quantity := make([]uint, 0, len(transactionReq.Product))
-//
-//	for _, item := range transactionReq.Product {
-//		productid = append(productid, item.ProductID)
-//		quantity = append(quantity, item.Quantity)
-//	}
-//
-//	entityProduct := &entities.Transaction{
-//		IsDomestic: transactionReq.IsDomestic,
-//	}
-//	return entityProduct
-//}
-//
-//func (s *transactionService) transactionEntityToRes(transactionEntity *entities.Transaction) *modelRes.Transaction {
-//	return &modelRes.Transaction{
-//		TransactionID: transactionEntity.TransactionID,
-//		IsDomestic:    transactionEntity.IsDomestic,
-//		SumPrice:      transactionEntity.SumPrice,
-//	}
-//}

@@ -40,7 +40,7 @@ func (c *orderControllerImpl) Create(pctx echo.Context) error {
 
 	logger.LogInfo("Order created successfully", logrus.Fields{"order_id": newOrderRes.OrderID})
 
-	orderRes := c.orderReqToEntity(newOrderReq)
+	orderRes := c.orderEntityToModelRes(newOrderRes)
 	return pctx.JSON(http.StatusCreated, orderRes)
 }
 
@@ -176,7 +176,6 @@ func (c *orderControllerImpl) orderEntityToModelRes(order *entities.Order) *mode
 	return &modelRes.Order{
 		OrderID:       order.OrderID,
 		TransactionID: order.TransactionID,
-		//ProductID:     order.ProductID,
-		Status: order.Status,
+		Status:        order.Status,
 	}
 }

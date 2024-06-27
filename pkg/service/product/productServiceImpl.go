@@ -68,20 +68,3 @@ func (s *productServiceImpl) Delete(ctx context.Context, id string) (*entities.P
 	}
 	return product, nil
 }
-
-//func (s *productServiceImpl) productReqToEntity(product *modelReq.Product) *entities.Product {
-//	return &entities.Product{
-//		ProductName:  product.ProductName,
-//		ProductPrice: product.ProductPrice,
-//	}
-//
-//}
-//
-//func (s *productServiceImpl) productEntityToRes(product *entities.Product) *modelRes.Product {
-//	return &modelRes.Product{
-//		ProductID:    product.ProductID,
-//		ProductName:  product.ProductName,
-//		ProductPrice: product.ProductPrice,
-//	}
-//
-//}

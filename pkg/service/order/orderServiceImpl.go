@@ -68,7 +68,6 @@ func (s *orderServiceImpl) Create(ctx context.Context, order *entities.Order) (*
 		stock.Quantity += quantityProduct
 		stockRollback = append(stockRollback, *stock)
 	}
-
 	customTracer.SetSubAttributesWithJson(newOrder, sp)
 	return newOrder, nil
 }
@@ -104,7 +103,6 @@ func (s *orderServiceImpl) Update(ctx context.Context, id string, order *entitie
 	if err != nil {
 		return nil, err
 	}
-
 
 	if ecommerce.Quantity == nil {
 		return nil, errors.New("quantity is nil")
@@ -194,19 +192,3 @@ func (s *orderServiceImpl) ChageStatusDone(ctx context.Context, id string) (*ent
 
 	return order, nil
 }
-
-//func (s *orderServiceImpl) orderReqToEntity(orderReq *modelReq.Order) *entities.Order {
-//	return &entities.Order{
-//		TransactionID: orderReq.TransactionID,
-//		Status:        orderReq.Status,
-//	}
-//}
-//
-//func (s *orderServiceImpl) orderEntityToModelRes(order *entities.Order) *modelRes.Order {
-//	return &modelRes.Order{
-//		OrderID:       order.OrderID,
-//		TransactionID: order.TransactionID,
-//		//ProductID:     order.ProductID,
-//		Status: order.Status,
-//	}
-//}

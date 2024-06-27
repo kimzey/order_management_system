@@ -70,18 +70,3 @@ func (s *stockServiceImpl) Delete(ctx context.Context, id string) (*entities.Sto
 
 	return stock, nil
 }
-
-//func (s *stockServiceImpl) stockReqToEntity(stockReq *modelReq.Stock) *entities.Stock {
-//	return &entities.Stock{
-//		ProductID: stockReq.ProductID,
-//		Quantity:  stockReq.Quantity,
-//	}
-//}
-//
-//func (s *stockServiceImpl) stockEntityToRes(stock *entities.Stock) *modelRes.Stock {
-//	return &modelRes.Stock{
-//		StockID:   stock.StockID,
-//		ProductID: stock.ProductID,
-//		Quantity:  stock.Quantity,
-//	}
-//}
