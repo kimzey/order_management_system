@@ -1,8 +1,5 @@
 stream_over_http_enabled: true
-#                            - name: Tempo
-#                            type: tempo
-#                            access: proxy
-#                            url: http://tempo:4317
+
 server:
   http_listen_port: 3200
   log_level: info

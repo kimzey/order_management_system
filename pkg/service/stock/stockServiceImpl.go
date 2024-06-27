@@ -3,8 +3,6 @@ package stock
 import (
 	"context"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
-	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
-	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
 	_StockRepository "github.com/kizmey/order_management_system/pkg/repository/stock"
 )
 
@@ -16,19 +14,18 @@ func NewStockServiceImpl(stockRepository _StockRepository.StockRepository) Stock
 	return &stockServiceImpl{stockRepository: stockRepository}
 }
 
-func (s *stockServiceImpl) Create(ctx context.Context, stock *modelReq.Stock) (*modelRes.Stock, error) {
+func (s *stockServiceImpl) Create(ctx context.Context, stock *entities.Stock) (*entities.Stock, error) {
 	ctx, sp := tracer.Start(ctx, "stockCreateService")
 	defer sp.End()
 
-	stockEntity := s.stockReqToEntity(stock)
-	stockEntity, err := s.stockRepository.Create(ctx, stockEntity)
+	stockEntity, err := s.stockRepository.Create(ctx, stock)
 	if err != nil {
 		return nil, err
 	}
-	return s.stockEntityToRes(stockEntity), nil
+	return stockEntity, nil
 }
 
-func (s *stockServiceImpl) FindAll(ctx context.Context) (*[]modelRes.Stock, error) {
+func (s *stockServiceImpl) FindAll(ctx context.Context) (*[]entities.Stock, error) {
 	ctx, sp := tracer.Start(ctx, "stockFindAllService")
 	defer sp.End()
 
@@ -36,14 +33,11 @@ func (s *stockServiceImpl) FindAll(ctx context.Context) (*[]modelRes.Stock, erro
 	if err != nil {
 		return nil, err
 	}
-	var stockRes []modelRes.Stock
-	for _, stock := range *stockEntities {
-		stockRes = append(stockRes, *s.stockEntityToRes(&stock))
-	}
-	return &stockRes, nil
+
+	return stockEntities, nil
 }
 
-func (s *stockServiceImpl) CheckStockByProductId(ctx context.Context, id string) (*modelRes.Stock, error) {
+func (s *stockServiceImpl) CheckStockByProductId(ctx context.Context, id string) (*entities.Stock, error) {
 	ctx, sp := tracer.Start(ctx, "stockCheckStockByProductIdService")
 	defer sp.End()
 
@@ -51,22 +45,21 @@ func (s *stockServiceImpl) CheckStockByProductId(ctx context.Context, id string)
 	if err != nil {
 		return nil, err
 	}
-	return s.stockEntityToRes(stock), nil
+	return stock, nil
 }
 
-func (s *stockServiceImpl) Update(ctx context.Context, id string, stock *modelReq.Stock) (*modelRes.Stock, error) {
+func (s *stockServiceImpl) Update(ctx context.Context, id string, stock *entities.Stock) (*entities.Stock, error) {
 	ctx, sp := tracer.Start(ctx, "stockUpdateService")
 	defer sp.End()
 
-	stockEntity := s.stockReqToEntity(stock)
-	stockEntity, err := s.stockRepository.Update(ctx, id, stockEntity)
+	stockEntity, err := s.stockRepository.Update(ctx, id, stock)
 	if err != nil {
 		return nil, err
 	}
-	return s.stockEntityToRes(stockEntity), nil
+	return stockEntity, nil
 }
 
-func (s *stockServiceImpl) Delete(ctx context.Context, id string) (*modelRes.Stock, error) {
+func (s *stockServiceImpl) Delete(ctx context.Context, id string) (*entities.Stock, error) {
 	ctx, sp := tracer.Start(ctx, "stockDeleteService")
 	defer sp.End()
 
@@ -75,20 +68,20 @@ func (s *stockServiceImpl) Delete(ctx context.Context, id string) (*modelRes.Sto
 		return nil, err
 	}
 
-	return s.stockEntityToRes(stock), nil
+	return stock, nil
 }
 
-func (s *stockServiceImpl) stockReqToEntity(stockReq *modelReq.Stock) *entities.Stock {
-	return &entities.Stock{
-		ProductID: stockReq.ProductID,
-		Quantity:  stockReq.Quantity,
-	}
-}
-
-func (s *stockServiceImpl) stockEntityToRes(stock *entities.Stock) *modelRes.Stock {
-	return &modelRes.Stock{
-		StockID:   stock.StockID,
-		ProductID: stock.ProductID,
-		Quantity:  stock.Quantity,
-	}
-}
+//func (s *stockServiceImpl) stockReqToEntity(stockReq *modelReq.Stock) *entities.Stock {
+//	return &entities.Stock{
+//		ProductID: stockReq.ProductID,
+//		Quantity:  stockReq.Quantity,
+//	}
+//}
+//
+//func (s *stockServiceImpl) stockEntityToRes(stock *entities.Stock) *modelRes.Stock {
+//	return &modelRes.Stock{
+//		StockID:   stock.StockID,
+//		ProductID: stock.ProductID,
+//		Quantity:  stock.Quantity,
+//	}
+//}

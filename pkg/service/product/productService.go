@@ -2,17 +2,16 @@ package product
 
 import (
 	"context"
-	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
-	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
+	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"go.opentelemetry.io/otel"
 )
 
 type ProductService interface {
-	Create(ctx context.Context, product *modelReq.Product) (*modelRes.Product, error)
-	FindAll(ctx context.Context) (*[]modelRes.Product, error)
-	FindByID(ctx context.Context, id string) (*modelRes.Product, error)
-	Update(ctx context.Context, id string, product *modelReq.Product) (*modelRes.Product, error)
-	Delete(ctx context.Context, id string) (*modelRes.Product, error)
+	Create(ctx context.Context, product *entities.Product) (*entities.Product, error)
+	FindAll(ctx context.Context) (*[]entities.Product, error)
+	FindByID(ctx context.Context, id string) (*entities.Product, error)
+	Update(ctx context.Context, id string, product *entities.Product) (*entities.Product, error)
+	Delete(ctx context.Context, id string) (*entities.Product, error)
 }
 
 var tracer = otel.Tracer("ProductService")

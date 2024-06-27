@@ -2,7 +2,9 @@ package product
 
 import (
 	"encoding/json"
+	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
+	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
 	_productService "github.com/kizmey/order_management_system/pkg/service/product"
 	"github.com/kizmey/order_management_system/server/httpEchoServer/custom"
 	customTracer "github.com/kizmey/order_management_system/tracer"
@@ -31,14 +33,16 @@ func (c *productController) Create(pctx echo.Context) error {
 	if err := validatingContext.BindAndValidate(productReq); err != nil {
 		return custom.Error(pctx, http.StatusBadRequest, custom.ErrFailedToValidateProductRequest)
 	}
-	product, err := c.productService.Create(ctx, productReq)
+	product := c.productReqToEntity(productReq)
+	product, err := c.productService.Create(ctx, product)
 	if err != nil {
 		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToCreateProduct)
 	}
 
 	customTracer.SetSubAttributesWithJson(product, sp)
 
-	return pctx.JSON(http.StatusCreated, product)
+	productRes := c.productReqToEntity(productReq)
+	return pctx.JSON(http.StatusCreated, productRes)
 }
 
 func (c *productController) FindAll(pctx echo.Context) error {
@@ -54,12 +58,16 @@ func (c *productController) FindAll(pctx echo.Context) error {
 	if err != nil {
 		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToRetrieveProducts)
 	}
-
 	sp.SetAttributes(
 		attribute.String("product.listing", string(productJSON)),
 	)
 
-	return pctx.JSON(http.StatusOK, productListingResult)
+	productsRes := make([]modelRes.Product, 0)
+	for _, product := range *productListingResult {
+		productsRes = append(productsRes, *c.productEntityToRes(&product))
+	}
+
+	return pctx.JSON(http.StatusOK, productsRes)
 }
 
 func (c *productController) FindByID(pctx echo.Context) error {
@@ -72,7 +80,9 @@ func (c *productController) FindByID(pctx echo.Context) error {
 	if err != nil {
 		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrProductNotFound)
 	}
-	return pctx.JSON(http.StatusOK, product)
+
+	productRes := c.productEntityToRes(product)
+	return pctx.JSON(http.StatusOK, productRes)
 }
 
 func (c *productController) Update(pctx echo.Context) error {
@@ -87,12 +97,15 @@ func (c *productController) Update(pctx echo.Context) error {
 	if err := validatingContext.BindAndValidate(productReq); err != nil {
 		return custom.Error(pctx, http.StatusBadRequest, custom.ErrFailedToValidateProductRequest)
 	}
-	product, err := c.productService.Update(ctx, id, productReq)
+
+	product := c.productReqToEntity(productReq)
+	product, err := c.productService.Update(ctx, id, product)
 	if err != nil {
 		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToUpdateProduct)
 	}
 
-	return pctx.JSON(http.StatusOK, product)
+	productRes := c.productEntityToRes(product)
+	return pctx.JSON(http.StatusOK, productRes)
 }
 
 func (c *productController) Delete(pctx echo.Context) error {
@@ -106,5 +119,23 @@ func (c *productController) Delete(pctx echo.Context) error {
 		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToDeleteProduct)
 	}
 
-	return pctx.JSON(http.StatusOK, product)
+	productRes := c.productEntityToRes(product)
+	return pctx.JSON(http.StatusOK, productRes)
+}
+
+func (c *productController) productReqToEntity(product *modelReq.Product) *entities.Product {
+	return &entities.Product{
+		ProductName:  product.ProductName,
+		ProductPrice: product.ProductPrice,
+	}
+
+}
+
+func (c *productController) productEntityToRes(product *entities.Product) *modelRes.Product {
+	return &modelRes.Product{
+		ProductID:    product.ProductID,
+		ProductName:  product.ProductName,
+		ProductPrice: product.ProductPrice,
+	}
+
 }

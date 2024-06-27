@@ -2,7 +2,9 @@ package order
 
 import (
 	logger "github.com/kizmey/order_management_system/logs"
+	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
+	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
 	_orderService "github.com/kizmey/order_management_system/pkg/service/order"
 	"github.com/kizmey/order_management_system/server/httpEchoServer/custom"
 	"github.com/labstack/echo/v4"
@@ -29,14 +31,17 @@ func (c *orderControllerImpl) Create(pctx echo.Context) error {
 		return custom.Error(pctx, http.StatusBadRequest, custom.ErrFailedToValidateOrderRequest)
 	}
 
-	newOrderRes, err := c.orderService.Create(ctx, newOrderReq)
+	order := c.orderReqToEntity(newOrderReq)
+	newOrderRes, err := c.orderService.Create(ctx, order)
 	if err != nil {
 		logger.LogError("Failed to create order", logrus.Fields{"error": err.Error()})
 		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToCreateOrder)
 	}
 
 	logger.LogInfo("Order created successfully", logrus.Fields{"order_id": newOrderRes.OrderID})
-	return pctx.JSON(http.StatusCreated, newOrderRes)
+
+	orderRes := c.orderReqToEntity(newOrderReq)
+	return pctx.JSON(http.StatusCreated, orderRes)
 }
 
 func (c *orderControllerImpl) FindAll(pctx echo.Context) error {
@@ -50,7 +55,13 @@ func (c *orderControllerImpl) FindAll(pctx echo.Context) error {
 	}
 
 	logger.LogInfo("Retrieved order list successfully", nil)
-	return pctx.JSON(http.StatusOK, orderListingResult)
+
+	allOrder := make([]modelRes.Order, 0)
+	for _, order := range *orderListingResult {
+		allOrder = append(allOrder, *c.orderEntityToModelRes(&order))
+	}
+
+	return pctx.JSON(http.StatusOK, allOrder)
 }
 
 func (c *orderControllerImpl) FindByID(pctx echo.Context) error {
@@ -66,7 +77,9 @@ func (c *orderControllerImpl) FindByID(pctx echo.Context) error {
 	}
 
 	logger.LogInfo("Found order by ID", logrus.Fields{"order_id": newOrderRes.OrderID})
-	return pctx.JSON(http.StatusOK, newOrderRes)
+
+	orderRes := c.orderEntityToModelRes(newOrderRes)
+	return pctx.JSON(http.StatusOK, orderRes)
 }
 
 func (c *orderControllerImpl) Update(pctx echo.Context) error {
@@ -82,14 +95,16 @@ func (c *orderControllerImpl) Update(pctx echo.Context) error {
 		return custom.Error(pctx, http.StatusBadRequest, custom.ErrFailedToValidateOrderRequest)
 	}
 
-	newOrderRes, err := c.orderService.Update(ctx, id, orderReq)
+	order := c.orderReqToEntity(orderReq)
+	newOrderRes, err := c.orderService.Update(ctx, id, order)
 	if err != nil {
 		logger.LogError("Failed to update order", logrus.Fields{"error": err.Error(), "order_id": id})
 		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToUpdateOrder)
 	}
-
 	logger.LogInfo("Order updated successfully", logrus.Fields{"order_id": newOrderRes.OrderID})
-	return pctx.JSON(http.StatusOK, newOrderRes)
+
+	orderRes := c.orderEntityToModelRes(newOrderRes)
+	return pctx.JSON(http.StatusOK, orderRes)
 }
 
 func (c *orderControllerImpl) Delete(pctx echo.Context) error {
@@ -98,14 +113,16 @@ func (c *orderControllerImpl) Delete(pctx echo.Context) error {
 
 	id := pctx.Param("id")
 
-	newOrderRes, err := c.orderService.Delete(ctx, id)
+	newOrderEntity, err := c.orderService.Delete(ctx, id)
 	if err != nil {
 		logger.LogError("Failed to delete order", logrus.Fields{"error": err.Error(), "order_id": id})
 		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToDeleteOrder)
 	}
 
-	logger.LogInfo("Order deleted successfully", logrus.Fields{"order_id": newOrderRes.OrderID})
-	return pctx.JSON(http.StatusOK, newOrderRes)
+	logger.LogInfo("Order deleted successfully", logrus.Fields{"order_id": newOrderEntity.OrderID})
+
+	orderRes := c.orderEntityToModelRes(newOrderEntity)
+	return pctx.JSON(http.StatusOK, orderRes)
 }
 
 func (c *orderControllerImpl) ChangeStatusNext(pctx echo.Context) error {
@@ -126,7 +143,8 @@ func (c *orderControllerImpl) ChangeStatusNext(pctx echo.Context) error {
 	}
 
 	logger.LogInfo("Order status changed successfully", logrus.Fields{"order_id": newOrderRes.OrderID, "new_status": newOrderRes.Status})
-	return pctx.JSON(http.StatusOK, newOrderRes)
+	orderRes := c.orderEntityToModelRes(newOrderRes)
+	return pctx.JSON(http.StatusOK, orderRes)
 }
 
 func (c *orderControllerImpl) ChageStatusDone(pctx echo.Context) error {
@@ -143,5 +161,22 @@ func (c *orderControllerImpl) ChageStatusDone(pctx echo.Context) error {
 	}
 
 	logger.LogInfo("Order status changed to done successfully", logrus.Fields{"order_id": newOrderRes.OrderID})
-	return pctx.JSON(http.StatusOK, newOrderRes)
+	orderRes := c.orderEntityToModelRes(newOrderRes)
+	return pctx.JSON(http.StatusOK, orderRes)
+}
+
+func (c *orderControllerImpl) orderReqToEntity(orderReq *modelReq.Order) *entities.Order {
+	return &entities.Order{
+		TransactionID: orderReq.TransactionID,
+		Status:        orderReq.Status,
+	}
+}
+
+func (c *orderControllerImpl) orderEntityToModelRes(order *entities.Order) *modelRes.Order {
+	return &modelRes.Order{
+		OrderID:       order.OrderID,
+		TransactionID: order.TransactionID,
+		//ProductID:     order.ProductID,
+		Status: order.Status,
+	}
 }

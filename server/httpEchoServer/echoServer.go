@@ -40,7 +40,7 @@ func NewEchoServer(conf *config.Config, usecase *pkg.Usecase) server.Server {
 
 func (s *echoServer) Start() {
 	s.app.GET("/v1/health", s.healthCheck)
-	s.app.GET("/metrics", echo.WrapHandler(promhttp.Handler()))
+	s.app.GET("/metricsx", echo.WrapHandler(promhttp.Handler()))
 
 	s.app.Use(middleware.Recover())
 	s.app.Use(middleware.Logger())

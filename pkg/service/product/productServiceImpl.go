@@ -3,8 +3,6 @@ package product
 import (
 	"context"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
-	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
-	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
 	_ProductRepository "github.com/kizmey/order_management_system/pkg/repository/product"
 )
 
@@ -16,20 +14,18 @@ func NewProductServiceImpl(productRepository _ProductRepository.ProductRepositor
 	return &productServiceImpl{productRepository: productRepository}
 }
 
-func (s *productServiceImpl) Create(ctx context.Context, product *modelReq.Product) (*modelRes.Product, error) {
+func (s *productServiceImpl) Create(ctx context.Context, product *entities.Product) (*entities.Product, error) {
 	ctx, sp := tracer.Start(ctx, "productCreateService")
 	defer sp.End()
 
-	productEntity := s.productReqToEntity(product)
-
-	productEntity, err := s.productRepository.Create(ctx, productEntity)
+	productEntity, err := s.productRepository.Create(ctx, product)
 	if err != nil {
 		return nil, err
 	}
-	return s.productEntityToRes(productEntity), nil
+	return productEntity, nil
 }
 
-func (s *productServiceImpl) FindAll(ctx context.Context) (*[]modelRes.Product, error) {
+func (s *productServiceImpl) FindAll(ctx context.Context) (*[]entities.Product, error) {
 	ctx, sp := tracer.Start(ctx, "productFindAllService")
 	defer sp.End()
 
@@ -38,14 +34,10 @@ func (s *productServiceImpl) FindAll(ctx context.Context) (*[]modelRes.Product, 
 		return nil, err
 	}
 
-	productsRes := make([]modelRes.Product, 0)
-	for _, product := range *products {
-		productsRes = append(productsRes, *s.productEntityToRes(&product))
-	}
-	return &productsRes, nil
+	return products, nil
 }
 
-func (s *productServiceImpl) FindByID(ctx context.Context, id string) (*modelRes.Product, error) {
+func (s *productServiceImpl) FindByID(ctx context.Context, id string) (*entities.Product, error) {
 	ctx, sp := tracer.Start(ctx, "productFindByIdService")
 	defer sp.End()
 
@@ -53,21 +45,20 @@ func (s *productServiceImpl) FindByID(ctx context.Context, id string) (*modelRes
 	if err != nil {
 		return nil, err
 	}
-	return s.productEntityToRes(product), nil
+	return product, nil
 }
-func (s *productServiceImpl) Update(ctx context.Context, id string, product *modelReq.Product) (*modelRes.Product, error) {
+func (s *productServiceImpl) Update(ctx context.Context, id string, product *entities.Product) (*entities.Product, error) {
 	ctx, sp := tracer.Start(ctx, "productUpdateService")
 	defer sp.End()
 
-	productEntity := s.productReqToEntity(product)
-	productEntity, err := s.productRepository.Update(ctx, id, productEntity)
+	productEntity, err := s.productRepository.Update(ctx, id, product)
 	if err != nil {
 		return nil, err
 	}
-	return s.productEntityToRes(productEntity), nil
+	return productEntity, nil
 }
 
-func (s *productServiceImpl) Delete(ctx context.Context, id string) (*modelRes.Product, error) {
+func (s *productServiceImpl) Delete(ctx context.Context, id string) (*entities.Product, error) {
 	ctx, sp := tracer.Start(ctx, "")
 	defer sp.End()
 
@@ -75,22 +66,22 @@ func (s *productServiceImpl) Delete(ctx context.Context, id string) (*modelRes.P
 	if err != nil {
 		return nil, err
 	}
-	return s.productEntityToRes(product), nil
+	return product, nil
 }
 
-func (s *productServiceImpl) productReqToEntity(product *modelReq.Product) *entities.Product {
-	return &entities.Product{
-		ProductName:  product.ProductName,
-		ProductPrice: product.ProductPrice,
-	}
-
-}
-
-func (s *productServiceImpl) productEntityToRes(product *entities.Product) *modelRes.Product {
-	return &modelRes.Product{
-		ProductID:    product.ProductID,
-		ProductName:  product.ProductName,
-		ProductPrice: product.ProductPrice,
-	}
-
-}
+//func (s *productServiceImpl) productReqToEntity(product *modelReq.Product) *entities.Product {
+//	return &entities.Product{
+//		ProductName:  product.ProductName,
+//		ProductPrice: product.ProductPrice,
+//	}
+//
+//}
+//
+//func (s *productServiceImpl) productEntityToRes(product *entities.Product) *modelRes.Product {
+//	return &modelRes.Product{
+//		ProductID:    product.ProductID,
+//		ProductName:  product.ProductName,
+//		ProductPrice: product.ProductPrice,
+//	}
+//
+//}

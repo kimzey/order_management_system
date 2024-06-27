@@ -4,7 +4,6 @@ import (
 	"context"
 	_interface "github.com/kizmey/order_management_system/pkg/interface"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
-	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
 	_productRepository "github.com/kizmey/order_management_system/pkg/repository/product"
 	_transactionRepository "github.com/kizmey/order_management_system/pkg/repository/transaction"
@@ -25,7 +24,7 @@ func NewTransactionServiceImpl(
 	}
 }
 
-func (s *transactionService) Create(ctx context.Context, transaction *modelReq.Transaction) (*modelRes.Transaction, error) {
+func (s *transactionService) Create(ctx context.Context, transaction *entities.Transaction) (*entities.Transaction, error) {
 	ctx, sp := tracer.Start(ctx, "transactionCreateService")
 	defer sp.End()
 
@@ -33,8 +32,6 @@ func (s *transactionService) Create(ctx context.Context, transaction *modelReq.T
 	for _, item := range transaction.Product {
 		productMap[item.ProductID] = item.Quantity
 	}
-
-	transactionEntity := s.transactionReqToEntity(transaction)
 
 	var products []entities.Product
 
@@ -72,7 +69,7 @@ func (s *transactionService) Create(ctx context.Context, transaction *modelReq.T
 
 }
 
-func (s *transactionService) FindAll(ctx context.Context) (*[]modelRes.Transaction, error) {
+func (s *transactionService) FindAll(ctx context.Context) (*[]entities.Transaction, error) {
 	ctx, sp := tracer.Start(ctx, "transactionFindAllService")
 	defer sp.End()
 
@@ -80,15 +77,11 @@ func (s *transactionService) FindAll(ctx context.Context) (*[]modelRes.Transacti
 	if err != nil {
 		return nil, err
 	}
-	allTransaction := make([]modelRes.Transaction, 0)
-	for _, transactionEntity := range *transactionEntities {
-		allTransaction = append(allTransaction, *s.transactionEntityToRes(&transactionEntity))
-	}
 
-	return &allTransaction, nil
+	return transactionEntities, nil
 }
 
-func (s *transactionService) FindByID(ctx context.Context, id string) (*modelRes.Transaction, error) {
+func (s *transactionService) FindByID(ctx context.Context, id string) (*entities.Transaction, error) {
 	ctx, sp := tracer.Start(ctx, "transactionFindByIdService")
 	defer sp.End()
 
@@ -96,10 +89,10 @@ func (s *transactionService) FindByID(ctx context.Context, id string) (*modelRes
 	if err != nil {
 		return nil, err
 	}
-	return s.transactionEntityToRes(transactionEntity), nil
+	return transactionEntity, nil
 }
 
-func (s *transactionService) Update(ctx context.Context, id string, transaction *modelReq.Transaction) (*modelRes.Transaction, error) {
+func (s *transactionService) Update(ctx context.Context, id string, transaction *entities.Transaction) (*entities.Transaction, error) {
 	ctx, sp := tracer.Start(ctx, "transactionUpdateService")
 	defer sp.End()
 
@@ -144,7 +137,7 @@ func (s *transactionService) Update(ctx context.Context, id string, transaction 
 	return transactionRes, nil
 }
 
-func (s *transactionService) Delete(ctx context.Context, id string) (*modelRes.Transaction, error) {
+func (s *transactionService) Delete(ctx context.Context, id string) (*entities.Transaction, error) {
 	ctx, sp := tracer.Start(ctx, "transactionDeleteService")
 	defer sp.End()
 
@@ -153,29 +146,29 @@ func (s *transactionService) Delete(ctx context.Context, id string) (*modelRes.T
 		return nil, err
 	}
 
-	return s.transactionEntityToRes(transaction), nil
+	return transaction, nil
 }
 
-func (s *transactionService) transactionReqToEntity(transactionReq *modelReq.Transaction) *entities.Transaction {
-
-	productid := make([]string, 0, len(transactionReq.Product))
-	quantity := make([]uint, 0, len(transactionReq.Product))
-
-	for _, item := range transactionReq.Product {
-		productid = append(productid, item.ProductID)
-		quantity = append(quantity, item.Quantity)
-	}
-
-	entityProduct := &entities.Transaction{
-		IsDomestic: transactionReq.IsDomestic,
-	}
-	return entityProduct
-}
-
-func (s *transactionService) transactionEntityToRes(transactionEntity *entities.Transaction) *modelRes.Transaction {
-	return &modelRes.Transaction{
-		TransactionID: transactionEntity.TransactionID,
-		IsDomestic:    transactionEntity.IsDomestic,
-		SumPrice:      transactionEntity.SumPrice,
-	}
-}
+//func (s *transactionService) transactionReqToEntity(transactionReq *modelReq.Transaction) *entities.Transaction {
+//
+//	productid := make([]string, 0, len(transactionReq.Product))
+//	quantity := make([]uint, 0, len(transactionReq.Product))
+//
+//	for _, item := range transactionReq.Product {
+//		productid = append(productid, item.ProductID)
+//		quantity = append(quantity, item.Quantity)
+//	}
+//
+//	entityProduct := &entities.Transaction{
+//		IsDomestic: transactionReq.IsDomestic,
+//	}
+//	return entityProduct
+//}
+//
+//func (s *transactionService) transactionEntityToRes(transactionEntity *entities.Transaction) *modelRes.Transaction {
+//	return &modelRes.Transaction{
+//		TransactionID: transactionEntity.TransactionID,
+//		IsDomestic:    transactionEntity.IsDomestic,
+//		SumPrice:      transactionEntity.SumPrice,
+//	}
+//}

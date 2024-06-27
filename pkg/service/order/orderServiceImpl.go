@@ -4,8 +4,6 @@ import (
 	"context"
 	"errors"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
-	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
-	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
 	_orderRepository "github.com/kizmey/order_management_system/pkg/repository/order"
 	_stockRepository "github.com/kizmey/order_management_system/pkg/repository/stock"
 	_transactionRepository "github.com/kizmey/order_management_system/pkg/repository/transaction"
@@ -29,9 +27,14 @@ func NewOrderServiceImpl(orderRepository _orderRepository.OrderRepository,
 	}
 }
 
-func (s *orderServiceImpl) Create(ctx context.Context, order *modelReq.Order) (*modelRes.Order, error) {
+func (s *orderServiceImpl) Create(ctx context.Context, order *entities.Order) (*entities.Order, error) {
 	ctx, sp := tracer.Start(ctx, "orderCreateService")
 	defer sp.End()
+
+	newOrder, err := s.orderRepository.Create(ctx, order)
+	if err != nil {
+		return nil, err
+	}
 
 	ecommerce, err := s.transactionRepository.FindProductsByTransactionID(ctx, order.TransactionID)
 	if err != nil {
@@ -40,12 +43,6 @@ func (s *orderServiceImpl) Create(ctx context.Context, order *modelReq.Order) (*
 
 	if ecommerce.Quantity == nil {
 		return nil, errors.New("quantity is nil")
-	}
-
-	orderEntity := s.orderReqToEntity(order)
-	newOrder, err := s.orderRepository.Create(ctx, orderEntity)
-	if err != nil {
-		return nil, err
 	}
 
 	stockRollback := make([]entities.Stock, 0)
@@ -73,10 +70,10 @@ func (s *orderServiceImpl) Create(ctx context.Context, order *modelReq.Order) (*
 	}
 
 	customTracer.SetSubAttributesWithJson(newOrder, sp)
-	return s.orderEntityToModelRes(newOrder), nil
+	return newOrder, nil
 }
 
-func (s *orderServiceImpl) FindAll(ctx context.Context) (*[]modelRes.Order, error) {
+func (s *orderServiceImpl) FindAll(ctx context.Context) (*[]entities.Order, error) {
 	ctx, sp := tracer.Start(ctx, "orderFindAllService")
 	defer sp.End()
 
@@ -85,14 +82,10 @@ func (s *orderServiceImpl) FindAll(ctx context.Context) (*[]modelRes.Order, erro
 		return nil, err
 	}
 
-	allOrder := make([]modelRes.Order, 0)
-	for _, order := range *orders {
-		allOrder = append(allOrder, *s.orderEntityToModelRes(&order))
-	}
-	return &allOrder, nil
+	return orders, nil
 }
 
-func (s *orderServiceImpl) FindByID(ctx context.Context, id string) (*modelRes.Order, error) {
+func (s *orderServiceImpl) FindByID(ctx context.Context, id string) (*entities.Order, error) {
 	ctx, sp := tracer.Start(ctx, "orderFindByIdService")
 	defer sp.End()
 
@@ -100,10 +93,10 @@ func (s *orderServiceImpl) FindByID(ctx context.Context, id string) (*modelRes.O
 	if err != nil {
 		return nil, err
 	}
-	return s.orderEntityToModelRes(order), nil
+	return order, nil
 }
 
-func (s *orderServiceImpl) Update(ctx context.Context, id string, order *modelReq.Order) (*modelRes.Order, error) {
+func (s *orderServiceImpl) Update(ctx context.Context, id string, order *entities.Order) (*entities.Order, error) {
 	ctx, sp := tracer.Start(ctx, "orderUpdateService")
 	defer sp.End()
 
@@ -112,13 +105,12 @@ func (s *orderServiceImpl) Update(ctx context.Context, id string, order *modelRe
 		return nil, err
 	}
 
-	orderEntity := s.orderReqToEntity(order)
 
 	if ecommerce.Quantity == nil {
 		return nil, errors.New("quantity is nil")
 	}
 
-	newOrder, err := s.orderRepository.Update(ctx, id, orderEntity)
+	newOrder, err := s.orderRepository.Update(ctx, id, order)
 	if err != nil {
 		return nil, err
 	}
@@ -146,10 +138,10 @@ func (s *orderServiceImpl) Update(ctx context.Context, id string, order *modelRe
 		stockRollback = append(stockRollback, *stock)
 	}
 
-	return s.orderEntityToModelRes(newOrder), nil
+	return newOrder, nil
 }
 
-func (s *orderServiceImpl) Delete(ctx context.Context, id string) (*modelRes.Order, error) {
+func (s *orderServiceImpl) Delete(ctx context.Context, id string) (*entities.Order, error) {
 	ctx, sp := tracer.Start(ctx, "orderDeleteService")
 	defer sp.End()
 
@@ -157,10 +149,10 @@ func (s *orderServiceImpl) Delete(ctx context.Context, id string) (*modelRes.Ord
 	if err != nil {
 		return nil, err
 	}
-	return s.orderEntityToModelRes(order), err
+	return order, err
 }
 
-func (s *orderServiceImpl) ChangeStatusNext(ctx context.Context, id string) (*modelRes.Order, error) {
+func (s *orderServiceImpl) ChangeStatusNext(ctx context.Context, id string) (*entities.Order, error) {
 	ctx, sp := tracer.Start(ctx, "orderChangeStatusNextService")
 	defer sp.End()
 
@@ -179,9 +171,9 @@ func (s *orderServiceImpl) ChangeStatusNext(ctx context.Context, id string) (*mo
 		return nil, err
 	}
 
-	return s.orderEntityToModelRes(order), nil
+	return order, nil
 }
-func (s *orderServiceImpl) ChageStatusDone(ctx context.Context, id string) (*modelRes.Order, error) {
+func (s *orderServiceImpl) ChageStatusDone(ctx context.Context, id string) (*entities.Order, error) {
 	ctx, sp := tracer.Start(ctx, "orderChageStatusDoneService")
 	defer sp.End()
 
@@ -200,21 +192,21 @@ func (s *orderServiceImpl) ChageStatusDone(ctx context.Context, id string) (*mod
 		return nil, err
 	}
 
-	return s.orderEntityToModelRes(order), nil
+	return order, nil
 }
 
-func (s *orderServiceImpl) orderReqToEntity(orderReq *modelReq.Order) *entities.Order {
-	return &entities.Order{
-		TransactionID: orderReq.TransactionID,
-		Status:        orderReq.Status,
-	}
-}
-
-func (s *orderServiceImpl) orderEntityToModelRes(order *entities.Order) *modelRes.Order {
-	return &modelRes.Order{
-		OrderID:       order.OrderID,
-		TransactionID: order.TransactionID,
-		//ProductID:     order.ProductID,
-		Status: order.Status,
-	}
-}
+//func (s *orderServiceImpl) orderReqToEntity(orderReq *modelReq.Order) *entities.Order {
+//	return &entities.Order{
+//		TransactionID: orderReq.TransactionID,
+//		Status:        orderReq.Status,
+//	}
+//}
+//
+//func (s *orderServiceImpl) orderEntityToModelRes(order *entities.Order) *modelRes.Order {
+//	return &modelRes.Order{
+//		OrderID:       order.OrderID,
+//		TransactionID: order.TransactionID,
+//		//ProductID:     order.ProductID,
+//		Status: order.Status,
+//	}
+//}
