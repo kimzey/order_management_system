@@ -22,6 +22,24 @@ type TransactionEcommerce struct {
 	AddessProduct map[string]uint
 }
 
+const (
+	// Domestic price
+	Domestic = uint(100)
+	// NotDomestic price
+	NotDomestic = uint(500)
+)
+
+func (m *TransactionEcommerce) CalculatePrice() uint {
+	for _, product := range m.Product {
+		if m.Tranasaction.IsDomestic {
+			m.Tranasaction.SumPrice += (product.ProductPrice * m.AddessProduct[product.ProductID]) + Domestic
+		} else {
+			m.Tranasaction.SumPrice += (product.ProductPrice * m.AddessProduct[product.ProductID]) + NotDomestic
+		}
+	}
+	return m.Tranasaction.SumPrice
+}
+
 func NewTransactionEcommerce(tranasaction *entities.Transaction, product []entities.Product, addessProduct map[string]uint) *TransactionEcommerce {
 	return &TransactionEcommerce{
 		Tranasaction:  tranasaction,

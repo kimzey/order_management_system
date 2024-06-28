@@ -28,33 +28,23 @@ func (s *transactionService) Create(ctx context.Context, transaction *_interface
 	ctx, sp := tracer.Start(ctx, "transactionCreateService")
 	defer sp.End()
 
-	var products []entities.Product
-
-	for productID, quantity := range transaction.AddessProduct {
+	for productID := range transaction.AddessProduct {
 		product, err := s.productRepository.FindByID(ctx, productID)
 		if err != nil {
 			return nil, err
 		}
-		products = append(products, *product)
-		transaction.Tranasaction.SumPrice += transaction.Tranasaction.CalculatePrice(product.ProductPrice, quantity, transaction.Tranasaction.IsDomestic)
+		transaction.Product = append(transaction.Product, *product)
 	}
 
-	transactionEcommerce := _interface.NewTransactionEcommerce(transaction.Tranasaction, products, transaction.AddessProduct)
-	transactionEntity, err := s.transactionRepository.Create(ctx, transactionEcommerce)
+	transaction.CalculatePrice()
+
+	transactionEntity, err := s.transactionRepository.Create(ctx, transaction)
 	if err != nil {
 		return nil, err
 	}
+
 	transaction.Tranasaction = transactionEntity
-	findproducs, err := s.transactionRepository.FindProductsByTransactionID(ctx, transactionEntity.TransactionID)
-	if err != nil {
-		return nil, err
-	}
-	for _, product := range findproducs.Product {
-		transaction.Product = append(transaction.Product, product)
-	}
-
 	return transaction, nil
-
 }
 
 func (s *transactionService) FindAll(ctx context.Context) (*[]entities.Transaction, error) {
@@ -85,32 +75,22 @@ func (s *transactionService) Update(ctx context.Context, id string, transaction 
 	ctx, sp := tracer.Start(ctx, "transactionUpdateService")
 	defer sp.End()
 
-	var products []entities.Product
-
-	for productID, quantity := range transaction.AddessProduct {
+	for productID := range transaction.AddessProduct {
 		product, err := s.productRepository.FindByID(ctx, productID)
 		if err != nil {
 			return nil, err
 		}
-		products = append(products, *product)
-		transaction.Tranasaction.SumPrice += transaction.Tranasaction.CalculatePrice(product.ProductPrice, quantity, transaction.Tranasaction.IsDomestic)
+		transaction.Product = append(transaction.Product, *product)
 	}
 
-	transactionEcommerce := _interface.NewTransactionEcommerce(transaction.Tranasaction, products, transaction.AddessProduct)
-	transactionEntity, err := s.transactionRepository.Update(ctx, id, transactionEcommerce)
+	transaction.CalculatePrice()
+
+	transactionEntity, err := s.transactionRepository.Update(ctx, id, transaction)
 	if err != nil {
 		return nil, err
 	}
 
 	transaction.Tranasaction = transactionEntity
-	findproducs, err := s.transactionRepository.FindProductsByTransactionID(ctx, transaction.Tranasaction.TransactionID)
-	if err != nil {
-		return nil, err
-	}
-	for _, product := range findproducs.Product {
-		transaction.Product = append(transaction.Product, product)
-	}
-
 	return transaction, nil
 }
 

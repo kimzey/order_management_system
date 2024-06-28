@@ -1,7 +1,6 @@
 package transaction
 
 import (
-	"fmt"
 	_interface "github.com/kizmey/order_management_system/pkg/interface"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
@@ -37,14 +36,13 @@ func (c *transactionControllerImpl) Create(pctx echo.Context) error {
 		return custom.Error(pctx, http.StatusBadRequest, custom.ErrFailedToValidateTransactionRequest)
 	}
 
-	transactionEntity := c.transactionReqToEntity(transactionReq)
+	transactionEntity := c.transactionReqToAggregation(transactionReq)
 
 	transaction, err := c.transaction.Create(ctx, transactionEntity)
 	if err != nil {
 		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToCreateTransaction)
 	}
 
-	fmt.Println("transaction: ", transaction)
 	transactionRes := c.transactionAndproductEntityToRes(transaction)
 	return pctx.JSON(http.StatusCreated, transactionRes)
 }
@@ -97,7 +95,7 @@ func (c *transactionControllerImpl) Update(pctx echo.Context) error {
 		return custom.Error(pctx, http.StatusBadRequest, custom.ErrFailedToValidateTransactionRequest)
 	}
 
-	transaction := c.transactionReqToEntity(transactionReq)
+	transaction := c.transactionReqToAggregation(transactionReq)
 	transaction, err := c.transaction.Update(ctx, id, transaction)
 	if err != nil {
 		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToUpdateTransaction)
@@ -133,21 +131,17 @@ func isProductIDsUnique(products []modelReq.ProductItem) bool {
 	return true
 }
 
-func (c *transactionControllerImpl) transactionReqToEntity(transactionReq *modelReq.Transaction) *_interface.TransactionEcommerce {
-
+func (c *transactionControllerImpl) transactionReqToAggregation(transactionReq *modelReq.Transaction) *_interface.TransactionEcommerce {
 	mapProduct := make(map[string]uint)
 	for _, item := range transactionReq.Product {
 		mapProduct[item.ProductID] = item.Quantity
 	}
 
-	return &_interface.TransactionEcommerce{
-		Tranasaction: &entities.Transaction{
-			IsDomestic: transactionReq.IsDomestic,
-		},
-		Product:       nil,
-		AddessProduct: mapProduct,
+	transaction := entities.Transaction{
+		IsDomestic: transactionReq.IsDomestic,
 	}
 
+	return _interface.NewTransactionEcommerce(&transaction, nil, mapProduct)
 }
 
 func (c *transactionControllerImpl) transactionAndproductEntityToRes(transactionEntity *_interface.TransactionEcommerce) *modelRes.Transaction {
