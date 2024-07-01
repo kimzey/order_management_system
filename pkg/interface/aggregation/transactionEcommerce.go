@@ -1,6 +1,8 @@
 package _interface
 
-import "github.com/kizmey/order_management_system/pkg/interface/entities"
+import (
+	"github.com/kizmey/order_management_system/pkg/interface/entities"
+)
 
 type Ecommerce struct {
 	Order    *entities.Order
@@ -30,13 +32,17 @@ const (
 )
 
 func (m *TransactionEcommerce) CalculatePrice() uint {
+	m.Tranasaction.SumPrice = 0
 	for _, product := range m.Product {
-		if m.Tranasaction.IsDomestic {
-			m.Tranasaction.SumPrice += (product.ProductPrice * m.AddessProduct[product.ProductID]) + Domestic
-		} else {
-			m.Tranasaction.SumPrice += (product.ProductPrice * m.AddessProduct[product.ProductID]) + NotDomestic
-		}
+		m.Tranasaction.SumPrice += (product.ProductPrice * m.AddessProduct[product.ProductID])
 	}
+
+	if m.Tranasaction.IsDomestic {
+		m.Tranasaction.SumPrice += Domestic
+	} else {
+		m.Tranasaction.SumPrice += NotDomestic
+	}
+
 	return m.Tranasaction.SumPrice
 }
 
