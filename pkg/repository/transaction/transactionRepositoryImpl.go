@@ -2,11 +2,11 @@ package transaction
 
 import (
 	"context"
+	"github.com/kizmey/order_management_system/pkg/interface/aggregation"
 
 	"errors"
 	"fmt"
 	"github.com/kizmey/order_management_system/database"
-	_interface "github.com/kizmey/order_management_system/pkg/interface"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/kizmey/order_management_system/pkg/interface/model"
 )
@@ -19,7 +19,7 @@ func NewTransactionRepositoryImpl(db database.Database) TransactionRepository {
 	return &transactionRepositoryImpl{db: db}
 }
 
-func (r *transactionRepositoryImpl) Create(ctx context.Context, transaction *_interface.TransactionEcommerce) (*entities.Transaction, error) {
+func (r *transactionRepositoryImpl) Create(ctx context.Context, transaction *aggregation.TransactionEcommerce) (*entities.Transaction, error) {
 	ctx, sp := tracer.Start(ctx, "transactionCreateRepository")
 	defer sp.End()
 
@@ -63,7 +63,7 @@ func (r *transactionRepositoryImpl) FindByID(ctx context.Context, id string) (*e
 	return transaction.ToTransactionEntity(), nil
 }
 
-func (r *transactionRepositoryImpl) Update(ctx context.Context, id string, transaction *_interface.TransactionEcommerce) (*entities.Transaction, error) {
+func (r *transactionRepositoryImpl) Update(ctx context.Context, id string, transaction *aggregation.TransactionEcommerce) (*entities.Transaction, error) {
 	ctx, sp := tracer.Start(ctx, "transactionUpdateRepository")
 	defer sp.End()
 
@@ -98,7 +98,7 @@ func (r *transactionRepositoryImpl) Delete(ctx context.Context, id string) (*ent
 	return transaction.ToTransactionEntity(), nil
 }
 
-func (r *transactionRepositoryImpl) FindProductsByTransactionID(ctx context.Context, id string) (*_interface.Ecommerce, error) {
+func (r *transactionRepositoryImpl) FindProductsByTransactionID(ctx context.Context, id string) (*aggregation.Ecommerce, error) {
 	ctx, sp := tracer.Start(ctx, "transactionFindProductsByTransactionIDRepository")
 	defer sp.End()
 
@@ -114,12 +114,12 @@ func (r *transactionRepositoryImpl) FindProductsByTransactionID(ctx context.Cont
 		quantity = append(quantity, transactionProduct.Quantity)
 	}
 
-	ecommerceProducts := _interface.NewEcommerce(nil, products, quantity)
+	ecommerceProducts := aggregation.NewEcommerce(nil, products, quantity)
 	return ecommerceProducts, nil
 
 }
 
-func ToTransactionModel(e *_interface.TransactionEcommerce) *model.Transaction {
+func ToTransactionModel(e *aggregation.TransactionEcommerce) *model.Transaction {
 	var productlist []model.Product
 	for _, v := range e.Product {
 		productlist = append(productlist, model.Product{

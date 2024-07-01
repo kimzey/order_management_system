@@ -2,12 +2,12 @@ package product
 
 import (
 	"encoding/json"
+	customTracer "github.com/kizmey/order_management_system/observability/tracer"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
 	_productService "github.com/kizmey/order_management_system/pkg/service/product"
 	"github.com/kizmey/order_management_system/server/httpEchoServer/custom"
-	customTracer "github.com/kizmey/order_management_system/tracer"
 	"github.com/labstack/echo/v4"
 	"go.opentelemetry.io/otel/attribute"
 	"net/http"

@@ -1,22 +1,8 @@
-package _interface
+package aggregation
 
 import (
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 )
-
-type Ecommerce struct {
-	Order    *entities.Order
-	Product  []entities.Product
-	Quantity []uint
-}
-
-func NewEcommerce(order *entities.Order, products []entities.Product, quantity []uint) *Ecommerce {
-	return &Ecommerce{
-		Order:    order,
-		Product:  products,
-		Quantity: quantity,
-	}
-}
 
 type TransactionEcommerce struct {
 	Tranasaction  *entities.Transaction
@@ -34,7 +20,7 @@ const (
 func (m *TransactionEcommerce) CalculatePrice() uint {
 	m.Tranasaction.SumPrice = 0
 	for _, product := range m.Product {
-		m.Tranasaction.SumPrice += (product.ProductPrice * m.AddessProduct[product.ProductID])
+		m.Tranasaction.SumPrice += product.ProductPrice * m.AddessProduct[product.ProductID]
 	}
 
 	if m.Tranasaction.IsDomestic {

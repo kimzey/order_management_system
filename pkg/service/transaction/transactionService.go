@@ -2,7 +2,7 @@ package transaction
 
 import (
 	"context"
-	_interface "github.com/kizmey/order_management_system/pkg/interface"
+	_interface "github.com/kizmey/order_management_system/pkg/interface/aggregation"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"go.opentelemetry.io/otel"
 )

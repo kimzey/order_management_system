@@ -2,7 +2,7 @@ package order
 
 import (
 	"context"
-	customTracer "github.com/kizmey/order_management_system/tracer"
+	customTracer "github.com/kizmey/order_management_system/observability/tracer"
 
 	"errors"
 	"fmt"

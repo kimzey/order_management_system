@@ -1,7 +1,7 @@
 package order
 
 import (
-	logger "github.com/kizmey/order_management_system/logs"
+	logger "github.com/kizmey/order_management_system/observability/logs"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	"github.com/kizmey/order_management_system/pkg/interface/modelRes"

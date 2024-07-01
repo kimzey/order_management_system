@@ -3,11 +3,11 @@ package order
 import (
 	"context"
 	"errors"
+	customTracer "github.com/kizmey/order_management_system/observability/tracer"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	_orderRepository "github.com/kizmey/order_management_system/pkg/repository/order"
 	_stockRepository "github.com/kizmey/order_management_system/pkg/repository/stock"
 	_transactionRepository "github.com/kizmey/order_management_system/pkg/repository/transaction"
-	customTracer "github.com/kizmey/order_management_system/tracer"
 )
 
 type orderServiceImpl struct {

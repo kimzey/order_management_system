@@ -1,7 +1,7 @@
 package transaction
 
 import (
-	_interface "github.com/kizmey/order_management_system/pkg/interface"
+	_interface "github.com/kizmey/order_management_system/pkg/interface/aggregation"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	"github.com/kizmey/order_management_system/pkg/interface/modelRes"

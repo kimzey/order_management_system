@@ -2,7 +2,7 @@ package transaction
 
 import (
 	"context"
-	_interface "github.com/kizmey/order_management_system/pkg/interface"
+	"github.com/kizmey/order_management_system/pkg/interface/aggregation"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	_productRepository "github.com/kizmey/order_management_system/pkg/repository/product"
 	_transactionRepository "github.com/kizmey/order_management_system/pkg/repository/transaction"
@@ -23,8 +23,9 @@ func NewTransactionServiceImpl(
 	}
 }
 
-func (s *transactionService) Create(ctx context.Context, transaction *_interface.TransactionEcommerce,
-) (*_interface.TransactionEcommerce, error) {
+func (s *transactionService) Create(ctx context.Context, transaction *aggregation.TransactionEcommerce,
+) (*aggregation.TransactionEcommerce, error) {
+
 	ctx, sp := tracer.Start(ctx, "transactionCreateService")
 	defer sp.End()
 
@@ -70,8 +71,9 @@ func (s *transactionService) FindByID(ctx context.Context, id string) (*entities
 	return transactionEntity, nil
 }
 
-func (s *transactionService) Update(ctx context.Context, id string, transaction *_interface.TransactionEcommerce,
-) (*_interface.TransactionEcommerce, error) {
+func (s *transactionService) Update(ctx context.Context, id string, transaction *aggregation.TransactionEcommerce,
+) (*aggregation.TransactionEcommerce, error) {
+
 	ctx, sp := tracer.Start(ctx, "transactionUpdateService")
 	defer sp.End()
 
