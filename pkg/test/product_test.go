@@ -13,7 +13,7 @@ import (
 )
 
 func TestProductService_Create(t *testing.T) {
-	mockRepo := new(_productRepository.MockProductRepositoryMock)
+	mockRepo := new(_productRepository.NewProductRepositoryMock)
 	service := _productService.NewProductServiceImpl(mockRepo)
 
 	product := &entities.Product{ProductID: "1", ProductName: "Product1", ProductPrice: 100}
@@ -43,7 +43,7 @@ func TestProductService_Create(t *testing.T) {
 }
 
 func TestProductService_FindAll(t *testing.T) {
-	mockRepo := new(_productRepository.MockProductRepositoryMock)
+	mockRepo := new(_productRepository.NewProductRepositoryMock)
 	service := _productService.NewProductServiceImpl(mockRepo)
 
 	// Prepare mock data
@@ -78,7 +78,7 @@ func TestProductService_FindAll(t *testing.T) {
 }
 
 func TestProductService_FindByID(t *testing.T) {
-	mockRepo := new(_productRepository.MockProductRepositoryMock)
+	mockRepo := new(_productRepository.NewProductRepositoryMock)
 	service := _productService.NewProductServiceImpl(mockRepo)
 
 	// Prepare mock data
@@ -112,7 +112,7 @@ func TestProductService_FindByID(t *testing.T) {
 }
 
 func TestProductService_Update(t *testing.T) {
-	mockRepo := new(_productRepository.MockProductRepositoryMock)
+	mockRepo := new(_productRepository.NewProductRepositoryMock)
 	service := _productService.NewProductServiceImpl(mockRepo)
 
 	// Prepare mock data
@@ -145,7 +145,7 @@ func TestProductService_Update(t *testing.T) {
 }
 
 func TestProductService_Delete(t *testing.T) {
-	mockRepo := new(_productRepository.MockProductRepositoryMock)
+	mockRepo := new(_productRepository.NewProductRepositoryMock)
 	service := _productService.NewProductServiceImpl(mockRepo)
 
 	// Prepare mock data

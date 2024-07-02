@@ -1,7 +1,7 @@
 package customMiddleware
 
 import (
-	logger "github.com/kizmey/order_management_system/logs"
+	logger "github.com/kizmey/order_management_system/observability/logs"
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 	"time"

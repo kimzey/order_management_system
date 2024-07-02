@@ -130,11 +130,11 @@ func (c *orderControllerImpl) ChangeStatusNext(pctx echo.Context) error {
 	defer sp.End()
 
 	orderId := pctx.Param("id")
-	if orderId == "" {
-		err := custom.ErrOrderNotFound
-		logger.LogWarn("Order id not found", logrus.Fields{"error": err.Error()})
-		return custom.Error(pctx, http.StatusBadRequest, err)
-	}
+	//if orderId == "" {
+	//	err := custom.ErrOrderNotFound
+	//	logger.LogWarn("Order id not found", logrus.Fields{"error": err.Error()})
+	//	return custom.Error(pctx, http.StatusBadRequest, err)
+	//}
 
 	newOrderRes, err := c.orderService.ChangeStatusNext(ctx, orderId)
 	if err != nil {

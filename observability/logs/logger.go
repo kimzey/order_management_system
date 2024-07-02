@@ -12,7 +12,7 @@ var (
 
 func InitLogger() {
 	var err error
-	LogFile, err = os.OpenFile("./logs/temp/logs.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	LogFile, err = os.OpenFile("./observability/logs/temp/logs.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		logrus.Fatalf("Failed to open log file: %v", err)
 	}

@@ -1,7 +1,6 @@
 package entities_test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
@@ -44,8 +43,6 @@ func TestOrder_NextStatus(t *testing.T) {
 			err := order.NextStatus()
 			if tt.wantErr {
 				assert.Error(t, err)
-				fmt.Println(tt.expectedErrMsg)
-				fmt.Println("err", err.Error())
 				assert.Equal(t, tt.expectedErrMsg, err.Error())
 			} else {
 				assert.NoError(t, err)

@@ -215,7 +215,7 @@ services:
   promtail:
     image: grafana/promtail:3.0.0
     volumes:
-      - ../temp:/var/log
+      - ../logs/temp:/var/log
       - ./:/etc/promtail
     command: "-config.file=/etc/promtail/pormtail-config.yaml"
     networks:

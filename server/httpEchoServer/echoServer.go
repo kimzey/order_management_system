@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/kizmey/order_management_system/config"
+	"github.com/kizmey/order_management_system/observability"
 	"github.com/kizmey/order_management_system/pkg"
 	"github.com/kizmey/order_management_system/server"
 	customMiddleware "github.com/kizmey/order_management_system/server/httpEchoServer/middleware"
@@ -33,7 +34,7 @@ func NewEchoServer(conf *config.Config, usecase *pkg.Usecase) server.Server {
 		usecase: usecase,
 	}
 
-	server.InitMetrics()
+	observability.InitMetrics()
 
 	return serverEcho
 }

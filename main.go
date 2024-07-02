@@ -4,10 +4,10 @@ package main
 import (
 	"github.com/kizmey/order_management_system/config"
 	"github.com/kizmey/order_management_system/database"
-	logger "github.com/kizmey/order_management_system/logs"
+	logger "github.com/kizmey/order_management_system/observability/logs"
+	customTracer "github.com/kizmey/order_management_system/observability/tracer"
 	"github.com/kizmey/order_management_system/pkg"
 	serverPkg "github.com/kizmey/order_management_system/server/httpEchoServer"
-	"github.com/kizmey/order_management_system/tracer"
 	"github.com/sirupsen/logrus"
 	"os"
 )

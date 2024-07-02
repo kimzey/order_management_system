@@ -79,7 +79,7 @@
 				
 				<option value="file11">github.com/kizmey/order_management_system/pkg/repository/order/orderRepositoryImpl.go (0.0%)</option>
 				
-				<option value="file12">github.com/kizmey/order_management_system/pkg/repository/order/orderRepositoryMock.go (0.0%)</option>
+				<option value="file12">github.com/kizmey/order_management_system/pkg/repository/order/orderRepositoryMock.go (92.3%)</option>
 				
 				<option value="file13">github.com/kizmey/order_management_system/pkg/repository/product/productRepositoryImpl.go (0.0%)</option>
 				
@@ -87,19 +87,19 @@
 				
 				<option value="file15">github.com/kizmey/order_management_system/pkg/repository/stock/stockRepositoryImpl.go (0.0%)</option>
 				
-				<option value="file16">github.com/kizmey/order_management_system/pkg/repository/stock/stockRepositoryMock.go (0.0%)</option>
+				<option value="file16">github.com/kizmey/order_management_system/pkg/repository/stock/stockRepositoryMock.go (90.9%)</option>
 				
 				<option value="file17">github.com/kizmey/order_management_system/pkg/repository/transaction/transactionRepositoryImpl.go (0.0%)</option>
 				
-				<option value="file18">github.com/kizmey/order_management_system/pkg/repository/transaction/transactionRepositoryMock.go (0.0%)</option>
+				<option value="file18">github.com/kizmey/order_management_system/pkg/repository/transaction/transactionRepositoryMock.go (92.3%)</option>
 				
-				<option value="file19">github.com/kizmey/order_management_system/pkg/service/order/orderServiceImpl.go (0.0%)</option>
+				<option value="file19">github.com/kizmey/order_management_system/pkg/service/order/orderServiceImpl.go (97.9%)</option>
 				
 				<option value="file20">github.com/kizmey/order_management_system/pkg/service/product/productServiceImpl.go (100.0%)</option>
 				
-				<option value="file21">github.com/kizmey/order_management_system/pkg/service/stock/stockServiceImpl.go (0.0%)</option>
+				<option value="file21">github.com/kizmey/order_management_system/pkg/service/stock/stockServiceImpl.go (100.0%)</option>
 				
-				<option value="file22">github.com/kizmey/order_management_system/pkg/service/transaction/transactionServiceImpl.go (0.0%)</option>
+				<option value="file22">github.com/kizmey/order_management_system/pkg/service/transaction/transactionServiceImpl.go (100.0%)</option>
 				
 				<option value="file23">github.com/kizmey/order_management_system/pkg/usecase.go (0.0%)</option>
 				
@@ -247,13 +247,13 @@ func (c *orderControllerImpl) ChangeStatusNext(pctx echo.Context) error <span cl
         defer sp.End()
 
         orderId := pctx.Param("id")
-        if orderId == "" </span><span class="cov0" title="0">{
-                err := custom.ErrOrderNotFound
-                logger.LogWarn("Order id not found", logrus.Fields{"error": err.Error()})
-                return custom.Error(pctx, http.StatusBadRequest, err)
-        }</span>
+        //if orderId == "" {
+        //        err := custom.ErrOrderNotFound
+        //        logger.LogWarn("Order id not found", logrus.Fields{"error": err.Error()})
+        //        return custom.Error(pctx, http.StatusBadRequest, err)
+        //}
 
-        <span class="cov0" title="0">newOrderRes, err := c.orderService.ChangeStatusNext(ctx, orderId)
+        newOrderRes, err := c.orderService.ChangeStatusNext(ctx, orderId)
         if err != nil </span><span class="cov0" title="0">{
                 logger.LogError("Failed to change order status", logrus.Fields{"error": err.Error(), "order_id": orderId})
                 return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToChangeOrderStatus)
@@ -1127,34 +1127,34 @@ func (m *NewOrderRepositoryMock) checkOrderRepositoryMock() OrderRepository <spa
         return m
 }</span>
 
-func (m *NewOrderRepositoryMock) Create(ctx context.Context, order *entities.Order) (*entities.Order, error) <span class="cov0" title="0">{
+func (m *NewOrderRepositoryMock) Create(ctx context.Context, order *entities.Order) (*entities.Order, error) <span class="cov8" title="1">{
         args := m.Called(ctx, order)
-        return args.Get(0).(*entities.Order), nil
+        return args.Get(0).(*entities.Order), args.Error(1)
 }</span>
 
-func (m *NewOrderRepositoryMock) FindAll(ctx context.Context) (*[]entities.Order, error) <span class="cov0" title="0">{
+func (m *NewOrderRepositoryMock) FindAll(ctx context.Context) (*[]entities.Order, error) <span class="cov8" title="1">{
         args := m.Called(ctx)
-        return args.Get(0).(*[]entities.Order), nil
+        return args.Get(0).(*[]entities.Order), args.Error(1)
 }</span>
 
-func (m *NewOrderRepositoryMock) FindByID(ctx context.Context, id string) (*entities.Order, error) <span class="cov0" title="0">{
+func (m *NewOrderRepositoryMock) FindByID(ctx context.Context, id string) (*entities.Order, error) <span class="cov8" title="1">{
         args := m.Called(ctx, id)
-        return args.Get(0).(*entities.Order), nil
+        return args.Get(0).(*entities.Order), args.Error(1)
 }</span>
 
-func (m *NewOrderRepositoryMock) Update(ctx context.Context, id string, order *entities.Order) (*entities.Order, error) <span class="cov0" title="0">{
+func (m *NewOrderRepositoryMock) Update(ctx context.Context, id string, order *entities.Order) (*entities.Order, error) <span class="cov8" title="1">{
         args := m.Called(ctx, id, order)
-        return args.Get(0).(*entities.Order), nil
+        return args.Get(0).(*entities.Order), args.Error(1)
 }</span>
 
-func (m *NewOrderRepositoryMock) UpdateStatus(ctx context.Context, id string, order *entities.Order) (*entities.Order, error) <span class="cov0" title="0">{
+func (m *NewOrderRepositoryMock) UpdateStatus(ctx context.Context, id string, order *entities.Order) (*entities.Order, error) <span class="cov8" title="1">{
         args := m.Called(ctx, id, order)
-        return args.Get(0).(*entities.Order), nil
+        return args.Get(0).(*entities.Order), args.Error(1)
 }</span>
 
-func (m *NewOrderRepositoryMock) Delete(ctx context.Context, id string) (*entities.Order, error) <span class="cov0" title="0">{
+func (m *NewOrderRepositoryMock) Delete(ctx context.Context, id string) (*entities.Order, error) <span class="cov8" title="1">{
         args := m.Called(ctx, id)
-        return args.Get(0).(*entities.Order), nil
+        return args.Get(0).(*entities.Order), args.Error(1)
 }</span>
 </pre>
 		
@@ -1262,15 +1262,15 @@ import (
         "github.com/stretchr/testify/mock"
 )
 
-type MockProductRepositoryMock struct {
+type NewProductRepositoryMock struct {
         mock.Mock
 }
 
-func (m *MockProductRepositoryMock) CheckProductRepository() ProductRepository <span class="cov0" title="0">{
+func (m *NewProductRepositoryMock) CheckProductRepository() ProductRepository <span class="cov0" title="0">{
         return m
 }</span>
 
-func (m *MockProductRepositoryMock) Create(ctx context.Context, product *entities.Product) (*entities.Product, error) <span class="cov8" title="1">{
+func (m *NewProductRepositoryMock) Create(ctx context.Context, product *entities.Product) (*entities.Product, error) <span class="cov8" title="1">{
         args := m.Called(ctx, product)
         if args.Get(0) != nil </span><span class="cov8" title="1">{
                 return args.Get(0).(*entities.Product), args.Error(1)
@@ -1278,7 +1278,7 @@ func (m *MockProductRepositoryMock) Create(ctx context.Context, product *entitie
         <span class="cov8" title="1">return nil, args.Error(1)</span>
 }
 
-func (m *MockProductRepositoryMock) FindAll(ctx context.Context) (*[]entities.Product, error) <span class="cov8" title="1">{
+func (m *NewProductRepositoryMock) FindAll(ctx context.Context) (*[]entities.Product, error) <span class="cov8" title="1">{
         args := m.Called(ctx)
         if args.Get(0) != nil </span><span class="cov8" title="1">{
                 return args.Get(0).(*[]entities.Product), args.Error(1)
@@ -1286,7 +1286,7 @@ func (m *MockProductRepositoryMock) FindAll(ctx context.Context) (*[]entities.Pr
         <span class="cov8" title="1">return nil, args.Error(1)</span>
 }
 
-func (m *MockProductRepositoryMock) FindByID(ctx context.Context, id string) (*entities.Product, error) <span class="cov8" title="1">{
+func (m *NewProductRepositoryMock) FindByID(ctx context.Context, id string) (*entities.Product, error) <span class="cov8" title="1">{
         args := m.Called(ctx, id)
         if args.Get(0) != nil </span><span class="cov8" title="1">{
                 return args.Get(0).(*entities.Product), args.Error(1)
@@ -1294,7 +1294,7 @@ func (m *MockProductRepositoryMock) FindByID(ctx context.Context, id string) (*e
         <span class="cov8" title="1">return nil, args.Error(1)</span>
 }
 
-func (m *MockProductRepositoryMock) Update(ctx context.Context, id string, product *entities.Product) (*entities.Product, error) <span class="cov8" title="1">{
+func (m *NewProductRepositoryMock) Update(ctx context.Context, id string, product *entities.Product) (*entities.Product, error) <span class="cov8" title="1">{
         args := m.Called(ctx, id, product)
         if args.Get(0) != nil </span><span class="cov8" title="1">{
                 return args.Get(0).(*entities.Product), args.Error(1)
@@ -1302,7 +1302,7 @@ func (m *MockProductRepositoryMock) Update(ctx context.Context, id string, produ
         <span class="cov8" title="1">return nil, args.Error(1)</span>
 }
 
-func (m *MockProductRepositoryMock) Delete(ctx context.Context, id string) (*entities.Product, error) <span class="cov8" title="1">{
+func (m *NewProductRepositoryMock) Delete(ctx context.Context, id string) (*entities.Product, error) <span class="cov8" title="1">{
         args := m.Called(ctx, id)
         if args.Get(0) != nil </span><span class="cov8" title="1">{
                 return args.Get(0).(*entities.Product), args.Error(1)
@@ -1441,27 +1441,27 @@ func (m *NewStockRepositoryMock) checkStockRepositoryMock() StockRepository <spa
         return m
 }</span>
 
-func (m *NewStockRepositoryMock) Create(ctx context.Context, stock *entities.Stock) (*entities.Stock, error) <span class="cov0" title="0">{
+func (m *NewStockRepositoryMock) Create(ctx context.Context, stock *entities.Stock) (*entities.Stock, error) <span class="cov8" title="1">{
         args := m.Called(ctx, stock)
         return args.Get(0).(*entities.Stock), args.Error(1)
 }</span>
 
-func (m *NewStockRepositoryMock) FindAll(ctx context.Context) (*[]entities.Stock, error) <span class="cov0" title="0">{
+func (m *NewStockRepositoryMock) FindAll(ctx context.Context) (*[]entities.Stock, error) <span class="cov8" title="1">{
         args := m.Called(ctx)
         return args.Get(0).(*[]entities.Stock), args.Error(1)
 }</span>
 
-func (m *NewStockRepositoryMock) CheckStockByProductId(ctx context.Context, id string) (*entities.Stock, error) <span class="cov0" title="0">{
+func (m *NewStockRepositoryMock) CheckStockByProductId(ctx context.Context, id string) (*entities.Stock, error) <span class="cov8" title="1">{
         args := m.Called(ctx, id)
         return args.Get(0).(*entities.Stock), args.Error(1)
 }</span>
 
-func (m *NewStockRepositoryMock) Update(ctx context.Context, id string, stock *entities.Stock) (*entities.Stock, error) <span class="cov0" title="0">{
+func (m *NewStockRepositoryMock) Update(ctx context.Context, id string, stock *entities.Stock) (*entities.Stock, error) <span class="cov8" title="1">{
         args := m.Called(ctx, id, stock)
         return args.Get(0).(*entities.Stock), args.Error(1)
 }</span>
 
-func (m *NewStockRepositoryMock) Delete(ctx context.Context, id string) (*entities.Stock, error) <span class="cov0" title="0">{
+func (m *NewStockRepositoryMock) Delete(ctx context.Context, id string) (*entities.Stock, error) <span class="cov8" title="1">{
         args := m.Called(ctx, id)
         return args.Get(0).(*entities.Stock), args.Error(1)
 }</span>
@@ -1622,32 +1622,32 @@ func (m *NewTransactionRepositoryMock) transactionRepositoryMock() TransactionRe
         return m
 }</span>
 
-func (m *NewTransactionRepositoryMock) Create(ctx context.Context, transaction *aggregation.TransactionEcommerce) (*entities.Transaction, error) <span class="cov0" title="0">{
+func (m *NewTransactionRepositoryMock) Create(ctx context.Context, transaction *aggregation.TransactionEcommerce) (*entities.Transaction, error) <span class="cov8" title="1">{
         args := m.Called(ctx, transaction)
         return args.Get(0).(*entities.Transaction), args.Error(1)
 }</span>
 
-func (m *NewTransactionRepositoryMock) FindAll(ctx context.Context) (*[]entities.Transaction, error) <span class="cov0" title="0">{
+func (m *NewTransactionRepositoryMock) FindAll(ctx context.Context) (*[]entities.Transaction, error) <span class="cov8" title="1">{
         args := m.Called(ctx)
         return args.Get(0).(*[]entities.Transaction), args.Error(1)
 }</span>
 
-func (m *NewTransactionRepositoryMock) FindByID(ctx context.Context, id string) (*entities.Transaction, error) <span class="cov0" title="0">{
+func (m *NewTransactionRepositoryMock) FindByID(ctx context.Context, id string) (*entities.Transaction, error) <span class="cov8" title="1">{
         args := m.Called(ctx, id)
         return args.Get(0).(*entities.Transaction), args.Error(1)
 }</span>
 
-func (m *NewTransactionRepositoryMock) Update(ctx context.Context, id string, transaction *aggregation.TransactionEcommerce) (*entities.Transaction, error) <span class="cov0" title="0">{
+func (m *NewTransactionRepositoryMock) Update(ctx context.Context, id string, transaction *aggregation.TransactionEcommerce) (*entities.Transaction, error) <span class="cov8" title="1">{
         args := m.Called(ctx, id, transaction)
         return args.Get(0).(*entities.Transaction), args.Error(1)
 }</span>
 
-func (m *NewTransactionRepositoryMock) Delete(ctx context.Context, id string) (*entities.Transaction, error) <span class="cov0" title="0">{
+func (m *NewTransactionRepositoryMock) Delete(ctx context.Context, id string) (*entities.Transaction, error) <span class="cov8" title="1">{
         args := m.Called(ctx, id)
         return args.Get(0).(*entities.Transaction), args.Error(1)
 }</span>
 
-func (m *NewTransactionRepositoryMock) FindProductsByTransactionID(ctx context.Context, id string) (*aggregation.Ecommerce, error) <span class="cov0" title="0">{
+func (m *NewTransactionRepositoryMock) FindProductsByTransactionID(ctx context.Context, id string) (*aggregation.Ecommerce, error) <span class="cov8" title="1">{
         args := m.Called(ctx, id)
         return args.Get(0).(*aggregation.Ecommerce), args.Error(1)
 }</span>
@@ -1674,7 +1674,7 @@ type orderServiceImpl struct {
 func NewOrderServiceImpl(orderRepository _orderRepository.OrderRepository,
         transactionRepository _transactionRepository.TransactionRepository,
         stockRepository _stockRepository.StockRepository,
-) OrderService <span class="cov0" title="0">{
+) OrderService <span class="cov8" title="1">{
         return &amp;orderServiceImpl{
                 orderRepository:       orderRepository,
                 transactionRepository: transactionRepository,
@@ -1682,170 +1682,170 @@ func NewOrderServiceImpl(orderRepository _orderRepository.OrderRepository,
         }
 }</span>
 
-func (s *orderServiceImpl) Create(ctx context.Context, order *entities.Order) (*entities.Order, error) <span class="cov0" title="0">{
+func (s *orderServiceImpl) Create(ctx context.Context, order *entities.Order) (*entities.Order, error) <span class="cov8" title="1">{
         ctx, sp := tracer.Start(ctx, "orderCreateService")
         defer sp.End()
 
         newOrder, err := s.orderRepository.Create(ctx, order)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">ecommerce, err := s.transactionRepository.FindProductsByTransactionID(ctx, order.TransactionID)
-        if err != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">ecommerce, err := s.transactionRepository.FindProductsByTransactionID(ctx, order.TransactionID)
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">if ecommerce.Quantity == nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if ecommerce.Quantity == nil </span><span class="cov8" title="1">{
                 return nil, errors.New("quantity is nil")
         }</span>
 
-        <span class="cov0" title="0">stockRollback := make([]entities.Stock, 0)
-        for i, product := range ecommerce.Product </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">stockRollback := make([]entities.Stock, 0)
+        for i, product := range ecommerce.Product </span><span class="cov8" title="1">{
                 quantityProduct := ecommerce.Quantity[i]
 
                 stock, err := s.stockRepository.CheckStockByProductId(ctx, product.ProductID)
-                if err != nil </span><span class="cov0" title="0">{
+                if err != nil </span><span class="cov8" title="1">{
                         return nil, err
                 }</span>
 
-                <span class="cov0" title="0">stock.Quantity -= quantityProduct
+                <span class="cov8" title="1">stock.Quantity -= quantityProduct
 
                 stock, err = s.stockRepository.Update(ctx, stock.StockID, stock)
-                if err != nil </span><span class="cov0" title="0">{
+                if err != nil </span><span class="cov8" title="1">{
                         //for rollback
                         _, _ = s.orderRepository.Delete(ctx, newOrder.OrderID)
                         for _, rollback := range stockRollback </span><span class="cov0" title="0">{
                                 _, _ = s.stockRepository.Update(ctx, rollback.StockID, &amp;rollback)
                         }</span>
-                        <span class="cov0" title="0">return nil, err</span>
+                        <span class="cov8" title="1">return nil, err</span>
                 }
-                <span class="cov0" title="0">stock.Quantity += quantityProduct
+                <span class="cov8" title="1">stock.Quantity += quantityProduct
                 stockRollback = append(stockRollback, *stock)</span>
         }
-        <span class="cov0" title="0">customTracer.SetSubAttributesWithJson(newOrder, sp)
+        <span class="cov8" title="1">customTracer.SetSubAttributesWithJson(newOrder, sp)
         return newOrder, nil</span>
 }
 
-func (s *orderServiceImpl) FindAll(ctx context.Context) (*[]entities.Order, error) <span class="cov0" title="0">{
+func (s *orderServiceImpl) FindAll(ctx context.Context) (*[]entities.Order, error) <span class="cov8" title="1">{
         ctx, sp := tracer.Start(ctx, "orderFindAllService")
         defer sp.End()
 
         orders, err := s.orderRepository.FindAll(ctx)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">return orders, nil</span>
+        <span class="cov8" title="1">return orders, nil</span>
 }
 
-func (s *orderServiceImpl) FindByID(ctx context.Context, id string) (*entities.Order, error) <span class="cov0" title="0">{
+func (s *orderServiceImpl) FindByID(ctx context.Context, id string) (*entities.Order, error) <span class="cov8" title="1">{
         ctx, sp := tracer.Start(ctx, "orderFindByIdService")
         defer sp.End()
 
         order, err := s.orderRepository.FindByID(ctx, id)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
-        <span class="cov0" title="0">return order, nil</span>
+        <span class="cov8" title="1">return order, nil</span>
 }
 
-func (s *orderServiceImpl) Update(ctx context.Context, id string, order *entities.Order) (*entities.Order, error) <span class="cov0" title="0">{
+func (s *orderServiceImpl) Update(ctx context.Context, id string, order *entities.Order) (*entities.Order, error) <span class="cov8" title="1">{
         ctx, sp := tracer.Start(ctx, "orderUpdateService")
         defer sp.End()
 
-        ecommerce, err := s.transactionRepository.FindProductsByTransactionID(ctx, order.TransactionID)
-        if err != nil </span><span class="cov0" title="0">{
+        newOrder, err := s.orderRepository.Update(ctx, id, order)
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">if ecommerce.Quantity == nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">ecommerce, err := s.transactionRepository.FindProductsByTransactionID(ctx, order.TransactionID)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">if ecommerce.Quantity == nil </span><span class="cov8" title="1">{
                 return nil, errors.New("quantity is nil")
         }</span>
 
-        <span class="cov0" title="0">newOrder, err := s.orderRepository.Update(ctx, id, order)
-        if err != nil </span><span class="cov0" title="0">{
-                return nil, err
-        }</span>
-
-        <span class="cov0" title="0">stockRollback := make([]entities.Stock, 0)
-        for i, product := range ecommerce.Product </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">stockRollback := make([]entities.Stock, 0)
+        for i, product := range ecommerce.Product </span><span class="cov8" title="1">{
                 quantityProduct := ecommerce.Quantity[i]
 
                 stock, err := s.stockRepository.CheckStockByProductId(ctx, product.ProductID)
-                if err != nil </span><span class="cov0" title="0">{
+                if err != nil </span><span class="cov8" title="1">{
                         return nil, err
                 }</span>
 
-                <span class="cov0" title="0">stock.Quantity -= quantityProduct
+                <span class="cov8" title="1">stock.Quantity -= quantityProduct
 
                 stock, err = s.stockRepository.Update(ctx, stock.StockID, stock)
-                if err != nil </span><span class="cov0" title="0">{
+                if err != nil </span><span class="cov8" title="1">{
                         _, _ = s.orderRepository.Delete(ctx, newOrder.OrderID)
                         for _, rollback := range stockRollback </span><span class="cov0" title="0">{
                                 _, _ = s.stockRepository.Update(ctx, rollback.StockID, &amp;rollback)
                         }</span>
-                        <span class="cov0" title="0">return nil, err</span>
+                        <span class="cov8" title="1">return nil, err</span>
                 }
-                <span class="cov0" title="0">stock.Quantity += quantityProduct
+                <span class="cov8" title="1">stock.Quantity += quantityProduct
                 stockRollback = append(stockRollback, *stock)</span>
         }
 
-        <span class="cov0" title="0">return newOrder, nil</span>
+        <span class="cov8" title="1">return newOrder, nil</span>
 }
 
-func (s *orderServiceImpl) Delete(ctx context.Context, id string) (*entities.Order, error) <span class="cov0" title="0">{
+func (s *orderServiceImpl) Delete(ctx context.Context, id string) (*entities.Order, error) <span class="cov8" title="1">{
         ctx, sp := tracer.Start(ctx, "orderDeleteService")
         defer sp.End()
 
         order, err := s.orderRepository.Delete(ctx, id)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
-        <span class="cov0" title="0">return order, err</span>
+        <span class="cov8" title="1">return order, err</span>
 }
 
-func (s *orderServiceImpl) ChangeStatusNext(ctx context.Context, id string) (*entities.Order, error) <span class="cov0" title="0">{
+func (s *orderServiceImpl) ChangeStatusNext(ctx context.Context, id string) (*entities.Order, error) <span class="cov8" title="1">{
         ctx, sp := tracer.Start(ctx, "orderChangeStatusNextService")
         defer sp.End()
 
         order, err := s.orderRepository.FindByID(ctx, id)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">err = order.NextStatus()
-        if err != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">err = order.NextStatus()
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">_, err = s.orderRepository.UpdateStatus(ctx, id, order)
-        if err != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">_, err = s.orderRepository.UpdateStatus(ctx, id, order)
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">return order, nil</span>
+        <span class="cov8" title="1">return order, nil</span>
 }
-func (s *orderServiceImpl) ChageStatusDone(ctx context.Context, id string) (*entities.Order, error) <span class="cov0" title="0">{
+func (s *orderServiceImpl) ChageStatusDone(ctx context.Context, id string) (*entities.Order, error) <span class="cov8" title="1">{
         ctx, sp := tracer.Start(ctx, "orderChageStatusDoneService")
         defer sp.End()
 
         order, err := s.orderRepository.FindByID(ctx, id)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">err = order.NextPaidToDone()
-        if err != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">err = order.NextPaidToDone()
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">_, err = s.orderRepository.UpdateStatus(ctx, id, order)
-        if err != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">_, err = s.orderRepository.UpdateStatus(ctx, id, order)
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">return order, nil</span>
+        <span class="cov8" title="1">return order, nil</span>
 }
 </pre>
 		
@@ -1933,65 +1933,65 @@ type stockServiceImpl struct {
         stockRepository _StockRepository.StockRepository
 }
 
-func NewStockServiceImpl(stockRepository _StockRepository.StockRepository) StockService <span class="cov0" title="0">{
+func NewStockServiceImpl(stockRepository _StockRepository.StockRepository) StockService <span class="cov8" title="1">{
         return &amp;stockServiceImpl{stockRepository: stockRepository}
 }</span>
 
-func (s *stockServiceImpl) Create(ctx context.Context, stock *entities.Stock) (*entities.Stock, error) <span class="cov0" title="0">{
+func (s *stockServiceImpl) Create(ctx context.Context, stock *entities.Stock) (*entities.Stock, error) <span class="cov8" title="1">{
         ctx, sp := tracer.Start(ctx, "stockCreateService")
         defer sp.End()
 
         stockEntity, err := s.stockRepository.Create(ctx, stock)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
-        <span class="cov0" title="0">return stockEntity, nil</span>
+        <span class="cov8" title="1">return stockEntity, nil</span>
 }
 
-func (s *stockServiceImpl) FindAll(ctx context.Context) (*[]entities.Stock, error) <span class="cov0" title="0">{
+func (s *stockServiceImpl) FindAll(ctx context.Context) (*[]entities.Stock, error) <span class="cov8" title="1">{
         ctx, sp := tracer.Start(ctx, "stockFindAllService")
         defer sp.End()
 
         stockEntities, err := s.stockRepository.FindAll(ctx)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">return stockEntities, nil</span>
+        <span class="cov8" title="1">return stockEntities, nil</span>
 }
 
-func (s *stockServiceImpl) CheckStockByProductId(ctx context.Context, id string) (*entities.Stock, error) <span class="cov0" title="0">{
+func (s *stockServiceImpl) CheckStockByProductId(ctx context.Context, id string) (*entities.Stock, error) <span class="cov8" title="1">{
         ctx, sp := tracer.Start(ctx, "stockCheckStockByProductIdService")
         defer sp.End()
 
         stock, err := s.stockRepository.CheckStockByProductId(ctx, id)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
-        <span class="cov0" title="0">return stock, nil</span>
+        <span class="cov8" title="1">return stock, nil</span>
 }
 
-func (s *stockServiceImpl) Update(ctx context.Context, id string, stock *entities.Stock) (*entities.Stock, error) <span class="cov0" title="0">{
+func (s *stockServiceImpl) Update(ctx context.Context, id string, stock *entities.Stock) (*entities.Stock, error) <span class="cov8" title="1">{
         ctx, sp := tracer.Start(ctx, "stockUpdateService")
         defer sp.End()
 
         stockEntity, err := s.stockRepository.Update(ctx, id, stock)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
-        <span class="cov0" title="0">return stockEntity, nil</span>
+        <span class="cov8" title="1">return stockEntity, nil</span>
 }
 
-func (s *stockServiceImpl) Delete(ctx context.Context, id string) (*entities.Stock, error) <span class="cov0" title="0">{
+func (s *stockServiceImpl) Delete(ctx context.Context, id string) (*entities.Stock, error) <span class="cov8" title="1">{
         ctx, sp := tracer.Start(ctx, "stockDeleteService")
         defer sp.End()
 
         stock, err := s.stockRepository.Delete(ctx, id)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">return stock, nil</span>
+        <span class="cov8" title="1">return stock, nil</span>
 }
 </pre>
 		
@@ -2013,7 +2013,7 @@ type transactionService struct {
 func NewTransactionServiceImpl(
         transactionRepository _transactionRepository.TransactionRepository,
         productRepository _productRepository.ProductRepository,
-) TransactionService <span class="cov0" title="0">{
+) TransactionService <span class="cov8" title="1">{
         return &amp;transactionService{
                 transactionRepository: transactionRepository,
                 productRepository:     productRepository,
@@ -2021,88 +2021,88 @@ func NewTransactionServiceImpl(
 }</span>
 
 func (s *transactionService) Create(ctx context.Context, transaction *aggregation.TransactionEcommerce,
-) (*aggregation.TransactionEcommerce, error) <span class="cov0" title="0">{
+) (*aggregation.TransactionEcommerce, error) <span class="cov8" title="1">{
 
         ctx, sp := tracer.Start(ctx, "transactionCreateService")
         defer sp.End()
 
-        for productID := range transaction.AddessProduct </span><span class="cov0" title="0">{
+        for productID := range transaction.AddessProduct </span><span class="cov8" title="1">{
                 product, err := s.productRepository.FindByID(ctx, productID)
-                if err != nil </span><span class="cov0" title="0">{
+                if err != nil </span><span class="cov8" title="1">{
                         return nil, err
                 }</span>
-                <span class="cov0" title="0">transaction.Product = append(transaction.Product, *product)</span>
+                <span class="cov8" title="1">transaction.Product = append(transaction.Product, *product)</span>
         }
 
-        <span class="cov0" title="0">transaction.CalculatePrice()
+        <span class="cov8" title="1">transaction.CalculatePrice()
 
         transactionEntity, err := s.transactionRepository.Create(ctx, transaction)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">transaction.Tranasaction = transactionEntity
+        <span class="cov8" title="1">transaction.Tranasaction = transactionEntity
         return transaction, nil</span>
 }
 
-func (s *transactionService) FindAll(ctx context.Context) (*[]entities.Transaction, error) <span class="cov0" title="0">{
+func (s *transactionService) FindAll(ctx context.Context) (*[]entities.Transaction, error) <span class="cov8" title="1">{
         ctx, sp := tracer.Start(ctx, "transactionFindAllService")
         defer sp.End()
 
         transactionEntities, err := s.transactionRepository.FindAll(ctx)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">return transactionEntities, nil</span>
+        <span class="cov8" title="1">return transactionEntities, nil</span>
 }
 
-func (s *transactionService) FindByID(ctx context.Context, id string) (*entities.Transaction, error) <span class="cov0" title="0">{
+func (s *transactionService) FindByID(ctx context.Context, id string) (*entities.Transaction, error) <span class="cov8" title="1">{
         ctx, sp := tracer.Start(ctx, "transactionFindByIdService")
         defer sp.End()
 
         transactionEntity, err := s.transactionRepository.FindByID(ctx, id)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
-        <span class="cov0" title="0">return transactionEntity, nil</span>
+        <span class="cov8" title="1">return transactionEntity, nil</span>
 }
 
 func (s *transactionService) Update(ctx context.Context, id string, transaction *aggregation.TransactionEcommerce,
-) (*aggregation.TransactionEcommerce, error) <span class="cov0" title="0">{
+) (*aggregation.TransactionEcommerce, error) <span class="cov8" title="1">{
 
         ctx, sp := tracer.Start(ctx, "transactionUpdateService")
         defer sp.End()
 
-        for productID := range transaction.AddessProduct </span><span class="cov0" title="0">{
+        for productID := range transaction.AddessProduct </span><span class="cov8" title="1">{
                 product, err := s.productRepository.FindByID(ctx, productID)
-                if err != nil </span><span class="cov0" title="0">{
+                if err != nil </span><span class="cov8" title="1">{
                         return nil, err
                 }</span>
-                <span class="cov0" title="0">transaction.Product = append(transaction.Product, *product)</span>
+                <span class="cov8" title="1">transaction.Product = append(transaction.Product, *product)</span>
         }
 
-        <span class="cov0" title="0">transaction.CalculatePrice()
+        <span class="cov8" title="1">transaction.CalculatePrice()
 
         transactionEntity, err := s.transactionRepository.Update(ctx, id, transaction)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">transaction.Tranasaction = transactionEntity
+        <span class="cov8" title="1">transaction.Tranasaction = transactionEntity
         return transaction, nil</span>
 }
 
-func (s *transactionService) Delete(ctx context.Context, id string) (*entities.Transaction, error) <span class="cov0" title="0">{
+func (s *transactionService) Delete(ctx context.Context, id string) (*entities.Transaction, error) <span class="cov8" title="1">{
         ctx, sp := tracer.Start(ctx, "transactionDeleteService")
         defer sp.End()
 
         transaction, err := s.transactionRepository.Delete(ctx, id)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">return transaction, nil</span>
+        <span class="cov8" title="1">return transaction, nil</span>
 }
 </pre>
 		

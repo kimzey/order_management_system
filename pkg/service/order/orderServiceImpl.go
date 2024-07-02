@@ -99,6 +99,11 @@ func (s *orderServiceImpl) Update(ctx context.Context, id string, order *entitie
 	ctx, sp := tracer.Start(ctx, "orderUpdateService")
 	defer sp.End()
 
+	newOrder, err := s.orderRepository.Update(ctx, id, order)
+	if err != nil {
+		return nil, err
+	}
+
 	ecommerce, err := s.transactionRepository.FindProductsByTransactionID(ctx, order.TransactionID)
 	if err != nil {
 		return nil, err
@@ -106,11 +111,6 @@ func (s *orderServiceImpl) Update(ctx context.Context, id string, order *entitie
 
 	if ecommerce.Quantity == nil {
 		return nil, errors.New("quantity is nil")
-	}
-
-	newOrder, err := s.orderRepository.Update(ctx, id, order)
-	if err != nil {
-		return nil, err
 	}
 
 	stockRollback := make([]entities.Stock, 0)
