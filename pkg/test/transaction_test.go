@@ -29,11 +29,9 @@ func TestTransactionService_Create(t *testing.T) {
 	}
 
 	t.Run("successful create transaction", func(t *testing.T) {
-		// Mock product repository calls
 		mockProductRepo.On("FindByID", mock.Anything, "1").Return(&mockTransaction.Product[0], nil).Once()
 		mockProductRepo.On("FindByID", mock.Anything, "2").Return(&mockTransaction.Product[1], nil).Once()
 
-		// Mock transaction repository call
 		mockTransactionRepo.On("Create", mock.Anything, mock.AnythingOfType("*aggregation.TransactionEcommerce")).Return(mockTransaction.Tranasaction, nil).Once()
 
 		ctx := context.Background()
@@ -48,7 +46,6 @@ func TestTransactionService_Create(t *testing.T) {
 	})
 
 	t.Run("create transaction with product error", func(t *testing.T) {
-		// Mock product repository calls
 		mockProductRepo.On("FindByID", mock.Anything, "1").Return(&entities.Product{}, errors.New("product error")).Once()
 
 		ctx := context.Background()
@@ -56,16 +53,14 @@ func TestTransactionService_Create(t *testing.T) {
 
 		assert.Error(t, err)
 		assert.Equal(t, "product error", err.Error())
-		mockTransactionRepo.AssertExpectations(t)
+
 		mockProductRepo.AssertExpectations(t)
 	})
 
 	t.Run("create transaction with repository error", func(t *testing.T) {
-		// Mock product repository calls
 		mockProductRepo.On("FindByID", mock.Anything, "1").Return(&mockTransaction.Product[0], nil).Once()
 		mockProductRepo.On("FindByID", mock.Anything, "2").Return(&mockTransaction.Product[1], nil).Once()
 
-		// Mock transaction repository call
 		mockTransactionRepo.On("Create", mock.Anything, mock.AnythingOfType("*aggregation.TransactionEcommerce")).Return(&entities.Transaction{}, errors.New("create error")).Once()
 
 		ctx := context.Background()
@@ -156,10 +151,8 @@ func TestTransactionService_Update(t *testing.T) {
 	}
 
 	t.Run("successful update transaction", func(t *testing.T) {
-		// Mock product repository call
 		mockProductRepo.On("FindByID", mock.Anything, "1").Return(&mockTransaction.Product[0], nil).Once()
 
-		// Mock transaction repository call
 		mockTransactionRepo.On("Update", mock.Anything, "1", mockTransaction).Return(mockTransaction.Tranasaction, nil).Once()
 
 		ctx := context.Background()
@@ -173,7 +166,6 @@ func TestTransactionService_Update(t *testing.T) {
 	})
 
 	t.Run("update transaction with product error", func(t *testing.T) {
-		// Mock product repository call
 		mockProductRepo.On("FindByID", mock.Anything, "1").Return(nil, errors.New("product error")).Once()
 
 		ctx := context.Background()
@@ -186,10 +178,8 @@ func TestTransactionService_Update(t *testing.T) {
 	})
 
 	t.Run("update transaction with repository error", func(t *testing.T) {
-		// Mock product repository call
 		mockProductRepo.On("FindByID", mock.Anything, "1").Return(&mockTransaction.Product[0], nil).Once()
 
-		// Mock transaction repository call
 		mockTransactionRepo.On("Update", mock.Anything, "1", mockTransaction).Return(&entities.Transaction{}, errors.New("update error")).Once()
 
 		ctx := context.Background()

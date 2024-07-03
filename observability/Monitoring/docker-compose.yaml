@@ -274,9 +274,10 @@ services:
       - "--web.enable-lifecycle"
     depends_on:
       - gateway
+#    network_mode: host
     networks:
-      - hostnet
-    #      - loki
+#      - hostnet
+      - loki
     user: root
 
 

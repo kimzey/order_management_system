@@ -46,7 +46,6 @@ func TestProductService_FindAll(t *testing.T) {
 	mockRepo := new(_productRepository.NewProductRepositoryMock)
 	service := _productService.NewProductServiceImpl(mockRepo)
 
-	// Prepare mock data
 	mockProducts := []entities.Product{
 		{ProductID: "1", ProductName: "Product1", ProductPrice: 100},
 		{ProductID: "2", ProductName: "Product2", ProductPrice: 200},
@@ -81,7 +80,6 @@ func TestProductService_FindByID(t *testing.T) {
 	mockRepo := new(_productRepository.NewProductRepositoryMock)
 	service := _productService.NewProductServiceImpl(mockRepo)
 
-	// Prepare mock data
 	mockProduct := &entities.Product{ProductID: "1", ProductName: "Product1", ProductPrice: 100}
 
 	t.Run("successful find by id", func(t *testing.T) {
@@ -115,7 +113,6 @@ func TestProductService_Update(t *testing.T) {
 	mockRepo := new(_productRepository.NewProductRepositoryMock)
 	service := _productService.NewProductServiceImpl(mockRepo)
 
-	// Prepare mock data
 	mockProduct := &entities.Product{ProductID: "1", ProductName: "UpdatedProduct", ProductPrice: 150}
 
 	t.Run("successful update", func(t *testing.T) {
@@ -148,7 +145,6 @@ func TestProductService_Delete(t *testing.T) {
 	mockRepo := new(_productRepository.NewProductRepositoryMock)
 	service := _productService.NewProductServiceImpl(mockRepo)
 
-	// Prepare mock data
 	mockProduct := &entities.Product{ProductID: "1", ProductName: "Product1", ProductPrice: 100}
 
 	t.Run("successful delete", func(t *testing.T) {
