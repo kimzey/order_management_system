@@ -1,0 +1,2194 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>order: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/kizmey/order_management_system/pkg/controller/order/orderControllerImpl.go (0.0%)</option>
+				
+				<option value="file1">github.com/kizmey/order_management_system/pkg/controller/product/productControllerImpl.go (0.0%)</option>
+				
+				<option value="file2">github.com/kizmey/order_management_system/pkg/controller/stock/stockControllerImpl.go (0.0%)</option>
+				
+				<option value="file3">github.com/kizmey/order_management_system/pkg/controller/transaction/transactionContrllerImpl.go (0.0%)</option>
+				
+				<option value="file4">github.com/kizmey/order_management_system/pkg/interface/aggregation/ecommerce.go (100.0%)</option>
+				
+				<option value="file5">github.com/kizmey/order_management_system/pkg/interface/aggregation/transactionEcommerce.go (100.0%)</option>
+				
+				<option value="file6">github.com/kizmey/order_management_system/pkg/interface/entities/order.go (100.0%)</option>
+				
+				<option value="file7">github.com/kizmey/order_management_system/pkg/interface/model/order.go (0.0%)</option>
+				
+				<option value="file8">github.com/kizmey/order_management_system/pkg/interface/model/product.go (0.0%)</option>
+				
+				<option value="file9">github.com/kizmey/order_management_system/pkg/interface/model/stock.go (0.0%)</option>
+				
+				<option value="file10">github.com/kizmey/order_management_system/pkg/interface/model/transaction.go (0.0%)</option>
+				
+				<option value="file11">github.com/kizmey/order_management_system/pkg/repository/order/orderRepositoryImpl.go (0.0%)</option>
+				
+				<option value="file12">github.com/kizmey/order_management_system/pkg/repository/order/orderRepositoryMock.go (92.3%)</option>
+				
+				<option value="file13">github.com/kizmey/order_management_system/pkg/repository/product/productRepositoryImpl.go (0.0%)</option>
+				
+				<option value="file14">github.com/kizmey/order_management_system/pkg/repository/product/productRepositoryMock.go (95.2%)</option>
+				
+				<option value="file15">github.com/kizmey/order_management_system/pkg/repository/stock/stockRepositoryImpl.go (0.0%)</option>
+				
+				<option value="file16">github.com/kizmey/order_management_system/pkg/repository/stock/stockRepositoryMock.go (90.9%)</option>
+				
+				<option value="file17">github.com/kizmey/order_management_system/pkg/repository/transaction/transactionRepositoryImpl.go (0.0%)</option>
+				
+				<option value="file18">github.com/kizmey/order_management_system/pkg/repository/transaction/transactionRepositoryMock.go (92.3%)</option>
+				
+				<option value="file19">github.com/kizmey/order_management_system/pkg/service/order/orderServiceImpl.go (97.9%)</option>
+				
+				<option value="file20">github.com/kizmey/order_management_system/pkg/service/product/productServiceImpl.go (100.0%)</option>
+				
+				<option value="file21">github.com/kizmey/order_management_system/pkg/service/stock/stockServiceImpl.go (100.0%)</option>
+				
+				<option value="file22">github.com/kizmey/order_management_system/pkg/service/transaction/transactionServiceImpl.go (100.0%)</option>
+				
+				<option value="file23">github.com/kizmey/order_management_system/pkg/usecase.go (0.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package order
+
+import (
+        logger "github.com/kizmey/order_management_system/observability/logs"
+        "github.com/kizmey/order_management_system/pkg/interface/entities"
+        "github.com/kizmey/order_management_system/pkg/interface/modelReq"
+        "github.com/kizmey/order_management_system/pkg/interface/modelRes"
+        _orderService "github.com/kizmey/order_management_system/pkg/service/order"
+        "github.com/kizmey/order_management_system/server/httpEchoServer/custom"
+        "github.com/labstack/echo/v4"
+        "github.com/sirupsen/logrus"
+        "net/http"
+)
+
+type orderControllerImpl struct {
+        orderService _orderService.OrderService
+}
+
+func NewOrderControllerImpl(orderService _orderService.OrderService) OrderController <span class="cov0" title="0">{
+        return &amp;orderControllerImpl{orderService}
+}</span>
+
+func (c *orderControllerImpl) Create(pctx echo.Context) error <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(pctx.Request().Context(), "orderCreateController")
+        defer sp.End()
+
+        newOrderReq := new(modelReq.Order)
+        validatingContext := custom.NewCustomEchoRequest(pctx)
+        if err := validatingContext.BindAndValidate(newOrderReq); err != nil </span><span class="cov0" title="0">{
+                logger.LogError("Failed to validate order request", logrus.Fields{"error": err.Error()})
+                return custom.Error(pctx, http.StatusBadRequest, custom.ErrFailedToValidateOrderRequest)
+        }</span>
+
+        <span class="cov0" title="0">order := c.orderReqToEntity(newOrderReq)
+        newOrderRes, err := c.orderService.Create(ctx, order)
+        if err != nil </span><span class="cov0" title="0">{
+                logger.LogError("Failed to create order", logrus.Fields{"error": err.Error()})
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToCreateOrder)
+        }</span>
+
+        <span class="cov0" title="0">logger.LogInfo("Order created successfully", logrus.Fields{"order_id": newOrderRes.OrderID})
+
+        orderRes := c.orderEntityToModelRes(newOrderRes)
+        return pctx.JSON(http.StatusCreated, orderRes)</span>
+}
+
+func (c *orderControllerImpl) FindAll(pctx echo.Context) error <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(pctx.Request().Context(), "orderFindAllController")
+        defer sp.End()
+
+        orderListingResult, err := c.orderService.FindAll(ctx)
+        if err != nil </span><span class="cov0" title="0">{
+                logger.LogError("Failed to retrieve order list", logrus.Fields{"error": err.Error()})
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToRetrieveOrders)
+        }</span>
+
+        <span class="cov0" title="0">logger.LogInfo("Retrieved order list successfully", nil)
+
+        allOrder := make([]modelRes.Order, 0)
+        for _, order := range *orderListingResult </span><span class="cov0" title="0">{
+                allOrder = append(allOrder, *c.orderEntityToModelRes(&amp;order))
+        }</span>
+
+        <span class="cov0" title="0">return pctx.JSON(http.StatusOK, allOrder)</span>
+}
+
+func (c *orderControllerImpl) FindByID(pctx echo.Context) error <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(pctx.Request().Context(), "orderFindByIdController")
+        defer sp.End()
+
+        id := pctx.Param("id")
+
+        newOrderRes, err := c.orderService.FindByID(ctx, id)
+        if err != nil </span><span class="cov0" title="0">{
+                logger.LogError("Failed to find order by ID", logrus.Fields{"error": err.Error(), "order_id": id})
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrOrderNotFound)
+        }</span>
+
+        <span class="cov0" title="0">logger.LogInfo("Found order by ID", logrus.Fields{"order_id": newOrderRes.OrderID})
+
+        orderRes := c.orderEntityToModelRes(newOrderRes)
+        return pctx.JSON(http.StatusOK, orderRes)</span>
+}
+
+func (c *orderControllerImpl) Update(pctx echo.Context) error <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(pctx.Request().Context(), "orderUpdateController")
+        defer sp.End()
+
+        id := pctx.Param("id")
+
+        orderReq := new(modelReq.Order)
+        validatingContext := custom.NewCustomEchoRequest(pctx)
+        if err := validatingContext.BindAndValidate(orderReq); err != nil </span><span class="cov0" title="0">{
+                logger.LogError("Failed to validate order update request", logrus.Fields{"error": err.Error()})
+                return custom.Error(pctx, http.StatusBadRequest, custom.ErrFailedToValidateOrderRequest)
+        }</span>
+
+        <span class="cov0" title="0">order := c.orderReqToEntity(orderReq)
+        newOrderRes, err := c.orderService.Update(ctx, id, order)
+        if err != nil </span><span class="cov0" title="0">{
+                logger.LogError("Failed to update order", logrus.Fields{"error": err.Error(), "order_id": id})
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToUpdateOrder)
+        }</span>
+        <span class="cov0" title="0">logger.LogInfo("Order updated successfully", logrus.Fields{"order_id": newOrderRes.OrderID})
+
+        orderRes := c.orderEntityToModelRes(newOrderRes)
+        return pctx.JSON(http.StatusOK, orderRes)</span>
+}
+
+func (c *orderControllerImpl) Delete(pctx echo.Context) error <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(pctx.Request().Context(), "orderDeleteController")
+        defer sp.End()
+
+        id := pctx.Param("id")
+
+        newOrderEntity, err := c.orderService.Delete(ctx, id)
+        if err != nil </span><span class="cov0" title="0">{
+                logger.LogError("Failed to delete order", logrus.Fields{"error": err.Error(), "order_id": id})
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToDeleteOrder)
+        }</span>
+
+        <span class="cov0" title="0">logger.LogInfo("Order deleted successfully", logrus.Fields{"order_id": newOrderEntity.OrderID})
+
+        orderRes := c.orderEntityToModelRes(newOrderEntity)
+        return pctx.JSON(http.StatusOK, orderRes)</span>
+}
+
+func (c *orderControllerImpl) ChangeStatusNext(pctx echo.Context) error <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(pctx.Request().Context(), "orderChangeStatusNextController")
+        defer sp.End()
+
+        orderId := pctx.Param("id")
+        //if orderId == "" {
+        //        err := custom.ErrOrderNotFound
+        //        logger.LogWarn("Order id not found", logrus.Fields{"error": err.Error()})
+        //        return custom.Error(pctx, http.StatusBadRequest, err)
+        //}
+
+        newOrderRes, err := c.orderService.ChangeStatusNext(ctx, orderId)
+        if err != nil </span><span class="cov0" title="0">{
+                logger.LogError("Failed to change order status", logrus.Fields{"error": err.Error(), "order_id": orderId})
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToChangeOrderStatus)
+        }</span>
+
+        <span class="cov0" title="0">logger.LogInfo("Order status changed successfully", logrus.Fields{"order_id": newOrderRes.OrderID, "new_status": newOrderRes.Status})
+        orderRes := c.orderEntityToModelRes(newOrderRes)
+        return pctx.JSON(http.StatusOK, orderRes)</span>
+}
+
+func (c *orderControllerImpl) ChageStatusDone(pctx echo.Context) error <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(pctx.Request().Context(), "orderChageStatusDoneController")
+        defer sp.End()
+
+        id := pctx.Param("id")
+
+        logger.LogInfo("Changing order status to done", logrus.Fields{"order_id": id})
+        newOrderRes, err := c.orderService.ChageStatusDone(ctx, id)
+        if err != nil </span><span class="cov0" title="0">{
+                logger.LogError("Failed to change order status to done", logrus.Fields{"error": err.Error(), "order_id": id})
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToChangeOrderStatus)
+        }</span>
+
+        <span class="cov0" title="0">logger.LogInfo("Order status changed to done successfully", logrus.Fields{"order_id": newOrderRes.OrderID})
+        orderRes := c.orderEntityToModelRes(newOrderRes)
+        return pctx.JSON(http.StatusOK, orderRes)</span>
+}
+
+func (c *orderControllerImpl) orderReqToEntity(orderReq *modelReq.Order) *entities.Order <span class="cov0" title="0">{
+        return &amp;entities.Order{
+                TransactionID: orderReq.TransactionID,
+                Status:        orderReq.Status,
+        }
+}</span>
+
+func (c *orderControllerImpl) orderEntityToModelRes(order *entities.Order) *modelRes.Order <span class="cov0" title="0">{
+        return &amp;modelRes.Order{
+                OrderID:       order.OrderID,
+                TransactionID: order.TransactionID,
+                Status:        order.Status,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package product
+
+import (
+        "encoding/json"
+        customTracer "github.com/kizmey/order_management_system/observability/tracer"
+        "github.com/kizmey/order_management_system/pkg/interface/entities"
+        "github.com/kizmey/order_management_system/pkg/interface/modelReq"
+        "github.com/kizmey/order_management_system/pkg/interface/modelRes"
+        _productService "github.com/kizmey/order_management_system/pkg/service/product"
+        "github.com/kizmey/order_management_system/server/httpEchoServer/custom"
+        "github.com/labstack/echo/v4"
+        "go.opentelemetry.io/otel/attribute"
+        "net/http"
+)
+
+type productController struct {
+        productService _productService.ProductService
+}
+
+func NewProductControllerImpl(productService _productService.ProductService) ProductController <span class="cov0" title="0">{
+        return &amp;productController{
+                productService: productService,
+        }
+}</span>
+
+func (c *productController) Create(pctx echo.Context) error <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(pctx.Request().Context(), "productCreateController")
+        defer sp.End()
+
+        productReq := new(modelReq.Product)
+
+        validatingContext := custom.NewCustomEchoRequest(pctx)
+        if err := validatingContext.BindAndValidate(productReq); err != nil </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusBadRequest, custom.ErrFailedToValidateProductRequest)
+        }</span>
+        <span class="cov0" title="0">product := c.productReqToEntity(productReq)
+        product, err := c.productService.Create(ctx, product)
+        if err != nil </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToCreateProduct)
+        }</span>
+
+        <span class="cov0" title="0">customTracer.SetSubAttributesWithJson(product, sp)
+
+        productRes := c.productReqToEntity(productReq)
+        return pctx.JSON(http.StatusCreated, productRes)</span>
+}
+
+func (c *productController) FindAll(pctx echo.Context) error <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(pctx.Request().Context(), "productFindAllController")
+        defer sp.End()
+
+        productListingResult, err := c.productService.FindAll(ctx)
+        if err != nil </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToRetrieveProducts)
+        }</span>
+
+        <span class="cov0" title="0">productJSON, err := json.Marshal(productListingResult)
+        if err != nil </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToRetrieveProducts)
+        }</span>
+        <span class="cov0" title="0">sp.SetAttributes(
+                attribute.String("product.listing", string(productJSON)),
+        )
+
+        productsRes := make([]modelRes.Product, 0)
+        for _, product := range *productListingResult </span><span class="cov0" title="0">{
+                productsRes = append(productsRes, *c.productEntityToRes(&amp;product))
+        }</span>
+
+        <span class="cov0" title="0">return pctx.JSON(http.StatusOK, productsRes)</span>
+}
+
+func (c *productController) FindByID(pctx echo.Context) error <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(pctx.Request().Context(), "productFindByIdController")
+        defer sp.End()
+
+        id := pctx.Param("id")
+
+        product, err := c.productService.FindByID(ctx, id)
+        if err != nil </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrProductNotFound)
+        }</span>
+
+        <span class="cov0" title="0">productRes := c.productEntityToRes(product)
+        return pctx.JSON(http.StatusOK, productRes)</span>
+}
+
+func (c *productController) Update(pctx echo.Context) error <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(pctx.Request().Context(), "productUpdateController")
+        defer sp.End()
+
+        id := pctx.Param("id")
+
+        productReq := new(modelReq.Product)
+
+        validatingContext := custom.NewCustomEchoRequest(pctx)
+        if err := validatingContext.BindAndValidate(productReq); err != nil </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusBadRequest, custom.ErrFailedToValidateProductRequest)
+        }</span>
+
+        <span class="cov0" title="0">product := c.productReqToEntity(productReq)
+        product, err := c.productService.Update(ctx, id, product)
+        if err != nil </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToUpdateProduct)
+        }</span>
+
+        <span class="cov0" title="0">productRes := c.productEntityToRes(product)
+        return pctx.JSON(http.StatusOK, productRes)</span>
+}
+
+func (c *productController) Delete(pctx echo.Context) error <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(pctx.Request().Context(), "productDeleteController")
+        defer sp.End()
+
+        id := pctx.Param("id")
+
+        product, err := c.productService.Delete(ctx, id)
+        if err != nil </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToDeleteProduct)
+        }</span>
+
+        <span class="cov0" title="0">productRes := c.productEntityToRes(product)
+        return pctx.JSON(http.StatusOK, productRes)</span>
+}
+
+func (c *productController) productReqToEntity(product *modelReq.Product) *entities.Product <span class="cov0" title="0">{
+        return &amp;entities.Product{
+                ProductName:  product.ProductName,
+                ProductPrice: product.ProductPrice,
+        }
+
+}</span>
+
+func (c *productController) productEntityToRes(product *entities.Product) *modelRes.Product <span class="cov0" title="0">{
+        return &amp;modelRes.Product{
+                ProductID:    product.ProductID,
+                ProductName:  product.ProductName,
+                ProductPrice: product.ProductPrice,
+        }
+
+}</span>
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package stock
+
+import (
+        "github.com/kizmey/order_management_system/pkg/interface/entities"
+        "github.com/kizmey/order_management_system/pkg/interface/modelReq"
+        "github.com/kizmey/order_management_system/pkg/interface/modelRes"
+        _StockService "github.com/kizmey/order_management_system/pkg/service/stock"
+        "github.com/kizmey/order_management_system/server/httpEchoServer/custom"
+        "github.com/labstack/echo/v4"
+        "net/http"
+)
+
+type stockControllerImpl struct {
+        stockService _StockService.StockService
+}
+
+func NewStockControllerImpl(stockController _StockService.StockService) StockController <span class="cov0" title="0">{
+        return &amp;stockControllerImpl{stockService: stockController}
+}</span>
+
+func (c *stockControllerImpl) Create(pctx echo.Context) error <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(pctx.Request().Context(), "stockCreateController")
+        defer sp.End()
+
+        stockReq := new(modelReq.Stock)
+
+        validatingContext := custom.NewCustomEchoRequest(pctx)
+        if err := validatingContext.BindAndValidate(stockReq); err != nil </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusBadRequest, custom.ErrFailedToValidateStockRequest)
+        }</span>
+
+        <span class="cov0" title="0">stockEntity := c.stockReqToEntity(stockReq)
+        stock, err := c.stockService.Create(ctx, stockEntity)
+
+        if err != nil </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToCreateStock)
+        }</span>
+        <span class="cov0" title="0">stockRes := c.stockEntityToRes(stock)
+        return pctx.JSON(http.StatusCreated, stockRes)</span>
+}
+
+func (c *stockControllerImpl) FindAll(pctx echo.Context) error <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(pctx.Request().Context(), "stockFindAllController")
+        defer sp.End()
+
+        stockListingResult, err := c.stockService.FindAll(ctx)
+
+        if err != nil </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToRetrieveStocks)
+        }</span>
+
+        <span class="cov0" title="0">var stockRes []modelRes.Stock
+        for _, stock := range *stockListingResult </span><span class="cov0" title="0">{
+                stockRes = append(stockRes, *c.stockEntityToRes(&amp;stock))
+        }</span>
+
+        <span class="cov0" title="0">return pctx.JSON(http.StatusOK, stockRes)</span>
+}
+
+func (c *stockControllerImpl) CheckStockByProductId(pctx echo.Context) error <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(pctx.Request().Context(), "CheckStockByProductIdController")
+        defer sp.End()
+
+        id := pctx.Param("id")
+
+        stock, err := c.stockService.CheckStockByProductId(ctx, id)
+
+        if err != nil </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrStockNotFound)
+        }</span>
+
+        <span class="cov0" title="0">stockRes := c.stockEntityToRes(stock)
+        return pctx.JSON(http.StatusOK, stockRes)</span>
+}
+
+func (c *stockControllerImpl) Update(pctx echo.Context) error <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(pctx.Request().Context(), "stockUpdateController")
+        defer sp.End()
+
+        id := pctx.Param("id")
+
+        stockReq := new(modelReq.Stock)
+
+        validatingContext := custom.NewCustomEchoRequest(pctx)
+        if err := validatingContext.BindAndValidate(stockReq); err != nil </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusBadRequest, custom.ErrFailedToValidateStockRequest)
+        }</span>
+
+        <span class="cov0" title="0">stockEntity := c.stockReqToEntity(stockReq)
+        stock, err := c.stockService.Update(ctx, id, stockEntity)
+
+        if err != nil </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToUpdateStock)
+        }</span>
+
+        <span class="cov0" title="0">stockRes := c.stockEntityToRes(stock)
+        return pctx.JSON(http.StatusCreated, stockRes)</span>
+}
+
+func (c *stockControllerImpl) Delete(pctx echo.Context) error <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(pctx.Request().Context(), "stockDeleteController")
+        defer sp.End()
+        id := pctx.Param("id")
+
+        stock, err := c.stockService.Delete(ctx, id)
+
+        if err != nil </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToDeleteStock)
+        }</span>
+
+        <span class="cov0" title="0">stockRes := c.stockEntityToRes(stock)
+        return pctx.JSON(http.StatusOK, stockRes)</span>
+}
+
+func (c *stockControllerImpl) stockReqToEntity(stockReq *modelReq.Stock) *entities.Stock <span class="cov0" title="0">{
+        return &amp;entities.Stock{
+                ProductID: stockReq.ProductID,
+                Quantity:  stockReq.Quantity,
+        }
+}</span>
+
+func (c *stockControllerImpl) stockEntityToRes(stock *entities.Stock) *modelRes.Stock <span class="cov0" title="0">{
+        return &amp;modelRes.Stock{
+                StockID:   stock.StockID,
+                ProductID: stock.ProductID,
+                Quantity:  stock.Quantity,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package transaction
+
+import (
+        _interface "github.com/kizmey/order_management_system/pkg/interface/aggregation"
+        "github.com/kizmey/order_management_system/pkg/interface/entities"
+        "github.com/kizmey/order_management_system/pkg/interface/modelReq"
+        "github.com/kizmey/order_management_system/pkg/interface/modelRes"
+        _transactionService "github.com/kizmey/order_management_system/pkg/service/transaction"
+        "github.com/kizmey/order_management_system/server/httpEchoServer/custom"
+        "github.com/labstack/echo/v4"
+        "net/http"
+)
+
+type transactionControllerImpl struct {
+        transaction _transactionService.TransactionService
+}
+
+func NewTransactionControllerImpl(transaction _transactionService.TransactionService) TransactionController <span class="cov0" title="0">{
+        return &amp;transactionControllerImpl{
+                transaction: transaction,
+        }
+}</span>
+
+func (c *transactionControllerImpl) Create(pctx echo.Context) error <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(pctx.Request().Context(), "transactionCreateController")
+        defer sp.End()
+
+        transactionReq := new(modelReq.Transaction)
+
+        validatingContext := custom.NewCustomEchoRequest(pctx)
+        if err := validatingContext.BindAndValidate(transactionReq); err != nil </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusBadRequest, custom.ErrFailedToValidateTransactionRequest)
+        }</span>
+
+        <span class="cov0" title="0">if !isProductIDsUnique(transactionReq.Product) </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusBadRequest, custom.ErrFailedToValidateTransactionRequest)
+        }</span>
+
+        <span class="cov0" title="0">transactionEntity := c.transactionReqToAggregation(transactionReq)
+
+        transaction, err := c.transaction.Create(ctx, transactionEntity)
+        if err != nil </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToCreateTransaction)
+        }</span>
+
+        <span class="cov0" title="0">transactionRes := c.transactionAndproductEntityToRes(transaction)
+        return pctx.JSON(http.StatusCreated, transactionRes)</span>
+}
+
+func (c *transactionControllerImpl) FindAll(pctx echo.Context) error <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(pctx.Request().Context(), "transactionFindAllController")
+        defer sp.End()
+
+        transactions, err := c.transaction.FindAll(ctx)
+        if err != nil </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToRetrieveTransactions)
+        }</span>
+
+        <span class="cov0" title="0">allTransaction := make([]modelRes.Transaction, 0)
+        for _, transactionEntity := range *transactions </span><span class="cov0" title="0">{
+                allTransaction = append(allTransaction, *c.transactionEntityToRes(&amp;transactionEntity))
+        }</span>
+
+        <span class="cov0" title="0">return pctx.JSON(http.StatusOK, allTransaction)</span>
+}
+
+func (c *transactionControllerImpl) FindByID(pctx echo.Context) error <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(pctx.Request().Context(), "transactionFindByIdController")
+        defer sp.End()
+
+        id := pctx.Param("id")
+
+        transaction, err := c.transaction.FindByID(ctx, id)
+        if err != nil </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrTransactionNotFound)
+        }</span>
+
+        <span class="cov0" title="0">transactionRes := c.transactionEntityToRes(transaction)
+        return pctx.JSON(http.StatusOK, transactionRes)</span>
+}
+
+func (c *transactionControllerImpl) Update(pctx echo.Context) error <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(pctx.Request().Context(), "transactionUpdateController")
+        defer sp.End()
+
+        id := pctx.Param("id")
+        transactionReq := new(modelReq.Transaction)
+
+        validatingContext := custom.NewCustomEchoRequest(pctx)
+        if err := validatingContext.BindAndValidate(transactionReq); err != nil </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusBadRequest, custom.ErrFailedToValidateTransactionRequest)
+        }</span>
+
+        <span class="cov0" title="0">if !isProductIDsUnique(transactionReq.Product) </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusBadRequest, custom.ErrFailedToValidateTransactionRequest)
+        }</span>
+
+        <span class="cov0" title="0">transaction := c.transactionReqToAggregation(transactionReq)
+        transaction, err := c.transaction.Update(ctx, id, transaction)
+        if err != nil </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToUpdateTransaction)
+        }</span>
+
+        <span class="cov0" title="0">transactionRes := c.transactionAndproductEntityToRes(transaction)
+        return pctx.JSON(http.StatusOK, transactionRes)</span>
+}
+
+func (c *transactionControllerImpl) Delete(pctx echo.Context) error <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(pctx.Request().Context(), "transactionDeleteController")
+        defer sp.End()
+
+        id := pctx.Param("id")
+
+        transaction, err := c.transaction.Delete(ctx, id)
+        if err != nil </span><span class="cov0" title="0">{
+                return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToDeleteTransaction)
+        }</span>
+
+        <span class="cov0" title="0">transactionRes := c.transactionEntityToRes(transaction)
+        return pctx.JSON(http.StatusOK, transactionRes)</span>
+}
+
+func isProductIDsUnique(products []modelReq.ProductItem) bool <span class="cov0" title="0">{
+        seen := make(map[string]struct{})
+        for _, item := range products </span><span class="cov0" title="0">{
+                if _, found := seen[item.ProductID]; found </span><span class="cov0" title="0">{
+                        return false
+                }</span>
+                <span class="cov0" title="0">seen[item.ProductID] = struct{}{}</span>
+        }
+        <span class="cov0" title="0">return true</span>
+}
+
+func (c *transactionControllerImpl) transactionReqToAggregation(transactionReq *modelReq.Transaction) *_interface.TransactionEcommerce <span class="cov0" title="0">{
+        mapProduct := make(map[string]uint)
+        for _, item := range transactionReq.Product </span><span class="cov0" title="0">{
+                mapProduct[item.ProductID] = item.Quantity
+        }</span>
+
+        <span class="cov0" title="0">transaction := entities.Transaction{
+                IsDomestic: transactionReq.IsDomestic,
+        }
+
+        return _interface.NewTransactionEcommerce(&amp;transaction, nil, mapProduct)</span>
+}
+
+func (c *transactionControllerImpl) transactionAndproductEntityToRes(transactionEntity *_interface.TransactionEcommerce) *modelRes.Transaction <span class="cov0" title="0">{
+        products := make([]modelRes.Product, 0)
+
+        for _, product := range transactionEntity.Product </span><span class="cov0" title="0">{
+                products = append(products, modelRes.Product{
+                        ProductID:   product.ProductID,
+                        ProductName: product.ProductName,
+                        Quantity:    transactionEntity.AddessProduct[product.ProductID],
+                })
+        }</span>
+
+        <span class="cov0" title="0">return &amp;modelRes.Transaction{
+                TransactionID: transactionEntity.Tranasaction.TransactionID,
+                IsDomestic:    transactionEntity.Tranasaction.IsDomestic,
+                SumPrice:      transactionEntity.Tranasaction.SumPrice,
+                Products:      products,
+        }</span>
+}
+
+func (c *transactionControllerImpl) transactionEntityToRes(transactionEntity *entities.Transaction) *modelRes.Transaction <span class="cov0" title="0">{
+        return &amp;modelRes.Transaction{
+                TransactionID: transactionEntity.TransactionID,
+                IsDomestic:    transactionEntity.IsDomestic,
+                SumPrice:      transactionEntity.SumPrice,
+        }
+
+}</span>
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package aggregation
+
+import "github.com/kizmey/order_management_system/pkg/interface/entities"
+
+type Ecommerce struct {
+        Order    *entities.Order
+        Product  []entities.Product
+        Quantity []uint
+}
+
+func NewEcommerce(order *entities.Order, products []entities.Product, quantity []uint) *Ecommerce <span class="cov8" title="1">{
+        return &amp;Ecommerce{
+                Order:    order,
+                Product:  products,
+                Quantity: quantity,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package aggregation
+
+import (
+        "github.com/kizmey/order_management_system/pkg/interface/entities"
+)
+
+type TransactionEcommerce struct {
+        Tranasaction  *entities.Transaction
+        Product       []entities.Product
+        AddessProduct map[string]uint
+}
+
+const (
+        // Domestic price
+        Domestic = uint(100)
+        // NotDomestic price
+        NotDomestic = uint(500)
+)
+
+func (m *TransactionEcommerce) CalculatePrice() uint <span class="cov8" title="1">{
+        m.Tranasaction.SumPrice = 0
+        for _, product := range m.Product </span><span class="cov8" title="1">{
+                m.Tranasaction.SumPrice += product.ProductPrice * m.AddessProduct[product.ProductID]
+        }</span>
+
+        <span class="cov8" title="1">if m.Tranasaction.IsDomestic </span><span class="cov8" title="1">{
+                m.Tranasaction.SumPrice += Domestic
+        }</span> else<span class="cov8" title="1"> {
+                m.Tranasaction.SumPrice += NotDomestic
+        }</span>
+
+        <span class="cov8" title="1">return m.Tranasaction.SumPrice</span>
+}
+
+func NewTransactionEcommerce(tranasaction *entities.Transaction, product []entities.Product, addessProduct map[string]uint) *TransactionEcommerce <span class="cov8" title="1">{
+        return &amp;TransactionEcommerce{
+                Tranasaction:  tranasaction,
+                Product:       product,
+                AddessProduct: addessProduct,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package entities
+
+import (
+        "errors"
+)
+
+type Order struct {
+        OrderID       string
+        TransactionID string
+        Status        string
+}
+
+var (
+        OrderStatus = []string{"New", "Paid", "Processing", "Done"}
+)
+
+func (m *Order) NextStatus() error <span class="cov8" title="1">{
+        for i := 0; i &lt; len(OrderStatus); i++ </span><span class="cov8" title="1">{
+
+                if m.Status == OrderStatus[len(OrderStatus)-1] </span><span class="cov8" title="1">{
+                        return errors.New("order is already done")
+                }</span>
+
+                <span class="cov8" title="1">if OrderStatus[i] == m.Status </span><span class="cov8" title="1">{
+                        m.Status = OrderStatus[i+1]
+                        return nil
+                }</span>
+        }
+
+        <span class="cov8" title="1">return errors.New("invalid order status")</span>
+}
+
+func (m *Order) NextPaidToDone() error <span class="cov8" title="1">{
+
+        if m.Status == "Paid" </span><span class="cov8" title="1">{
+                m.Status = "Done"
+                return nil
+        }</span>
+
+        <span class="cov8" title="1">return errors.New("invalid order status")</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package model
+
+import (
+        "github.com/kizmey/order_management_system/pkg/interface/entities"
+        "time"
+)
+
+type Order struct {
+        ID            string      `gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
+        TransactionID string      `gorm:"not null; unique;" `
+        Transaction   Transaction `gorm:"foreignKey:TransactionID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+        Status        string      `gorm:"type:varchar(20);not null;default:New"`
+        CreatedAt     time.Time   `gorm:"not null;autoCreateTime;"`
+        UpdatedAt     time.Time   `gorm:"not null;autoUpdateTime;"`
+}
+
+func (m *Order) ToOrderEntity() *entities.Order <span class="cov0" title="0">{
+        return &amp;entities.Order{
+                OrderID:       m.ID,
+                TransactionID: m.TransactionID,
+                Status:        m.Status,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package model
+
+import (
+        "github.com/kizmey/order_management_system/pkg/interface/entities"
+        "time"
+)
+
+type Product struct {
+        ID        string    `gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
+        Name      string    `gorm:"type:varchar(128);not null;" `
+        Price     uint      `gorm:"not null;"`
+        CreatedAt time.Time `gorm:"not null;autoCreateTime;" `
+        UpdatedAt time.Time `gorm:"not null;autoUpdateTime;" `
+}
+
+func (m *Product) ToProductEntity() *entities.Product <span class="cov0" title="0">{
+        return &amp;entities.Product{
+                ProductID:    m.ID,
+                ProductName:  m.Name,
+                ProductPrice: m.Price,
+        }
+}</span>
+func ConvertProductModelsToEntities(products *[]Product) *[]entities.Product <span class="cov0" title="0">{
+        entityProducts := new([]entities.Product)
+
+        for _, product := range *products </span><span class="cov0" title="0">{
+                *entityProducts = append(*entityProducts, *product.ToProductEntity())
+        }</span>
+
+        <span class="cov0" title="0">return entityProducts</span>
+}
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package model
+
+import (
+        "github.com/kizmey/order_management_system/pkg/interface/entities"
+        "time"
+)
+
+type Stock struct {
+        ID        string    `gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
+        ProductID string    `gorm:"unique;not null;" `
+        Product   Product   `gorm:"foreignKey:ProductID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+        Quantity  uint      `gorm:"not null;" `
+        CreatedAt time.Time `gorm:"not null;autoCreateTime;" `
+        UpdatedAt time.Time `gorm:"not null;autoUpdateTime;" `
+}
+
+func (m *Stock) ToStockEntity() *entities.Stock <span class="cov0" title="0">{
+        return &amp;entities.Stock{
+                StockID:   m.ID,
+                ProductID: m.ProductID,
+                Quantity:  m.Quantity,
+        }
+}</span>
+
+func ConvertStockModelsToEntities(stocks *[]Stock) *[]entities.Stock <span class="cov0" title="0">{
+        entityStocks := new([]entities.Stock)
+
+        for _, stock := range *stocks </span><span class="cov0" title="0">{
+                *entityStocks = append(*entityStocks, *stock.ToStockEntity())
+        }</span>
+
+        <span class="cov0" title="0">return entityStocks</span>
+}
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package model
+
+import (
+        "github.com/kizmey/order_management_system/pkg/interface/entities"
+        "time"
+)
+
+type Transaction struct {
+        ID         string    `gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
+        IsDomestic bool      `gorm:"not null; default:false;"`
+        SumPrice   uint      `gorm:"not null;" `
+        ProductID  string    `gorm:"not null;" `
+        Products   []Product `gorm:"many2many:transaction_products;"`
+        CreatedAt  time.Time `gorm:"not null;autoCreateTime;"`
+        UpdatedAt  time.Time `gorm:"not null;autoUpdateTime;"`
+}
+
+type TransactionProduct struct {
+        ID            string      `gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
+        TransactionID string      `gorm:"not null;" `
+        Transaction   Transaction `gorm:"foreignKey:TransactionID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+        ProductID     string      `gorm:"not null;" `
+        Product       Product     `gorm:"foreignKey:ProductID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+        Quantity      uint        `gorm:" not null; default:1" `
+}
+
+func (m *Transaction) ToTransactionEntity() *entities.Transaction <span class="cov0" title="0">{
+        return &amp;entities.Transaction{
+                TransactionID: m.ID,
+                SumPrice:      m.SumPrice,
+                IsDomestic:    m.IsDomestic,
+        }
+}</span>
+
+func ConvertModelsTransactionToEntities(transactions *[]Transaction) *[]entities.Transaction <span class="cov0" title="0">{
+        entityTransaction := new([]entities.Transaction)
+
+        for _, transaction := range *transactions </span><span class="cov0" title="0">{
+
+                *entityTransaction = append(*entityTransaction, *transaction.ToTransactionEntity())
+        }</span>
+
+        <span class="cov0" title="0">return entityTransaction</span>
+}
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package order
+
+import (
+        "context"
+        customTracer "github.com/kizmey/order_management_system/observability/tracer"
+
+        "errors"
+        "fmt"
+        "github.com/kizmey/order_management_system/database"
+        "github.com/kizmey/order_management_system/pkg/interface/entities"
+        "github.com/kizmey/order_management_system/pkg/interface/model"
+)
+
+type orderRepositoryImpl struct {
+        db database.Database
+}
+
+func NewOrderRepositoryImpl(db database.Database) OrderRepository <span class="cov0" title="0">{
+        return &amp;orderRepositoryImpl{db: db}
+}</span>
+
+func (r *orderRepositoryImpl) Create(ctx context.Context, order *entities.Order) (*entities.Order, error) <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(ctx, "orderCreateRepository")
+        defer sp.End()
+
+        modelOrder := ToOrderModel(order)
+        if err := r.db.Connect().Create(&amp;modelOrder).Preload("Transaction").Where("id = ?", modelOrder.ID).First(&amp;modelOrder).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(fmt.Sprintf("create order error "))
+        }</span>
+
+        <span class="cov0" title="0">customTracer.SetSubAttributesWithJson(modelOrder.ToOrderEntity(), sp)
+
+        return modelOrder.ToOrderEntity(), nil</span>
+}
+
+func (r *orderRepositoryImpl) FindAll(ctx context.Context) (*[]entities.Order, error) <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(ctx, "orderFindAllRepository")
+        defer sp.End()
+
+        orders := new([]model.Order)
+
+        if err := r.db.Connect().Preload("Transaction").Find(orders).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(fmt.Sprintf("find all order error "))
+        }</span>
+        <span class="cov0" title="0">allOrder := ConvertOrderModelsToEntities(orders)
+
+        return allOrder, nil</span>
+}
+func (r *orderRepositoryImpl) FindByID(ctx context.Context, id string) (*entities.Order, error) <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(ctx, "orderFindByIdRepository")
+        defer sp.End()
+
+        order := new(model.Order)
+        if err := r.db.Connect().Preload("Transaction").Where("id = ?", id).First(&amp;order).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(fmt.Sprintf("find by id order error "))
+        }</span>
+        <span class="cov0" title="0">return order.ToOrderEntity(), nil</span>
+}
+
+func (r *orderRepositoryImpl) Update(ctx context.Context, id string, order *entities.Order) (*entities.Order, error) <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(ctx, "orderUpdateRepository")
+        defer sp.End()
+
+        modelOrder := ToOrderModel(order)
+        if err := r.db.Connect().Model(&amp;modelOrder).Where("id = ?", id).Updates(&amp;modelOrder).Scan(modelOrder).Where("id = ?", id).First(&amp;modelOrder).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(fmt.Sprintf("update order error "))
+        }</span>
+
+        <span class="cov0" title="0">return modelOrder.ToOrderEntity(), nil</span>
+}
+
+func (r *orderRepositoryImpl) UpdateStatus(ctx context.Context, id string, order *entities.Order) (*entities.Order, error) <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(ctx, "orderUpdateRepository")
+        defer sp.End()
+
+        orderModel := ToOrderModel(order)
+
+        if err := r.db.Connect().Model(&amp;orderModel).Where("id = ?", id).Updates(&amp;orderModel).Scan(orderModel).Preload("Transaction").Where("id = ?", id).First(&amp;orderModel).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(fmt.Sprintf("update order error "))
+        }</span>
+        <span class="cov0" title="0">return orderModel.ToOrderEntity(), nil</span>
+}
+
+func (r *orderRepositoryImpl) Delete(ctx context.Context, id string) (*entities.Order, error) <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(ctx, "orderDeleteRepository")
+        defer sp.End()
+
+        order := new(model.Order)
+        if err := r.db.Connect().Where("id = ?", id).First(&amp;order).Delete(&amp;order).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(fmt.Sprintf("failed to delete order"))
+        }</span>
+
+        <span class="cov0" title="0">return order.ToOrderEntity(), nil</span>
+}
+func ConvertOrderModelsToEntities(orders *[]model.Order) *[]entities.Order <span class="cov0" title="0">{
+        entityOrders := new([]entities.Order)
+
+        for _, order := range *orders </span><span class="cov0" title="0">{
+                *entityOrders = append(*entityOrders, *order.ToOrderEntity())
+        }</span>
+
+        <span class="cov0" title="0">return entityOrders</span>
+}
+func ToOrderModel(e *entities.Order) *model.Order <span class="cov0" title="0">{
+        //fmt.Println("e: ", e.IsDomestic)
+        return &amp;model.Order{
+                TransactionID: e.TransactionID,
+                Status:        e.Status,
+        }
+}</span>
+
+//func ToOrderModelRes(e *entities.Order) *modelRes.Order {
+//        return &amp;modelRes.Order{
+//                OrderID:       e.OrderID,
+//                TransactionID: e.TransactionID,
+//                //ProductID:     e.ProductID,
+//                Status: e.Status,
+//        }
+//}
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package order
+
+import (
+        "context"
+        "github.com/kizmey/order_management_system/pkg/interface/entities"
+        "github.com/stretchr/testify/mock"
+)
+
+type NewOrderRepositoryMock struct {
+        mock.Mock
+}
+
+func (m *NewOrderRepositoryMock) checkOrderRepositoryMock() OrderRepository <span class="cov0" title="0">{
+        return m
+}</span>
+
+func (m *NewOrderRepositoryMock) Create(ctx context.Context, order *entities.Order) (*entities.Order, error) <span class="cov8" title="1">{
+        args := m.Called(ctx, order)
+        return args.Get(0).(*entities.Order), args.Error(1)
+}</span>
+
+func (m *NewOrderRepositoryMock) FindAll(ctx context.Context) (*[]entities.Order, error) <span class="cov8" title="1">{
+        args := m.Called(ctx)
+        return args.Get(0).(*[]entities.Order), args.Error(1)
+}</span>
+
+func (m *NewOrderRepositoryMock) FindByID(ctx context.Context, id string) (*entities.Order, error) <span class="cov8" title="1">{
+        args := m.Called(ctx, id)
+        return args.Get(0).(*entities.Order), args.Error(1)
+}</span>
+
+func (m *NewOrderRepositoryMock) Update(ctx context.Context, id string, order *entities.Order) (*entities.Order, error) <span class="cov8" title="1">{
+        args := m.Called(ctx, id, order)
+        return args.Get(0).(*entities.Order), args.Error(1)
+}</span>
+
+func (m *NewOrderRepositoryMock) UpdateStatus(ctx context.Context, id string, order *entities.Order) (*entities.Order, error) <span class="cov8" title="1">{
+        args := m.Called(ctx, id, order)
+        return args.Get(0).(*entities.Order), args.Error(1)
+}</span>
+
+func (m *NewOrderRepositoryMock) Delete(ctx context.Context, id string) (*entities.Order, error) <span class="cov8" title="1">{
+        args := m.Called(ctx, id)
+        return args.Get(0).(*entities.Order), args.Error(1)
+}</span>
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">package product
+
+import (
+        "context"
+
+        "errors"
+        "fmt"
+        "github.com/kizmey/order_management_system/database"
+        "github.com/kizmey/order_management_system/pkg/interface/entities"
+        "github.com/kizmey/order_management_system/pkg/interface/model"
+)
+
+type productRepositoryImpl struct {
+        db database.Database
+}
+
+func NewProductRepositoryImpl(db database.Database) ProductRepository <span class="cov0" title="0">{
+        return &amp;productRepositoryImpl{db: db}
+
+}</span>
+
+func (r *productRepositoryImpl) Create(ctx context.Context, product *entities.Product) (*entities.Product, error) <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(ctx, "productCreateRepository")
+        defer sp.End()
+
+        modelProduct := ToProductModel(product)
+        newProduct := new(model.Product)
+
+        if err := r.db.Connect().Create(modelProduct).Scan(newProduct).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(fmt.Sprintf("failed to create product"))
+        }</span>
+        <span class="cov0" title="0">return newProduct.ToProductEntity(), nil</span>
+}
+
+func (r *productRepositoryImpl) FindAll(ctx context.Context) (*[]entities.Product, error) <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(ctx, "productFindByIdRepository")
+        defer sp.End()
+
+        products := new([]model.Product)
+
+        if err := r.db.Connect().Find(products).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(fmt.Sprintf("failed to find all products"))
+        }</span>
+        <span class="cov0" title="0">allProduct := model.ConvertProductModelsToEntities(products)
+        return allProduct, nil</span>
+}
+
+func (r *productRepositoryImpl) FindByID(ctx context.Context, id string) (*entities.Product, error) <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(ctx, "productFindByIdRepository")
+        defer sp.End()
+
+        product := new(model.Product)
+
+        if err := r.db.Connect().Where("id = ?", id).First(product).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(fmt.Sprintf("failed to find product"))
+        }</span>
+        <span class="cov0" title="0">return product.ToProductEntity(), nil</span>
+}
+
+func (r *productRepositoryImpl) Update(ctx context.Context, id string, product *entities.Product) (*entities.Product, error) <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(ctx, "productFindByIdRepository")
+        defer sp.End()
+
+        newProduct := new(model.Product)
+        productModel := ToProductModel(product)
+
+        if err := r.db.Connect().Model(&amp;productModel).Where(
+                "id = ?", id,
+        ).Updates(
+                productModel,
+        ).Scan(newProduct).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(fmt.Sprintf("failed to update product"))
+        }</span>
+        <span class="cov0" title="0">return newProduct.ToProductEntity(), nil</span>
+}
+
+func (r *productRepositoryImpl) Delete(ctx context.Context, id string) (*entities.Product, error) <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(ctx, "productDeleteRepository")
+        defer sp.End()
+
+        product := new(model.Product)
+        if err := r.db.Connect().Where("id = ?", id).First(&amp;product).Delete(&amp;product).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(fmt.Sprintf("failed to delete product"))
+        }</span>
+
+        <span class="cov0" title="0">return product.ToProductEntity(), nil</span>
+}
+
+func ToProductModel(e *entities.Product) *model.Product <span class="cov0" title="0">{
+        return &amp;model.Product{
+                Name:  e.ProductName,
+                Price: e.ProductPrice,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file14" style="display: none">package product
+
+import (
+        "context"
+        "github.com/kizmey/order_management_system/pkg/interface/entities"
+        "github.com/stretchr/testify/mock"
+)
+
+type NewProductRepositoryMock struct {
+        mock.Mock
+}
+
+func (m *NewProductRepositoryMock) CheckProductRepository() ProductRepository <span class="cov0" title="0">{
+        return m
+}</span>
+
+func (m *NewProductRepositoryMock) Create(ctx context.Context, product *entities.Product) (*entities.Product, error) <span class="cov8" title="1">{
+        args := m.Called(ctx, product)
+        if args.Get(0) != nil </span><span class="cov8" title="1">{
+                return args.Get(0).(*entities.Product), args.Error(1)
+        }</span>
+        <span class="cov8" title="1">return nil, args.Error(1)</span>
+}
+
+func (m *NewProductRepositoryMock) FindAll(ctx context.Context) (*[]entities.Product, error) <span class="cov8" title="1">{
+        args := m.Called(ctx)
+        if args.Get(0) != nil </span><span class="cov8" title="1">{
+                return args.Get(0).(*[]entities.Product), args.Error(1)
+        }</span>
+        <span class="cov8" title="1">return nil, args.Error(1)</span>
+}
+
+func (m *NewProductRepositoryMock) FindByID(ctx context.Context, id string) (*entities.Product, error) <span class="cov8" title="1">{
+        args := m.Called(ctx, id)
+        if args.Get(0) != nil </span><span class="cov8" title="1">{
+                return args.Get(0).(*entities.Product), args.Error(1)
+        }</span>
+        <span class="cov8" title="1">return nil, args.Error(1)</span>
+}
+
+func (m *NewProductRepositoryMock) Update(ctx context.Context, id string, product *entities.Product) (*entities.Product, error) <span class="cov8" title="1">{
+        args := m.Called(ctx, id, product)
+        if args.Get(0) != nil </span><span class="cov8" title="1">{
+                return args.Get(0).(*entities.Product), args.Error(1)
+        }</span>
+        <span class="cov8" title="1">return nil, args.Error(1)</span>
+}
+
+func (m *NewProductRepositoryMock) Delete(ctx context.Context, id string) (*entities.Product, error) <span class="cov8" title="1">{
+        args := m.Called(ctx, id)
+        if args.Get(0) != nil </span><span class="cov8" title="1">{
+                return args.Get(0).(*entities.Product), args.Error(1)
+        }</span>
+        <span class="cov8" title="1">return nil, args.Error(1)</span>
+}
+</pre>
+		
+		<pre class="file" id="file15" style="display: none">package stock
+
+import (
+        "context"
+        "github.com/kizmey/order_management_system/pkg/interface/modelRes"
+
+        "errors"
+        "fmt"
+        "github.com/kizmey/order_management_system/database"
+        "github.com/kizmey/order_management_system/pkg/interface/entities"
+        "github.com/kizmey/order_management_system/pkg/interface/model"
+)
+
+type stockRepositoryImpl struct {
+        db database.Database
+}
+
+func NewStockRepositoryImpl(db database.Database) StockRepository <span class="cov0" title="0">{
+        return &amp;stockRepositoryImpl{db: db}
+}</span>
+
+func (r *stockRepositoryImpl) Create(ctx context.Context, stock *entities.Stock) (*entities.Stock, error) <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(ctx, "stockCreateRepository")
+        defer sp.End()
+
+        modelStock := ToStockModel(stock)
+        newStock := new(model.Stock)
+
+        if err := r.db.Connect().Create(modelStock).Scan(newStock).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(fmt.Sprintf("failed to create stock"))
+        }</span>
+
+        <span class="cov0" title="0">return newStock.ToStockEntity(), nil</span>
+}
+
+func (r *stockRepositoryImpl) FindAll(ctx context.Context) (*[]entities.Stock, error) <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(ctx, "stockFindAllRepository")
+        defer sp.End()
+
+        stocks := new([]model.Stock)
+        if err := r.db.Connect().Find(stocks).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(fmt.Sprintf("failed to find all stock"))
+        }</span>
+
+        <span class="cov0" title="0">allStock := model.ConvertStockModelsToEntities(stocks)
+        return allStock, nil</span>
+}
+
+func (r *stockRepositoryImpl) CheckStockByProductId(ctx context.Context, productId string) (*entities.Stock, error) <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(ctx, "stockCheckStockByProductIdRepository")
+        defer sp.End()
+
+        stock := new(model.Stock)
+        //fmt.Println("productId: ", productId)
+        if err := r.db.Connect().Preload("Product").Where("product_id = ?", productId).First(stock).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(fmt.Sprintf("failed to find stock"))
+        }</span>
+        //fmt.Println("stock: ", stock)
+        <span class="cov0" title="0">return stock.ToStockEntity(), nil</span>
+}
+
+func (r *stockRepositoryImpl) Update(ctx context.Context, stockid string, stock *entities.Stock) (*entities.Stock, error) <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(ctx, "stockUpdateRepository")
+        defer sp.End()
+
+        stocks := new(model.Stock)
+        modelStock := ToStockModel(stock)
+
+        if modelStock.Quantity == 0 </span><span class="cov0" title="0">{
+                if err := r.db.Connect().Model(&amp;modelStock).
+                        Where("id = ?", stockid).
+                        Update("quantity", modelStock.Quantity).
+                        Scan(stocks).Error; err != nil </span><span class="cov0" title="0">{
+                        return nil, errors.New(fmt.Sprintf("failed to update stock"))
+                }</span>
+        } else<span class="cov0" title="0"> {
+                if err := r.db.Connect().Model(&amp;modelStock).
+                        Where("id = ? AND ? &gt;= 0", stockid, modelStock.Quantity).
+                        Update("quantity", modelStock.Quantity).
+                        Scan(stocks).Error; err != nil </span><span class="cov0" title="0">{
+                        return nil, errors.New(fmt.Sprintf("failed to update stock"))
+                }</span>
+        }
+        <span class="cov0" title="0">return stocks.ToStockEntity(), nil</span>
+}
+
+func (r *stockRepositoryImpl) Delete(ctx context.Context, id string) (*entities.Stock, error) <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(ctx, "stockDeleteRepository")
+        defer sp.End()
+
+        stock := new(model.Stock)
+        if err := r.db.Connect().Where("id = ?", id).First(&amp;stock).Delete(&amp;stock).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(fmt.Sprintf("failed to delete stock"))
+        }</span>
+
+        <span class="cov0" title="0">return stock.ToStockEntity(), nil</span>
+}
+
+func ToStockModel(e *entities.Stock) *model.Stock <span class="cov0" title="0">{
+        return &amp;model.Stock{
+                ProductID: e.ProductID,
+                Quantity:  e.Quantity,
+        }
+}</span>
+
+func ToStockModelRes(e *entities.Stock) *modelRes.Stock <span class="cov0" title="0">{
+        return &amp;modelRes.Stock{
+                StockID:   e.StockID,
+                ProductID: e.ProductID,
+                Quantity:  e.Quantity,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file16" style="display: none">package stock
+
+import (
+        "context"
+        "github.com/kizmey/order_management_system/pkg/interface/entities"
+        "github.com/stretchr/testify/mock"
+)
+
+type NewStockRepositoryMock struct {
+        mock.Mock
+}
+
+func (m *NewStockRepositoryMock) checkStockRepositoryMock() StockRepository <span class="cov0" title="0">{
+        return m
+}</span>
+
+func (m *NewStockRepositoryMock) Create(ctx context.Context, stock *entities.Stock) (*entities.Stock, error) <span class="cov8" title="1">{
+        args := m.Called(ctx, stock)
+        return args.Get(0).(*entities.Stock), args.Error(1)
+}</span>
+
+func (m *NewStockRepositoryMock) FindAll(ctx context.Context) (*[]entities.Stock, error) <span class="cov8" title="1">{
+        args := m.Called(ctx)
+        return args.Get(0).(*[]entities.Stock), args.Error(1)
+}</span>
+
+func (m *NewStockRepositoryMock) CheckStockByProductId(ctx context.Context, id string) (*entities.Stock, error) <span class="cov8" title="1">{
+        args := m.Called(ctx, id)
+        return args.Get(0).(*entities.Stock), args.Error(1)
+}</span>
+
+func (m *NewStockRepositoryMock) Update(ctx context.Context, id string, stock *entities.Stock) (*entities.Stock, error) <span class="cov8" title="1">{
+        args := m.Called(ctx, id, stock)
+        return args.Get(0).(*entities.Stock), args.Error(1)
+}</span>
+
+func (m *NewStockRepositoryMock) Delete(ctx context.Context, id string) (*entities.Stock, error) <span class="cov8" title="1">{
+        args := m.Called(ctx, id)
+        return args.Get(0).(*entities.Stock), args.Error(1)
+}</span>
+</pre>
+		
+		<pre class="file" id="file17" style="display: none">package transaction
+
+import (
+        "context"
+        "github.com/kizmey/order_management_system/pkg/interface/aggregation"
+
+        "errors"
+        "fmt"
+        "github.com/kizmey/order_management_system/database"
+        "github.com/kizmey/order_management_system/pkg/interface/entities"
+        "github.com/kizmey/order_management_system/pkg/interface/model"
+)
+
+type transactionRepositoryImpl struct {
+        db database.Database
+}
+
+func NewTransactionRepositoryImpl(db database.Database) TransactionRepository <span class="cov0" title="0">{
+        return &amp;transactionRepositoryImpl{db: db}
+}</span>
+
+func (r *transactionRepositoryImpl) Create(ctx context.Context, transaction *aggregation.TransactionEcommerce) (*entities.Transaction, error) <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(ctx, "transactionCreateRepository")
+        defer sp.End()
+
+        transactionModel := ToTransactionModel(transaction)
+
+        if err := r.db.Connect().Create(&amp;transactionModel).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(fmt.Sprintf("failed to create transaction"))
+        }</span>
+
+        <span class="cov0" title="0">for productID, quantity := range transaction.AddessProduct </span><span class="cov0" title="0">{
+                if err := r.db.Connect().Model(&amp;model.TransactionProduct{}).Where("transaction_id = ? AND product_id = ?", transactionModel.ID, productID).Update("quantity", quantity).Error; err != nil </span><span class="cov0" title="0">{
+                        return nil, errors.New(fmt.Sprintf("failed to update transaction"))
+                }</span>
+        }
+
+        <span class="cov0" title="0">return transactionModel.ToTransactionEntity(), nil</span>
+}
+
+func (r *transactionRepositoryImpl) FindAll(ctx context.Context) (*[]entities.Transaction, error) <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(ctx, "transactionFindAllRepository")
+        defer sp.End()
+
+        transactions := new([]model.Transaction)
+
+        if err := r.db.Connect().Find(&amp;transactions).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(fmt.Sprintf("failed to find transactions"))
+        }</span>
+        <span class="cov0" title="0">allTransactions := model.ConvertModelsTransactionToEntities(transactions)
+        return allTransactions, nil</span>
+}
+
+func (r *transactionRepositoryImpl) FindByID(ctx context.Context, id string) (*entities.Transaction, error) <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(ctx, "transactionFindByIdRepository")
+        defer sp.End()
+
+        transaction := new(model.Transaction)
+        if err := r.db.Connect().Where("id = ?", id).First(&amp;transaction).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(fmt.Sprintf("failed to find transaction"))
+        }</span>
+
+        <span class="cov0" title="0">return transaction.ToTransactionEntity(), nil</span>
+}
+
+func (r *transactionRepositoryImpl) Update(ctx context.Context, id string, transaction *aggregation.TransactionEcommerce) (*entities.Transaction, error) <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(ctx, "transactionUpdateRepository")
+        defer sp.End()
+
+        transactionModel := ToTransactionModel(transaction)
+
+        transactionModel.ID = id
+        fmt.Println(transactionModel)
+        if err := r.db.Connect().Model(&amp;model.Transaction{}).Where("id = ?", id).Updates(&amp;transactionModel).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(fmt.Sprintf("failed to update transaction"))
+        }</span>
+
+        <span class="cov0" title="0">for productID, quantity := range transaction.AddessProduct </span><span class="cov0" title="0">{
+                if err := r.db.Connect().Model(&amp;model.TransactionProduct{}).
+                        Where("transaction_id = ? AND product_id = ?", id, productID).
+                        Update("quantity", quantity).Error; err != nil </span><span class="cov0" title="0">{
+                        return nil, errors.New(fmt.Sprintf("failed to update transaction"))
+                }</span>
+        }
+
+        <span class="cov0" title="0">return transactionModel.ToTransactionEntity(), nil</span>
+}
+
+func (r *transactionRepositoryImpl) Delete(ctx context.Context, id string) (*entities.Transaction, error) <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(ctx, "transactionDeleteRepository")
+        defer sp.End()
+
+        transaction := new(model.Transaction)
+        if err := r.db.Connect().Where("id = ?", id).First(&amp;transaction).Delete(&amp;transaction).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(fmt.Sprintf("failed to delete transaction"))
+        }</span>
+
+        <span class="cov0" title="0">return transaction.ToTransactionEntity(), nil</span>
+}
+
+func (r *transactionRepositoryImpl) FindProductsByTransactionID(ctx context.Context, id string) (*aggregation.Ecommerce, error) <span class="cov0" title="0">{
+        ctx, sp := tracer.Start(ctx, "transactionFindProductsByTransactionIDRepository")
+        defer sp.End()
+
+        var transactionProducts []model.TransactionProduct
+        if err := r.db.Connect().Where("transaction_id = ?", id).Preload("Product").Find(&amp;transactionProducts).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(fmt.Sprintf("failed to find transaction"))
+        }</span>
+
+        <span class="cov0" title="0">var products []entities.Product
+        var quantity []uint
+        for _, transactionProduct := range transactionProducts </span><span class="cov0" title="0">{
+                products = append(products, *transactionProduct.Product.ToProductEntity())
+                quantity = append(quantity, transactionProduct.Quantity)
+        }</span>
+
+        <span class="cov0" title="0">ecommerceProducts := aggregation.NewEcommerce(nil, products, quantity)
+        return ecommerceProducts, nil</span>
+
+}
+
+func ToTransactionModel(e *aggregation.TransactionEcommerce) *model.Transaction <span class="cov0" title="0">{
+        var productlist []model.Product
+        for _, v := range e.Product </span><span class="cov0" title="0">{
+                productlist = append(productlist, model.Product{
+                        ID:    v.ProductID,
+                        Name:  v.ProductName,
+                        Price: v.ProductPrice,
+                })
+        }</span>
+        <span class="cov0" title="0">return &amp;model.Transaction{
+                SumPrice:   e.Tranasaction.SumPrice,
+                IsDomestic: e.Tranasaction.IsDomestic,
+                Products:   productlist,
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file18" style="display: none">package transaction
+
+import (
+        "context"
+        "github.com/kizmey/order_management_system/pkg/interface/aggregation"
+        "github.com/kizmey/order_management_system/pkg/interface/entities"
+        "github.com/stretchr/testify/mock"
+)
+
+type NewTransactionRepositoryMock struct {
+        mock.Mock
+}
+
+func (m *NewTransactionRepositoryMock) transactionRepositoryMock() TransactionRepository <span class="cov0" title="0">{
+        return m
+}</span>
+
+func (m *NewTransactionRepositoryMock) Create(ctx context.Context, transaction *aggregation.TransactionEcommerce) (*entities.Transaction, error) <span class="cov8" title="1">{
+        args := m.Called(ctx, transaction)
+        return args.Get(0).(*entities.Transaction), args.Error(1)
+}</span>
+
+func (m *NewTransactionRepositoryMock) FindAll(ctx context.Context) (*[]entities.Transaction, error) <span class="cov8" title="1">{
+        args := m.Called(ctx)
+        return args.Get(0).(*[]entities.Transaction), args.Error(1)
+}</span>
+
+func (m *NewTransactionRepositoryMock) FindByID(ctx context.Context, id string) (*entities.Transaction, error) <span class="cov8" title="1">{
+        args := m.Called(ctx, id)
+        return args.Get(0).(*entities.Transaction), args.Error(1)
+}</span>
+
+func (m *NewTransactionRepositoryMock) Update(ctx context.Context, id string, transaction *aggregation.TransactionEcommerce) (*entities.Transaction, error) <span class="cov8" title="1">{
+        args := m.Called(ctx, id, transaction)
+        return args.Get(0).(*entities.Transaction), args.Error(1)
+}</span>
+
+func (m *NewTransactionRepositoryMock) Delete(ctx context.Context, id string) (*entities.Transaction, error) <span class="cov8" title="1">{
+        args := m.Called(ctx, id)
+        return args.Get(0).(*entities.Transaction), args.Error(1)
+}</span>
+
+func (m *NewTransactionRepositoryMock) FindProductsByTransactionID(ctx context.Context, id string) (*aggregation.Ecommerce, error) <span class="cov8" title="1">{
+        args := m.Called(ctx, id)
+        return args.Get(0).(*aggregation.Ecommerce), args.Error(1)
+}</span>
+</pre>
+		
+		<pre class="file" id="file19" style="display: none">package order
+
+import (
+        "context"
+        "errors"
+        customTracer "github.com/kizmey/order_management_system/observability/tracer"
+        "github.com/kizmey/order_management_system/pkg/interface/entities"
+        _orderRepository "github.com/kizmey/order_management_system/pkg/repository/order"
+        _stockRepository "github.com/kizmey/order_management_system/pkg/repository/stock"
+        _transactionRepository "github.com/kizmey/order_management_system/pkg/repository/transaction"
+)
+
+type orderServiceImpl struct {
+        orderRepository       _orderRepository.OrderRepository
+        transactionRepository _transactionRepository.TransactionRepository
+        stockRepository       _stockRepository.StockRepository
+}
+
+func NewOrderServiceImpl(orderRepository _orderRepository.OrderRepository,
+        transactionRepository _transactionRepository.TransactionRepository,
+        stockRepository _stockRepository.StockRepository,
+) OrderService <span class="cov8" title="1">{
+        return &amp;orderServiceImpl{
+                orderRepository:       orderRepository,
+                transactionRepository: transactionRepository,
+                stockRepository:       stockRepository,
+        }
+}</span>
+
+func (s *orderServiceImpl) Create(ctx context.Context, order *entities.Order) (*entities.Order, error) <span class="cov8" title="1">{
+        ctx, sp := tracer.Start(ctx, "orderCreateService")
+        defer sp.End()
+
+        newOrder, err := s.orderRepository.Create(ctx, order)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">ecommerce, err := s.transactionRepository.FindProductsByTransactionID(ctx, order.TransactionID)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">if ecommerce.Quantity == nil </span><span class="cov8" title="1">{
+                return nil, errors.New("quantity is nil")
+        }</span>
+
+        <span class="cov8" title="1">stockRollback := make([]entities.Stock, 0)
+        for i, product := range ecommerce.Product </span><span class="cov8" title="1">{
+                quantityProduct := ecommerce.Quantity[i]
+
+                stock, err := s.stockRepository.CheckStockByProductId(ctx, product.ProductID)
+                if err != nil </span><span class="cov8" title="1">{
+                        return nil, err
+                }</span>
+
+                <span class="cov8" title="1">stock.Quantity -= quantityProduct
+
+                stock, err = s.stockRepository.Update(ctx, stock.StockID, stock)
+                if err != nil </span><span class="cov8" title="1">{
+                        //for rollback
+                        _, _ = s.orderRepository.Delete(ctx, newOrder.OrderID)
+                        for _, rollback := range stockRollback </span><span class="cov0" title="0">{
+                                _, _ = s.stockRepository.Update(ctx, rollback.StockID, &amp;rollback)
+                        }</span>
+                        <span class="cov8" title="1">return nil, err</span>
+                }
+                <span class="cov8" title="1">stock.Quantity += quantityProduct
+                stockRollback = append(stockRollback, *stock)</span>
+        }
+        <span class="cov8" title="1">customTracer.SetSubAttributesWithJson(newOrder, sp)
+        return newOrder, nil</span>
+}
+
+func (s *orderServiceImpl) FindAll(ctx context.Context) (*[]entities.Order, error) <span class="cov8" title="1">{
+        ctx, sp := tracer.Start(ctx, "orderFindAllService")
+        defer sp.End()
+
+        orders, err := s.orderRepository.FindAll(ctx)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return orders, nil</span>
+}
+
+func (s *orderServiceImpl) FindByID(ctx context.Context, id string) (*entities.Order, error) <span class="cov8" title="1">{
+        ctx, sp := tracer.Start(ctx, "orderFindByIdService")
+        defer sp.End()
+
+        order, err := s.orderRepository.FindByID(ctx, id)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">return order, nil</span>
+}
+
+func (s *orderServiceImpl) Update(ctx context.Context, id string, order *entities.Order) (*entities.Order, error) <span class="cov8" title="1">{
+        ctx, sp := tracer.Start(ctx, "orderUpdateService")
+        defer sp.End()
+
+        newOrder, err := s.orderRepository.Update(ctx, id, order)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">ecommerce, err := s.transactionRepository.FindProductsByTransactionID(ctx, order.TransactionID)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">if ecommerce.Quantity == nil </span><span class="cov8" title="1">{
+                return nil, errors.New("quantity is nil")
+        }</span>
+
+        <span class="cov8" title="1">stockRollback := make([]entities.Stock, 0)
+        for i, product := range ecommerce.Product </span><span class="cov8" title="1">{
+                quantityProduct := ecommerce.Quantity[i]
+
+                stock, err := s.stockRepository.CheckStockByProductId(ctx, product.ProductID)
+                if err != nil </span><span class="cov8" title="1">{
+                        return nil, err
+                }</span>
+
+                <span class="cov8" title="1">stock.Quantity -= quantityProduct
+
+                stock, err = s.stockRepository.Update(ctx, stock.StockID, stock)
+                if err != nil </span><span class="cov8" title="1">{
+                        _, _ = s.orderRepository.Delete(ctx, newOrder.OrderID)
+                        for _, rollback := range stockRollback </span><span class="cov0" title="0">{
+                                _, _ = s.stockRepository.Update(ctx, rollback.StockID, &amp;rollback)
+                        }</span>
+                        <span class="cov8" title="1">return nil, err</span>
+                }
+                <span class="cov8" title="1">stock.Quantity += quantityProduct
+                stockRollback = append(stockRollback, *stock)</span>
+        }
+
+        <span class="cov8" title="1">return newOrder, nil</span>
+}
+
+func (s *orderServiceImpl) Delete(ctx context.Context, id string) (*entities.Order, error) <span class="cov8" title="1">{
+        ctx, sp := tracer.Start(ctx, "orderDeleteService")
+        defer sp.End()
+
+        order, err := s.orderRepository.Delete(ctx, id)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">return order, err</span>
+}
+
+func (s *orderServiceImpl) ChangeStatusNext(ctx context.Context, id string) (*entities.Order, error) <span class="cov8" title="1">{
+        ctx, sp := tracer.Start(ctx, "orderChangeStatusNextService")
+        defer sp.End()
+
+        order, err := s.orderRepository.FindByID(ctx, id)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">err = order.NextStatus()
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">_, err = s.orderRepository.UpdateStatus(ctx, id, order)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return order, nil</span>
+}
+func (s *orderServiceImpl) ChageStatusDone(ctx context.Context, id string) (*entities.Order, error) <span class="cov8" title="1">{
+        ctx, sp := tracer.Start(ctx, "orderChageStatusDoneService")
+        defer sp.End()
+
+        order, err := s.orderRepository.FindByID(ctx, id)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">err = order.NextPaidToDone()
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">_, err = s.orderRepository.UpdateStatus(ctx, id, order)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return order, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file20" style="display: none">package product
+
+import (
+        "context"
+        "github.com/kizmey/order_management_system/pkg/interface/entities"
+        _ProductRepository "github.com/kizmey/order_management_system/pkg/repository/product"
+)
+
+type productServiceImpl struct {
+        productRepository _ProductRepository.ProductRepository
+}
+
+func NewProductServiceImpl(productRepository _ProductRepository.ProductRepository) ProductService <span class="cov8" title="1">{
+        return &amp;productServiceImpl{productRepository: productRepository}
+}</span>
+
+func (s *productServiceImpl) Create(ctx context.Context, product *entities.Product) (*entities.Product, error) <span class="cov8" title="1">{
+        ctx, sp := tracer.Start(ctx, "productCreateService")
+        defer sp.End()
+
+        productEntity, err := s.productRepository.Create(ctx, product)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">return productEntity, nil</span>
+}
+
+func (s *productServiceImpl) FindAll(ctx context.Context) (*[]entities.Product, error) <span class="cov8" title="1">{
+        ctx, sp := tracer.Start(ctx, "productFindAllService")
+        defer sp.End()
+
+        products, err := s.productRepository.FindAll(ctx)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return products, nil</span>
+}
+
+func (s *productServiceImpl) FindByID(ctx context.Context, id string) (*entities.Product, error) <span class="cov8" title="1">{
+        ctx, sp := tracer.Start(ctx, "productFindByIdService")
+        defer sp.End()
+
+        product, err := s.productRepository.FindByID(ctx, id)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">return product, nil</span>
+}
+func (s *productServiceImpl) Update(ctx context.Context, id string, product *entities.Product) (*entities.Product, error) <span class="cov8" title="1">{
+        ctx, sp := tracer.Start(ctx, "productUpdateService")
+        defer sp.End()
+
+        productEntity, err := s.productRepository.Update(ctx, id, product)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">return productEntity, nil</span>
+}
+
+func (s *productServiceImpl) Delete(ctx context.Context, id string) (*entities.Product, error) <span class="cov8" title="1">{
+        ctx, sp := tracer.Start(ctx, "")
+        defer sp.End()
+
+        product, err := s.productRepository.Delete(ctx, id)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">return product, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file21" style="display: none">package stock
+
+import (
+        "context"
+        "github.com/kizmey/order_management_system/pkg/interface/entities"
+        _StockRepository "github.com/kizmey/order_management_system/pkg/repository/stock"
+)
+
+type stockServiceImpl struct {
+        stockRepository _StockRepository.StockRepository
+}
+
+func NewStockServiceImpl(stockRepository _StockRepository.StockRepository) StockService <span class="cov8" title="1">{
+        return &amp;stockServiceImpl{stockRepository: stockRepository}
+}</span>
+
+func (s *stockServiceImpl) Create(ctx context.Context, stock *entities.Stock) (*entities.Stock, error) <span class="cov8" title="1">{
+        ctx, sp := tracer.Start(ctx, "stockCreateService")
+        defer sp.End()
+
+        stockEntity, err := s.stockRepository.Create(ctx, stock)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">return stockEntity, nil</span>
+}
+
+func (s *stockServiceImpl) FindAll(ctx context.Context) (*[]entities.Stock, error) <span class="cov8" title="1">{
+        ctx, sp := tracer.Start(ctx, "stockFindAllService")
+        defer sp.End()
+
+        stockEntities, err := s.stockRepository.FindAll(ctx)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return stockEntities, nil</span>
+}
+
+func (s *stockServiceImpl) CheckStockByProductId(ctx context.Context, id string) (*entities.Stock, error) <span class="cov8" title="1">{
+        ctx, sp := tracer.Start(ctx, "stockCheckStockByProductIdService")
+        defer sp.End()
+
+        stock, err := s.stockRepository.CheckStockByProductId(ctx, id)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">return stock, nil</span>
+}
+
+func (s *stockServiceImpl) Update(ctx context.Context, id string, stock *entities.Stock) (*entities.Stock, error) <span class="cov8" title="1">{
+        ctx, sp := tracer.Start(ctx, "stockUpdateService")
+        defer sp.End()
+
+        stockEntity, err := s.stockRepository.Update(ctx, id, stock)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">return stockEntity, nil</span>
+}
+
+func (s *stockServiceImpl) Delete(ctx context.Context, id string) (*entities.Stock, error) <span class="cov8" title="1">{
+        ctx, sp := tracer.Start(ctx, "stockDeleteService")
+        defer sp.End()
+
+        stock, err := s.stockRepository.Delete(ctx, id)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return stock, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file22" style="display: none">package transaction
+
+import (
+        "context"
+        "github.com/kizmey/order_management_system/pkg/interface/aggregation"
+        "github.com/kizmey/order_management_system/pkg/interface/entities"
+        _productRepository "github.com/kizmey/order_management_system/pkg/repository/product"
+        _transactionRepository "github.com/kizmey/order_management_system/pkg/repository/transaction"
+)
+
+type transactionService struct {
+        transactionRepository _transactionRepository.TransactionRepository
+        productRepository     _productRepository.ProductRepository
+}
+
+func NewTransactionServiceImpl(
+        transactionRepository _transactionRepository.TransactionRepository,
+        productRepository _productRepository.ProductRepository,
+) TransactionService <span class="cov8" title="1">{
+        return &amp;transactionService{
+                transactionRepository: transactionRepository,
+                productRepository:     productRepository,
+        }
+}</span>
+
+func (s *transactionService) Create(ctx context.Context, transaction *aggregation.TransactionEcommerce,
+) (*aggregation.TransactionEcommerce, error) <span class="cov8" title="1">{
+
+        ctx, sp := tracer.Start(ctx, "transactionCreateService")
+        defer sp.End()
+
+        for productID := range transaction.AddessProduct </span><span class="cov8" title="1">{
+                product, err := s.productRepository.FindByID(ctx, productID)
+                if err != nil </span><span class="cov8" title="1">{
+                        return nil, err
+                }</span>
+                <span class="cov8" title="1">transaction.Product = append(transaction.Product, *product)</span>
+        }
+
+        <span class="cov8" title="1">transaction.CalculatePrice()
+
+        transactionEntity, err := s.transactionRepository.Create(ctx, transaction)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">transaction.Tranasaction = transactionEntity
+        return transaction, nil</span>
+}
+
+func (s *transactionService) FindAll(ctx context.Context) (*[]entities.Transaction, error) <span class="cov8" title="1">{
+        ctx, sp := tracer.Start(ctx, "transactionFindAllService")
+        defer sp.End()
+
+        transactionEntities, err := s.transactionRepository.FindAll(ctx)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return transactionEntities, nil</span>
+}
+
+func (s *transactionService) FindByID(ctx context.Context, id string) (*entities.Transaction, error) <span class="cov8" title="1">{
+        ctx, sp := tracer.Start(ctx, "transactionFindByIdService")
+        defer sp.End()
+
+        transactionEntity, err := s.transactionRepository.FindByID(ctx, id)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">return transactionEntity, nil</span>
+}
+
+func (s *transactionService) Update(ctx context.Context, id string, transaction *aggregation.TransactionEcommerce,
+) (*aggregation.TransactionEcommerce, error) <span class="cov8" title="1">{
+
+        ctx, sp := tracer.Start(ctx, "transactionUpdateService")
+        defer sp.End()
+
+        for productID := range transaction.AddessProduct </span><span class="cov8" title="1">{
+                product, err := s.productRepository.FindByID(ctx, productID)
+                if err != nil </span><span class="cov8" title="1">{
+                        return nil, err
+                }</span>
+                <span class="cov8" title="1">transaction.Product = append(transaction.Product, *product)</span>
+        }
+
+        <span class="cov8" title="1">transaction.CalculatePrice()
+
+        transactionEntity, err := s.transactionRepository.Update(ctx, id, transaction)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">transaction.Tranasaction = transactionEntity
+        return transaction, nil</span>
+}
+
+func (s *transactionService) Delete(ctx context.Context, id string) (*entities.Transaction, error) <span class="cov8" title="1">{
+        ctx, sp := tracer.Start(ctx, "transactionDeleteService")
+        defer sp.End()
+
+        transaction, err := s.transactionRepository.Delete(ctx, id)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return transaction, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file23" style="display: none">package pkg
+
+import (
+        "github.com/kizmey/order_management_system/database"
+        "github.com/kizmey/order_management_system/pkg/repository/order"
+        "github.com/kizmey/order_management_system/pkg/repository/product"
+        "github.com/kizmey/order_management_system/pkg/repository/stock"
+        "github.com/kizmey/order_management_system/pkg/repository/transaction"
+        order2 "github.com/kizmey/order_management_system/pkg/service/order"
+        product2 "github.com/kizmey/order_management_system/pkg/service/product"
+        stock2 "github.com/kizmey/order_management_system/pkg/service/stock"
+        transaction2 "github.com/kizmey/order_management_system/pkg/service/transaction"
+)
+
+type Usecase struct {
+        TransactionService transaction2.TransactionService
+        StockService       stock2.StockService
+        ProductService     product2.ProductService
+        OrderService       order2.OrderService
+}
+
+func NewUsecase(
+        transactionService transaction2.TransactionService,
+        stockService stock2.StockService,
+        productService product2.ProductService,
+        orderService order2.OrderService,
+) *Usecase <span class="cov0" title="0">{
+        return &amp;Usecase{
+                TransactionService: transactionService,
+                StockService:       stockService,
+                ProductService:     productService,
+                OrderService:       orderService,
+        }
+}</span>
+
+func InitUsecase(db database.Database) *Usecase <span class="cov0" title="0">{
+
+        // Init Repository
+
+        orderRepo := order.NewOrderRepositoryImpl(db)
+        productRepo := product.NewProductRepositoryImpl(db)
+        stockRepo := stock.NewStockRepositoryImpl(db)
+        transactionRepo := transaction.NewTransactionRepositoryImpl(db)
+
+        // Init Service
+        productService := product2.NewProductServiceImpl(productRepo)
+        stockService := stock2.NewStockServiceImpl(stockRepo)
+        transactionService := transaction2.NewTransactionServiceImpl(transactionRepo, productRepo)
+        orderService := order2.NewOrderServiceImpl(orderRepo, transactionRepo, stockRepo)
+
+        usecases := NewUsecase(transactionService, stockService, productService, orderService)
+
+        return usecases
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
