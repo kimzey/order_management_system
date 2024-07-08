@@ -28,3 +28,5 @@ Monitoring/.data
 Monitoring/node
 Monitoring/prometheus-data
 Monitoring/tempo-data
+.data
+tempo-data

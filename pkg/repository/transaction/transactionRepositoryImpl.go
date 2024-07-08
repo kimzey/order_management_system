@@ -2,13 +2,14 @@ package transaction
 
 import (
 	"context"
-	"github.com/kizmey/order_management_system/pkg/interface/aggregation"
-
 	"errors"
 	"fmt"
 	"github.com/kizmey/order_management_system/database"
+	"github.com/kizmey/order_management_system/pkg/interface/aggregation"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/kizmey/order_management_system/pkg/interface/model"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type transactionRepositoryImpl struct {
@@ -23,7 +24,7 @@ func (r *transactionRepositoryImpl) Create(ctx context.Context, transaction *agg
 	ctx, sp := tracer.Start(ctx, "transactionCreateRepository")
 	defer sp.End()
 
-	transactionModel := ToTransactionModel(transaction)
+	transactionModel := r.ToTransactionModel(transaction)
 
 	if err := r.db.Connect().Create(&transactionModel).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to create transaction"))
@@ -34,8 +35,9 @@ func (r *transactionRepositoryImpl) Create(ctx context.Context, transaction *agg
 			return nil, errors.New(fmt.Sprintf("failed to update transaction"))
 		}
 	}
-
-	return transactionModel.ToTransactionEntity(), nil
+	transactionEntity := transactionModel.ToTransactionEntity()
+	r.SetTranactionSubAttributes(transactionEntity, sp)
+	return transactionEntity, nil
 }
 
 func (r *transactionRepositoryImpl) FindAll(ctx context.Context) (*[]entities.Transaction, error) {
@@ -48,6 +50,8 @@ func (r *transactionRepositoryImpl) FindAll(ctx context.Context) (*[]entities.Tr
 		return nil, errors.New(fmt.Sprintf("failed to find transactions"))
 	}
 	allTransactions := model.ConvertModelsTransactionToEntities(transactions)
+
+	r.SetTranactionSubAttributes(allTransactions, sp)
 	return allTransactions, nil
 }
 
@@ -60,14 +64,16 @@ func (r *transactionRepositoryImpl) FindByID(ctx context.Context, id string) (*e
 		return nil, errors.New(fmt.Sprintf("failed to find transaction"))
 	}
 
-	return transaction.ToTransactionEntity(), nil
+	transactionEntity := transaction.ToTransactionEntity()
+	r.SetTranactionSubAttributes(transactionEntity, sp)
+	return transactionEntity, nil
 }
 
 func (r *transactionRepositoryImpl) Update(ctx context.Context, id string, transaction *aggregation.TransactionEcommerce) (*entities.Transaction, error) {
 	ctx, sp := tracer.Start(ctx, "transactionUpdateRepository")
 	defer sp.End()
 
-	transactionModel := ToTransactionModel(transaction)
+	transactionModel := r.ToTransactionModel(transaction)
 
 	transactionModel.ID = id
 	fmt.Println(transactionModel)
@@ -83,7 +89,9 @@ func (r *transactionRepositoryImpl) Update(ctx context.Context, id string, trans
 		}
 	}
 
-	return transactionModel.ToTransactionEntity(), nil
+	transactionEntity := transactionModel.ToTransactionEntity()
+	r.SetTranactionSubAttributes(transactionEntity, sp)
+	return transactionEntity, nil
 }
 
 func (r *transactionRepositoryImpl) Delete(ctx context.Context, id string) (*entities.Transaction, error) {
@@ -95,7 +103,9 @@ func (r *transactionRepositoryImpl) Delete(ctx context.Context, id string) (*ent
 		return nil, errors.New(fmt.Sprintf("failed to delete transaction"))
 	}
 
-	return transaction.ToTransactionEntity(), nil
+	transactionEntity := transaction.ToTransactionEntity()
+	r.SetTranactionSubAttributes(transactionEntity, sp)
+	return transactionEntity, nil
 }
 
 func (r *transactionRepositoryImpl) FindProductsByTransactionID(ctx context.Context, id string) (*aggregation.Ecommerce, error) {
@@ -115,11 +125,11 @@ func (r *transactionRepositoryImpl) FindProductsByTransactionID(ctx context.Cont
 	}
 
 	ecommerceProducts := aggregation.NewEcommerce(nil, products, quantity)
+	r.SetEcommerceSubAttributes(ecommerceProducts, sp)
 	return ecommerceProducts, nil
-
 }
 
-func ToTransactionModel(e *aggregation.TransactionEcommerce) *model.Transaction {
+func (r *transactionRepositoryImpl) ToTransactionModel(e *aggregation.TransactionEcommerce) *model.Transaction {
 	var productlist []model.Product
 	for _, v := range e.Product {
 		productlist = append(productlist, model.Product{
@@ -132,5 +142,63 @@ func ToTransactionModel(e *aggregation.TransactionEcommerce) *model.Transaction 
 		SumPrice:   e.Tranasaction.SumPrice,
 		IsDomestic: e.Tranasaction.IsDomestic,
 		Products:   productlist,
+	}
+}
+
+func (r *transactionRepositoryImpl) SetTranactionSubAttributes(tranasctionData any, sp trace.Span) {
+	if transactions, ok := tranasctionData.(*[]entities.Transaction); ok {
+		var TransactionIDs []string
+		var SumPrices []int
+		var IsDometic []bool
+
+		for _, transaction := range *transactions {
+			TransactionIDs = append(TransactionIDs, transaction.TransactionID)
+			SumPrices = append(SumPrices, int(transaction.SumPrice))
+			IsDometic = append(IsDometic, transaction.IsDomestic)
+		}
+
+		sp.SetAttributes(
+			attribute.StringSlice("TransactionID", TransactionIDs),
+			attribute.IntSlice("SumPrice", SumPrices),
+			attribute.BoolSlice("IsDomestic", IsDometic),
+		)
+
+	} else if transaction, ok := tranasctionData.(*entities.Transaction); ok {
+		sp.SetAttributes(
+			attribute.String("TransactionID", transaction.TransactionID),
+			attribute.Int("SumPrice", int(transaction.SumPrice)),
+			attribute.Bool("IsDomestic", transaction.IsDomestic),
+		)
+	} else {
+		sp.RecordError(errors.New("invalid type"))
+	}
+}
+
+func (r *transactionRepositoryImpl) SetEcommerceSubAttributes(ecommerceData any, sp trace.Span) {
+	if ecommerce, ok := ecommerceData.(*aggregation.Ecommerce); ok {
+		var quantity []int
+		var productIDs []string
+		var productNames []string
+		var productPrices []int
+
+		for _, product := range ecommerce.Product {
+			productIDs = append(productIDs, product.ProductID)
+			productNames = append(productNames, product.ProductName)
+			productPrices = append(productPrices, int(product.ProductPrice))
+		}
+
+		for _, data := range ecommerce.Quantity {
+			quantity = append(quantity, int(data))
+		}
+
+		sp.SetAttributes(
+			attribute.IntSlice("Quantity", quantity),
+			attribute.StringSlice("ProductIDs", productIDs),
+			attribute.StringSlice("ProductNames", productNames),
+			attribute.IntSlice("ProductPrices", productPrices),
+		)
+
+	} else {
+		sp.RecordError(errors.New("invalid type"))
 	}
 }
