@@ -2,13 +2,13 @@ package order
 
 import (
 	"context"
-	customTracer "github.com/kizmey/order_management_system/observability/tracer"
-
 	"errors"
 	"fmt"
 	"github.com/kizmey/order_management_system/database"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/kizmey/order_management_system/pkg/interface/model"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type orderRepositoryImpl struct {
@@ -23,14 +23,14 @@ func (r *orderRepositoryImpl) Create(ctx context.Context, order *entities.Order)
 	ctx, sp := tracer.Start(ctx, "orderCreateRepository")
 	defer sp.End()
 
-	modelOrder := ToOrderModel(order)
+	modelOrder := r.ToOrderModel(order)
 	if err := r.db.Connect().Create(&modelOrder).Preload("Transaction").Where("id = ?", modelOrder.ID).First(&modelOrder).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("create order error "))
 	}
 
-	customTracer.SetSubAttributesWithJson(modelOrder.ToOrderEntity(), sp)
-
-	return modelOrder.ToOrderEntity(), nil
+	orderEntity := modelOrder.ToOrderEntity()
+	r.SetOrderSubAttributes(orderEntity, sp)
+	return orderEntity, nil
 }
 
 func (r *orderRepositoryImpl) FindAll(ctx context.Context) (*[]entities.Order, error) {
@@ -42,8 +42,9 @@ func (r *orderRepositoryImpl) FindAll(ctx context.Context) (*[]entities.Order, e
 	if err := r.db.Connect().Preload("Transaction").Find(orders).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("find all order error "))
 	}
-	allOrder := ConvertOrderModelsToEntities(orders)
+	allOrder := r.ConvertOrderModelsToEntities(orders)
 
+	r.SetOrderSubAttributes(allOrder, sp)
 	return allOrder, nil
 }
 func (r *orderRepositoryImpl) FindByID(ctx context.Context, id string) (*entities.Order, error) {
@@ -54,31 +55,39 @@ func (r *orderRepositoryImpl) FindByID(ctx context.Context, id string) (*entitie
 	if err := r.db.Connect().Preload("Transaction").Where("id = ?", id).First(&order).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("find by id order error "))
 	}
-	return order.ToOrderEntity(), nil
+
+	orderEntity := order.ToOrderEntity()
+	r.SetOrderSubAttributes(order, sp)
+	return orderEntity, nil
 }
 
 func (r *orderRepositoryImpl) Update(ctx context.Context, id string, order *entities.Order) (*entities.Order, error) {
 	ctx, sp := tracer.Start(ctx, "orderUpdateRepository")
 	defer sp.End()
 
-	modelOrder := ToOrderModel(order)
+	modelOrder := r.ToOrderModel(order)
 	if err := r.db.Connect().Model(&modelOrder).Where("id = ?", id).Updates(&modelOrder).Scan(modelOrder).Where("id = ?", id).First(&modelOrder).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("update order error "))
 	}
 
-	return modelOrder.ToOrderEntity(), nil
+	orderEntiry := modelOrder.ToOrderEntity()
+	r.SetOrderSubAttributes(orderEntiry, sp)
+	return orderEntiry, nil
 }
 
 func (r *orderRepositoryImpl) UpdateStatus(ctx context.Context, id string, order *entities.Order) (*entities.Order, error) {
 	ctx, sp := tracer.Start(ctx, "orderUpdateRepository")
 	defer sp.End()
 
-	orderModel := ToOrderModel(order)
+	orderModel := r.ToOrderModel(order)
 
 	if err := r.db.Connect().Model(&orderModel).Where("id = ?", id).Updates(&orderModel).Scan(orderModel).Preload("Transaction").Where("id = ?", id).First(&orderModel).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("update order error "))
 	}
-	return orderModel.ToOrderEntity(), nil
+
+	orderEntiry := orderModel.ToOrderEntity()
+	r.SetOrderSubAttributes(orderEntiry, sp)
+	return orderEntiry, nil
 }
 
 func (r *orderRepositoryImpl) Delete(ctx context.Context, id string) (*entities.Order, error) {
@@ -90,9 +99,12 @@ func (r *orderRepositoryImpl) Delete(ctx context.Context, id string) (*entities.
 		return nil, errors.New(fmt.Sprintf("failed to delete order"))
 	}
 
-	return order.ToOrderEntity(), nil
+	orderEntiry := order.ToOrderEntity()
+	r.SetOrderSubAttributes(orderEntiry, sp)
+	return orderEntiry, nil
 }
-func ConvertOrderModelsToEntities(orders *[]model.Order) *[]entities.Order {
+
+func (r *orderRepositoryImpl) ConvertOrderModelsToEntities(orders *[]model.Order) *[]entities.Order {
 	entityOrders := new([]entities.Order)
 
 	for _, order := range *orders {
@@ -101,11 +113,39 @@ func ConvertOrderModelsToEntities(orders *[]model.Order) *[]entities.Order {
 
 	return entityOrders
 }
-func ToOrderModel(e *entities.Order) *model.Order {
+func (r *orderRepositoryImpl) ToOrderModel(e *entities.Order) *model.Order {
 	//fmt.Println("e: ", e.IsDomestic)
 	return &model.Order{
 		TransactionID: e.TransactionID,
 		Status:        e.Status,
+	}
+}
+
+func (r *orderRepositoryImpl) SetOrderSubAttributes(orderData any, sp trace.Span) {
+	if orders, ok := orderData.(*[]entities.Order); ok {
+		var orderIDs []string
+		var transactionIDs []string
+		var statuses []string
+
+		for _, order := range *orders {
+			orderIDs = append(orderIDs, order.OrderID)
+			transactionIDs = append(transactionIDs, order.TransactionID)
+			statuses = append(statuses, order.Status)
+		}
+
+		sp.SetAttributes(
+			attribute.StringSlice("OrderID", orderIDs),
+			attribute.StringSlice("TransactionID", transactionIDs),
+			attribute.StringSlice("Status", statuses),
+		)
+	} else if order, ok := orderData.(*entities.Order); ok {
+		sp.SetAttributes(
+			attribute.String("OrderID", order.OrderID),
+			attribute.String("TransactionID", order.TransactionID),
+			attribute.String("Status", order.Status),
+		)
+	} else {
+		sp.RecordError(errors.New("invalid type"))
 	}
 }
 

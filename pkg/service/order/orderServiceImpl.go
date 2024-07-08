@@ -3,11 +3,12 @@ package order
 import (
 	"context"
 	"errors"
-	customTracer "github.com/kizmey/order_management_system/observability/tracer"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	_orderRepository "github.com/kizmey/order_management_system/pkg/repository/order"
 	_stockRepository "github.com/kizmey/order_management_system/pkg/repository/stock"
 	_transactionRepository "github.com/kizmey/order_management_system/pkg/repository/transaction"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type orderServiceImpl struct {
@@ -68,7 +69,8 @@ func (s *orderServiceImpl) Create(ctx context.Context, order *entities.Order) (*
 		stock.Quantity += quantityProduct
 		stockRollback = append(stockRollback, *stock)
 	}
-	customTracer.SetSubAttributesWithJson(newOrder, sp)
+
+	SetOrderSubAttributes(newOrder, sp)
 	return newOrder, nil
 }
 
@@ -81,6 +83,7 @@ func (s *orderServiceImpl) FindAll(ctx context.Context) (*[]entities.Order, erro
 		return nil, err
 	}
 
+	SetOrderSubAttributes(orders, sp)
 	return orders, nil
 }
 
@@ -92,6 +95,8 @@ func (s *orderServiceImpl) FindByID(ctx context.Context, id string) (*entities.O
 	if err != nil {
 		return nil, err
 	}
+
+	SetOrderSubAttributes(order, sp)
 	return order, nil
 }
 
@@ -136,6 +141,7 @@ func (s *orderServiceImpl) Update(ctx context.Context, id string, order *entitie
 		stockRollback = append(stockRollback, *stock)
 	}
 
+	SetOrderSubAttributes(newOrder, sp)
 	return newOrder, nil
 }
 
@@ -147,6 +153,8 @@ func (s *orderServiceImpl) Delete(ctx context.Context, id string) (*entities.Ord
 	if err != nil {
 		return nil, err
 	}
+	SetOrderSubAttributes(order, sp)
+
 	return order, err
 }
 
@@ -168,6 +176,7 @@ func (s *orderServiceImpl) ChangeStatusNext(ctx context.Context, id string) (*en
 	if err != nil {
 		return nil, err
 	}
+	SetOrderSubAttributes(order, sp)
 
 	return order, nil
 }
@@ -189,6 +198,35 @@ func (s *orderServiceImpl) ChageStatusDone(ctx context.Context, id string) (*ent
 	if err != nil {
 		return nil, err
 	}
+	SetOrderSubAttributes(order, sp)
 
 	return order, nil
+}
+
+func SetOrderSubAttributes(orderData any, sp trace.Span) {
+	if orders, ok := orderData.(*[]entities.Order); ok {
+		var orderIDs []string
+		var transactionIDs []string
+		var statuses []string
+
+		for _, order := range *orders {
+			orderIDs = append(orderIDs, order.OrderID)
+			transactionIDs = append(transactionIDs, order.TransactionID)
+			statuses = append(statuses, order.Status)
+		}
+
+		sp.SetAttributes(
+			attribute.StringSlice("OrderID", orderIDs),
+			attribute.StringSlice("TransactionID", transactionIDs),
+			attribute.StringSlice("Status", statuses),
+		)
+	} else if order, ok := orderData.(*entities.Order); ok {
+		sp.SetAttributes(
+			attribute.String("OrderID", order.OrderID),
+			attribute.String("TransactionID", order.TransactionID),
+			attribute.String("Status", order.Status),
+		)
+	} else {
+		sp.RecordError(errors.New("invalid type"))
+	}
 }

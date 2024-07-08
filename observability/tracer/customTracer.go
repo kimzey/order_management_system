@@ -2,17 +2,14 @@ package customTracer
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/go-logr/stdr"
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"go.opentelemetry.io/otel/semconv/v1.21.0" // Import semconv package
-	"go.opentelemetry.io/otel/trace"
 	"log"
 	"os"
 )
@@ -50,13 +47,4 @@ func InitOpenTelemetry() error {
 	)
 	otel.SetTracerProvider(tp)
 	return nil
-}
-
-func SetSubAttributesWithJson(obj any, sp trace.Span) {
-	objJson, err := json.Marshal(obj)
-	if err != nil {
-	}
-	sp.SetAttributes(
-		attribute.String("result", string(objJson)),
-	)
 }
