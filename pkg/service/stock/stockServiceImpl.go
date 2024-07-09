@@ -76,9 +76,9 @@ func (s *stockServiceImpl) Delete(ctx context.Context, id string) (*entities.Sto
 
 func (s *stockServiceImpl) SetStockSubAttributes(stockData any, sp trace.Span) {
 	if stocks, ok := stockData.(*[]entities.Stock); ok {
-		var stockIDs []string
-		var productIDs []string
-		var quantities []int
+		stockIDs := make([]string, len(*stocks))
+		productIDs := make([]string, len(*stocks))
+		quantities := make([]int, len(*stocks))
 
 		for _, stock := range *stocks {
 			stockIDs = append(stockIDs, stock.StockID)

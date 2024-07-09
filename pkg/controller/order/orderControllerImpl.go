@@ -13,6 +13,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 	"net/http"
+	"reflect"
 )
 
 type orderControllerImpl struct {
@@ -192,12 +193,12 @@ func (c *orderControllerImpl) orderEntityToModelRes(order *entities.Order) *mode
 }
 
 func (c *orderControllerImpl) SetSubAttributesWithJson(orderData any, sp trace.Span) {
-	if orders, ok := orderData.(*[]modelRes.Order); ok {
+	if orders, ok := orderData.([]modelRes.Order); ok {
 		var orderIDs []string
 		var transactionIDs []string
 		var statuses []string
 
-		for _, order := range *orders {
+		for _, order := range orders {
 			orderIDs = append(orderIDs, order.OrderID)
 			transactionIDs = append(transactionIDs, order.TransactionID)
 			statuses = append(statuses, order.Status)
@@ -215,6 +216,6 @@ func (c *orderControllerImpl) SetSubAttributesWithJson(orderData any, sp trace.S
 			attribute.String("Status", order.Status),
 		)
 	} else {
-		sp.RecordError(errors.New("invalid type"))
+		sp.RecordError(errors.New("invalid type" + reflect.TypeOf(orderData).String()))
 	}
 }

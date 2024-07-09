@@ -11,6 +11,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 	"net/http"
+	"reflect"
 )
 
 type productController struct {
@@ -39,9 +40,8 @@ func (c *productController) Create(pctx echo.Context) error {
 		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToCreateProduct)
 	}
 
-	c.SetSubAttributesWithJson(product, sp)
-
 	productRes := c.productEntityToRes(product)
+	c.SetSubAttributesWithJson(productRes, sp)
 	return pctx.JSON(http.StatusCreated, productRes)
 }
 
@@ -140,13 +140,13 @@ func (c *productController) productEntityToRes(product *entities.Product) *model
 }
 
 func (c *productController) SetSubAttributesWithJson(obj any, sp trace.Span) {
-	if products, ok := obj.(*[]modelRes.Product); ok {
+	if products, ok := obj.([]modelRes.Product); ok {
 		var productIDs []string
 		var productNames []string
 		var productPrices []int
 		var quantities []int
 
-		for _, product := range *products {
+		for _, product := range products {
 			productIDs = append(productIDs, product.ProductID)
 			productNames = append(productNames, product.ProductName)
 			productPrices = append(productPrices, int(product.ProductPrice))
@@ -167,6 +167,6 @@ func (c *productController) SetSubAttributesWithJson(obj any, sp trace.Span) {
 			attribute.Int("Quantity", int(product.Quantity)),
 		)
 	} else {
-		sp.RecordError(errors.New("invalid type"))
+		sp.RecordError(errors.New("invalid type" + reflect.TypeOf(obj).String()))
 	}
 }

@@ -185,13 +185,13 @@ func (c *transactionControllerImpl) transactionEntityToRes(transactionEntity *en
 }
 
 func (c *transactionControllerImpl) SetSubAttributesWithJson(obj any, sp trace.Span) {
-	if transactions, ok := obj.(*[]modelRes.Transaction); ok {
+	if transactions, ok := obj.([]modelRes.Transaction); ok {
 		var transactionIDs []string
 		var transactionIsDomestic []bool
 		var transactionSumPrices []int
 		var transactionProducts []string
 
-		for _, transaction := range *transactions {
+		for _, transaction := range transactions {
 			transactionIDs = append(transactionIDs, transaction.TransactionID)
 			transactionIsDomestic = append(transactionIsDomestic, transaction.IsDomestic)
 			transactionSumPrices = append(transactionSumPrices, int(transaction.SumPrice))

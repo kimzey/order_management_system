@@ -83,9 +83,9 @@ func (s *productServiceImpl) Delete(ctx context.Context, id string) (*entities.P
 
 func (s *productServiceImpl) SetProductSubAttributes(productData any, sp trace.Span) {
 	if products, ok := productData.(*[]entities.Product); ok {
-		var productIDs []string
-		var productNames []string
-		var productPrices []int
+		productIDs := make([]string, len(*products))
+		productNames := make([]string, len(*products))
+		productPrices := make([]int, len(*products))
 
 		for _, product := range *products {
 			productIDs = append(productIDs, product.ProductID)

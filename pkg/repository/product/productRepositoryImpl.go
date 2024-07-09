@@ -4,6 +4,7 @@ import (
 	"context"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
+	"reflect"
 
 	"errors"
 	"fmt"
@@ -22,7 +23,7 @@ func NewProductRepositoryImpl(db database.Database) ProductRepository {
 }
 
 func (r *productRepositoryImpl) Create(ctx context.Context, product *entities.Product) (*entities.Product, error) {
-	ctx, sp := tracer.Start(ctx, "productCreateRepository")
+	_, sp := tracer.Start(ctx, "productCreateRepository")
 	defer sp.End()
 
 	modelProduct := r.ToProductModel(product)
@@ -33,12 +34,12 @@ func (r *productRepositoryImpl) Create(ctx context.Context, product *entities.Pr
 	}
 
 	productEntity := newProduct.ToProductEntity()
-	r.SetProductSubAttributes(newProduct, sp)
+	r.SetProductSubAttributes(productEntity, sp)
 	return productEntity, nil
 }
 
 func (r *productRepositoryImpl) FindAll(ctx context.Context) (*[]entities.Product, error) {
-	ctx, sp := tracer.Start(ctx, "productFindByIdRepository")
+	_, sp := tracer.Start(ctx, "productFindByIdRepository")
 	defer sp.End()
 
 	products := new([]model.Product)
@@ -52,7 +53,7 @@ func (r *productRepositoryImpl) FindAll(ctx context.Context) (*[]entities.Produc
 }
 
 func (r *productRepositoryImpl) FindByID(ctx context.Context, id string) (*entities.Product, error) {
-	ctx, sp := tracer.Start(ctx, "productFindByIdRepository")
+	_, sp := tracer.Start(ctx, "productFindByIdRepository")
 	defer sp.End()
 
 	product := new(model.Product)
@@ -62,12 +63,12 @@ func (r *productRepositoryImpl) FindByID(ctx context.Context, id string) (*entit
 	}
 
 	productEntity := product.ToProductEntity()
-	r.SetProductSubAttributes(product, sp)
+	r.SetProductSubAttributes(productEntity, sp)
 	return productEntity, nil
 }
 
 func (r *productRepositoryImpl) Update(ctx context.Context, id string, product *entities.Product) (*entities.Product, error) {
-	ctx, sp := tracer.Start(ctx, "productFindByIdRepository")
+	_, sp := tracer.Start(ctx, "productFindByIdRepository")
 	defer sp.End()
 
 	newProduct := new(model.Product)
@@ -82,12 +83,12 @@ func (r *productRepositoryImpl) Update(ctx context.Context, id string, product *
 	}
 
 	productEntity := newProduct.ToProductEntity()
-	r.SetProductSubAttributes(product, sp)
+	r.SetProductSubAttributes(productEntity, sp)
 	return productEntity, nil
 }
 
 func (r *productRepositoryImpl) Delete(ctx context.Context, id string) (*entities.Product, error) {
-	ctx, sp := tracer.Start(ctx, "productDeleteRepository")
+	_, sp := tracer.Start(ctx, "productDeleteRepository")
 	defer sp.End()
 
 	product := new(model.Product)
@@ -96,7 +97,7 @@ func (r *productRepositoryImpl) Delete(ctx context.Context, id string) (*entitie
 	}
 
 	productEntity := product.ToProductEntity()
-	r.SetProductSubAttributes(product, sp)
+	r.SetProductSubAttributes(productEntity, sp)
 	return productEntity, nil
 }
 
@@ -109,9 +110,9 @@ func (r *productRepositoryImpl) ToProductModel(e *entities.Product) *model.Produ
 
 func (r *productRepositoryImpl) SetProductSubAttributes(productData any, sp trace.Span) {
 	if products, ok := productData.(*[]entities.Product); ok {
-		var productIDs []string
-		var productNames []string
-		var productPrices []int
+		productIDs := make([]string, len(*products))
+		productNames := make([]string, len(*products))
+		productPrices := make([]int, len(*products))
 
 		for _, product := range *products {
 			productIDs = append(productIDs, product.ProductID)
@@ -131,6 +132,6 @@ func (r *productRepositoryImpl) SetProductSubAttributes(productData any, sp trac
 			attribute.Int("ProductPrice", int(product.ProductPrice)),
 		)
 	} else {
-		sp.RecordError(errors.New("invalid type"))
+		sp.RecordError(errors.New("invalid type" + reflect.TypeOf(productData).String()))
 	}
 }

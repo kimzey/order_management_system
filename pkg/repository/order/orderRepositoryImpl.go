@@ -20,7 +20,7 @@ func NewOrderRepositoryImpl(db database.Database) OrderRepository {
 }
 
 func (r *orderRepositoryImpl) Create(ctx context.Context, order *entities.Order) (*entities.Order, error) {
-	ctx, sp := tracer.Start(ctx, "orderCreateRepository")
+	_, sp := tracer.Start(ctx, "orderCreateRepository")
 	defer sp.End()
 
 	modelOrder := r.ToOrderModel(order)
@@ -34,7 +34,7 @@ func (r *orderRepositoryImpl) Create(ctx context.Context, order *entities.Order)
 }
 
 func (r *orderRepositoryImpl) FindAll(ctx context.Context) (*[]entities.Order, error) {
-	ctx, sp := tracer.Start(ctx, "orderFindAllRepository")
+	_, sp := tracer.Start(ctx, "orderFindAllRepository")
 	defer sp.End()
 
 	orders := new([]model.Order)
@@ -48,7 +48,7 @@ func (r *orderRepositoryImpl) FindAll(ctx context.Context) (*[]entities.Order, e
 	return allOrder, nil
 }
 func (r *orderRepositoryImpl) FindByID(ctx context.Context, id string) (*entities.Order, error) {
-	ctx, sp := tracer.Start(ctx, "orderFindByIdRepository")
+	_, sp := tracer.Start(ctx, "orderFindByIdRepository")
 	defer sp.End()
 
 	order := new(model.Order)
@@ -62,7 +62,7 @@ func (r *orderRepositoryImpl) FindByID(ctx context.Context, id string) (*entitie
 }
 
 func (r *orderRepositoryImpl) Update(ctx context.Context, id string, order *entities.Order) (*entities.Order, error) {
-	ctx, sp := tracer.Start(ctx, "orderUpdateRepository")
+	_, sp := tracer.Start(ctx, "orderUpdateRepository")
 	defer sp.End()
 
 	modelOrder := r.ToOrderModel(order)
@@ -76,7 +76,7 @@ func (r *orderRepositoryImpl) Update(ctx context.Context, id string, order *enti
 }
 
 func (r *orderRepositoryImpl) UpdateStatus(ctx context.Context, id string, order *entities.Order) (*entities.Order, error) {
-	ctx, sp := tracer.Start(ctx, "orderUpdateRepository")
+	_, sp := tracer.Start(ctx, "orderUpdateRepository")
 	defer sp.End()
 
 	orderModel := r.ToOrderModel(order)
@@ -91,7 +91,7 @@ func (r *orderRepositoryImpl) UpdateStatus(ctx context.Context, id string, order
 }
 
 func (r *orderRepositoryImpl) Delete(ctx context.Context, id string) (*entities.Order, error) {
-	ctx, sp := tracer.Start(ctx, "orderDeleteRepository")
+	_, sp := tracer.Start(ctx, "orderDeleteRepository")
 	defer sp.End()
 
 	order := new(model.Order)
@@ -114,7 +114,6 @@ func (r *orderRepositoryImpl) ConvertOrderModelsToEntities(orders *[]model.Order
 	return entityOrders
 }
 func (r *orderRepositoryImpl) ToOrderModel(e *entities.Order) *model.Order {
-	//fmt.Println("e: ", e.IsDomestic)
 	return &model.Order{
 		TransactionID: e.TransactionID,
 		Status:        e.Status,
@@ -123,9 +122,9 @@ func (r *orderRepositoryImpl) ToOrderModel(e *entities.Order) *model.Order {
 
 func (r *orderRepositoryImpl) SetOrderSubAttributes(orderData any, sp trace.Span) {
 	if orders, ok := orderData.(*[]entities.Order); ok {
-		var orderIDs []string
-		var transactionIDs []string
-		var statuses []string
+		orderIDs := make([]string, len(*orders))
+		transactionIDs := make([]string, len(*orders))
+		statuses := make([]string, len(*orders))
 
 		for _, order := range *orders {
 			orderIDs = append(orderIDs, order.OrderID)

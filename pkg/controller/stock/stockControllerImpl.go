@@ -140,12 +140,12 @@ func (c *stockControllerImpl) stockEntityToRes(stock *entities.Stock) *modelRes.
 }
 
 func (c *stockControllerImpl) SetSubAttributesWithJson(obj any, sp trace.Span) {
-	if stocks, ok := obj.(*[]modelRes.Stock); ok {
+	if stocks, ok := obj.([]modelRes.Stock); ok {
 		var stockIDs []string
 		var productIDs []string
 		var quantities []int
 
-		for _, stock := range *stocks {
+		for _, stock := range stocks {
 			stockIDs = append(stockIDs, stock.StockID)
 			productIDs = append(productIDs, stock.ProductID)
 			quantities = append(quantities, int(stock.Quantity))
@@ -156,7 +156,7 @@ func (c *stockControllerImpl) SetSubAttributesWithJson(obj any, sp trace.Span) {
 			attribute.StringSlice("ProductID", productIDs),
 			attribute.IntSlice("Quantity", quantities),
 		)
-	} else if stock, ok := obj.(*modelRes.Stock); ok {
+	} else if stock, ok := obj.(modelRes.Stock); ok {
 		sp.SetAttributes(
 			attribute.String("StockID", stock.StockID),
 			attribute.String("ProductID", stock.ProductID),

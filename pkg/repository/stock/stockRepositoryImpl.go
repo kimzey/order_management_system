@@ -22,7 +22,7 @@ func NewStockRepositoryImpl(db database.Database) StockRepository {
 }
 
 func (r *stockRepositoryImpl) Create(ctx context.Context, stock *entities.Stock) (*entities.Stock, error) {
-	ctx, sp := tracer.Start(ctx, "stockCreateRepository")
+	_, sp := tracer.Start(ctx, "stockCreateRepository")
 	defer sp.End()
 
 	modelStock := r.ToStockModel(stock)
@@ -38,7 +38,7 @@ func (r *stockRepositoryImpl) Create(ctx context.Context, stock *entities.Stock)
 }
 
 func (r *stockRepositoryImpl) FindAll(ctx context.Context) (*[]entities.Stock, error) {
-	ctx, sp := tracer.Start(ctx, "stockFindAllRepository")
+	_, sp := tracer.Start(ctx, "stockFindAllRepository")
 	defer sp.End()
 
 	stocks := new([]model.Stock)
@@ -53,7 +53,7 @@ func (r *stockRepositoryImpl) FindAll(ctx context.Context) (*[]entities.Stock, e
 }
 
 func (r *stockRepositoryImpl) CheckStockByProductId(ctx context.Context, productId string) (*entities.Stock, error) {
-	ctx, sp := tracer.Start(ctx, "stockCheckStockByProductIdRepository")
+	_, sp := tracer.Start(ctx, "stockCheckStockByProductIdRepository")
 	defer sp.End()
 
 	stock := new(model.Stock)
@@ -67,7 +67,7 @@ func (r *stockRepositoryImpl) CheckStockByProductId(ctx context.Context, product
 }
 
 func (r *stockRepositoryImpl) Update(ctx context.Context, stockid string, stock *entities.Stock) (*entities.Stock, error) {
-	ctx, sp := tracer.Start(ctx, "stockUpdateRepository")
+	_, sp := tracer.Start(ctx, "stockUpdateRepository")
 	defer sp.End()
 
 	stocks := new(model.Stock)
@@ -95,7 +95,7 @@ func (r *stockRepositoryImpl) Update(ctx context.Context, stockid string, stock 
 }
 
 func (r *stockRepositoryImpl) Delete(ctx context.Context, id string) (*entities.Stock, error) {
-	ctx, sp := tracer.Start(ctx, "stockDeleteRepository")
+	_, sp := tracer.Start(ctx, "stockDeleteRepository")
 	defer sp.End()
 
 	stock := new(model.Stock)
@@ -125,9 +125,9 @@ func (r *stockRepositoryImpl) ToStockModelRes(e *entities.Stock) *modelRes.Stock
 
 func (r *stockRepositoryImpl) SetStockSubAttributes(stockData any, sp trace.Span) {
 	if stocks, ok := stockData.(*[]entities.Stock); ok {
-		var stockIDs []string
-		var productIDs []string
-		var quantities []int
+		stockIDs := make([]string, len(*stocks))
+		productIDs := make([]string, len(*stocks))
+		quantities := make([]int, len(*stocks))
 
 		for _, stock := range *stocks {
 			stockIDs = append(stockIDs, stock.StockID)

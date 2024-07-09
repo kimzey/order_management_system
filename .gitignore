@@ -30,3 +30,8 @@ Monitoring/prometheus-data
 Monitoring/tempo-data
 .data
 tempo-data
+observability/Monitoring/
+observability/Monitoring/.data
+observability/Monitoring/prometheus-data
+observability/Monitoring/tempo-data
+observability/Monitoring/.data/minio/

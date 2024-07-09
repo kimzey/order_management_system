@@ -205,9 +205,9 @@ func (s *orderServiceImpl) ChageStatusDone(ctx context.Context, id string) (*ent
 
 func SetOrderSubAttributes(orderData any, sp trace.Span) {
 	if orders, ok := orderData.(*[]entities.Order); ok {
-		var orderIDs []string
-		var transactionIDs []string
-		var statuses []string
+		orderIDs := make([]string, len(*orders))
+		transactionIDs := make([]string, len(*orders))
+		statuses := make([]string, len(*orders))
 
 		for _, order := range *orders {
 			orderIDs = append(orderIDs, order.OrderID)

@@ -21,7 +21,7 @@ func NewTransactionRepositoryImpl(db database.Database) TransactionRepository {
 }
 
 func (r *transactionRepositoryImpl) Create(ctx context.Context, transaction *aggregation.TransactionEcommerce) (*entities.Transaction, error) {
-	ctx, sp := tracer.Start(ctx, "transactionCreateRepository")
+	_, sp := tracer.Start(ctx, "transactionCreateRepository")
 	defer sp.End()
 
 	transactionModel := r.ToTransactionModel(transaction)
@@ -41,7 +41,7 @@ func (r *transactionRepositoryImpl) Create(ctx context.Context, transaction *agg
 }
 
 func (r *transactionRepositoryImpl) FindAll(ctx context.Context) (*[]entities.Transaction, error) {
-	ctx, sp := tracer.Start(ctx, "transactionFindAllRepository")
+	_, sp := tracer.Start(ctx, "transactionFindAllRepository")
 	defer sp.End()
 
 	transactions := new([]model.Transaction)
@@ -56,7 +56,7 @@ func (r *transactionRepositoryImpl) FindAll(ctx context.Context) (*[]entities.Tr
 }
 
 func (r *transactionRepositoryImpl) FindByID(ctx context.Context, id string) (*entities.Transaction, error) {
-	ctx, sp := tracer.Start(ctx, "transactionFindByIdRepository")
+	_, sp := tracer.Start(ctx, "transactionFindByIdRepository")
 	defer sp.End()
 
 	transaction := new(model.Transaction)
@@ -70,7 +70,7 @@ func (r *transactionRepositoryImpl) FindByID(ctx context.Context, id string) (*e
 }
 
 func (r *transactionRepositoryImpl) Update(ctx context.Context, id string, transaction *aggregation.TransactionEcommerce) (*entities.Transaction, error) {
-	ctx, sp := tracer.Start(ctx, "transactionUpdateRepository")
+	_, sp := tracer.Start(ctx, "transactionUpdateRepository")
 	defer sp.End()
 
 	transactionModel := r.ToTransactionModel(transaction)
@@ -95,7 +95,7 @@ func (r *transactionRepositoryImpl) Update(ctx context.Context, id string, trans
 }
 
 func (r *transactionRepositoryImpl) Delete(ctx context.Context, id string) (*entities.Transaction, error) {
-	ctx, sp := tracer.Start(ctx, "transactionDeleteRepository")
+	_, sp := tracer.Start(ctx, "transactionDeleteRepository")
 	defer sp.End()
 
 	transaction := new(model.Transaction)
@@ -109,7 +109,7 @@ func (r *transactionRepositoryImpl) Delete(ctx context.Context, id string) (*ent
 }
 
 func (r *transactionRepositoryImpl) FindProductsByTransactionID(ctx context.Context, id string) (*aggregation.Ecommerce, error) {
-	ctx, sp := tracer.Start(ctx, "transactionFindProductsByTransactionIDRepository")
+	_, sp := tracer.Start(ctx, "transactionFindProductsByTransactionIDRepository")
 	defer sp.End()
 
 	var transactionProducts []model.TransactionProduct
@@ -145,11 +145,11 @@ func (r *transactionRepositoryImpl) ToTransactionModel(e *aggregation.Transactio
 	}
 }
 
-func (r *transactionRepositoryImpl) SetTranactionSubAttributes(tranasctionData any, sp trace.Span) {
-	if transactions, ok := tranasctionData.(*[]entities.Transaction); ok {
-		var TransactionIDs []string
-		var SumPrices []int
-		var IsDometic []bool
+func (r *transactionRepositoryImpl) SetTranactionSubAttributes(tranasactionData any, sp trace.Span) {
+	if transactions, ok := tranasactionData.(*[]entities.Transaction); ok {
+		TransactionIDs := make([]string, len(*transactions))
+		SumPrices := make([]int, len(*transactions))
+		IsDometic := make([]bool, len(*transactions))
 
 		for _, transaction := range *transactions {
 			TransactionIDs = append(TransactionIDs, transaction.TransactionID)
@@ -163,7 +163,7 @@ func (r *transactionRepositoryImpl) SetTranactionSubAttributes(tranasctionData a
 			attribute.BoolSlice("IsDomestic", IsDometic),
 		)
 
-	} else if transaction, ok := tranasctionData.(*entities.Transaction); ok {
+	} else if transaction, ok := tranasactionData.(*entities.Transaction); ok {
 		sp.SetAttributes(
 			attribute.String("TransactionID", transaction.TransactionID),
 			attribute.Int("SumPrice", int(transaction.SumPrice)),
@@ -176,10 +176,10 @@ func (r *transactionRepositoryImpl) SetTranactionSubAttributes(tranasctionData a
 
 func (r *transactionRepositoryImpl) SetEcommerceSubAttributes(ecommerceData any, sp trace.Span) {
 	if ecommerce, ok := ecommerceData.(*aggregation.Ecommerce); ok {
-		var quantity []int
-		var productIDs []string
-		var productNames []string
-		var productPrices []int
+		quantity := make([]int, len(ecommerce.Quantity))
+		productIDs := make([]string, len(ecommerce.Product))
+		productNames := make([]string, len(ecommerce.Product))
+		productPrices := make([]int, len(ecommerce.Product))
 
 		for _, product := range ecommerce.Product {
 			productIDs = append(productIDs, product.ProductID)

@@ -3,6 +3,7 @@ package transaction
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/kizmey/order_management_system/pkg/interface/aggregation"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	_productRepository "github.com/kizmey/order_management_system/pkg/repository/product"
@@ -149,19 +150,22 @@ func (s *transactionService) SetTranactionSubAttributes(tranasctionData any, sp 
 
 func (s *transactionService) SetTransactionEcommerceSubAttributes(TransactionEcommerceData any, sp trace.Span) {
 	if transaction, ok := TransactionEcommerceData.(*aggregation.TransactionEcommerce); ok {
-		var addressProducts []string
-		var productIds []string
-		var productNames []string
-		var prductPrices []int
+
+		addressProducts := make([]string, 0, len(transaction.AddessProduct))
+		productIds := make([]string, 0, len(transaction.Product))
+		productNames := make([]string, 0, len(transaction.Product))
+		productPrices := make([]int, 0, len(transaction.Product))
+
+		fmt.Println(productPrices)
 
 		for _, product := range transaction.Product {
 			productIds = append(productIds, product.ProductID)
 			productNames = append(productNames, product.ProductName)
-			prductPrices = append(prductPrices, int(product.ProductPrice))
+			productPrices = append(productPrices, int(product.ProductPrice))
 		}
 
 		for key, value := range transaction.AddessProduct {
-			addressProducts = append(addressProducts, string(key+" : "+strconv.Itoa(int(value))))
+			addressProducts = append(addressProducts, key+" : "+strconv.Itoa(int(value)))
 		}
 
 		sp.SetAttributes(
@@ -171,7 +175,7 @@ func (s *transactionService) SetTransactionEcommerceSubAttributes(TransactionEco
 			attribute.StringSlice("AddressProducts", addressProducts),
 			attribute.StringSlice("ProductIds", productIds),
 			attribute.StringSlice("ProductNames", productNames),
-			attribute.IntSlice("PrductPrices", prductPrices),
+			attribute.IntSlice("PrductPrices", productPrices),
 		)
 	} else {
 		sp.RecordError(errors.New("invalid type"))
