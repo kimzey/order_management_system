@@ -1,8 +1,7 @@
 package product
 
 import (
-	"encoding/json"
-	customTracer "github.com/kizmey/order_management_system/observability/tracer"
+	"errors"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
 	"github.com/kizmey/order_management_system/pkg/interface/modelRes"
@@ -10,7 +9,9 @@ import (
 	"github.com/kizmey/order_management_system/server/httpEchoServer/custom"
 	"github.com/labstack/echo/v4"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 	"net/http"
+	"reflect"
 )
 
 type productController struct {
@@ -39,9 +40,8 @@ func (c *productController) Create(pctx echo.Context) error {
 		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToCreateProduct)
 	}
 
-	customTracer.SetSubAttributesWithJson(product, sp)
-
-	productRes := c.productReqToEntity(productReq)
+	productRes := c.productEntityToRes(product)
+	c.SetSubAttributesWithJson(productRes, sp)
 	return pctx.JSON(http.StatusCreated, productRes)
 }
 
@@ -54,19 +54,12 @@ func (c *productController) FindAll(pctx echo.Context) error {
 		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToRetrieveProducts)
 	}
 
-	productJSON, err := json.Marshal(productListingResult)
-	if err != nil {
-		return custom.Error(pctx, http.StatusInternalServerError, custom.ErrFailedToRetrieveProducts)
-	}
-	sp.SetAttributes(
-		attribute.String("product.listing", string(productJSON)),
-	)
-
 	productsRes := make([]modelRes.Product, 0)
 	for _, product := range *productListingResult {
 		productsRes = append(productsRes, *c.productEntityToRes(&product))
 	}
 
+	c.SetSubAttributesWithJson(productsRes, sp)
 	return pctx.JSON(http.StatusOK, productsRes)
 }
 
@@ -82,6 +75,8 @@ func (c *productController) FindByID(pctx echo.Context) error {
 	}
 
 	productRes := c.productEntityToRes(product)
+	c.SetSubAttributesWithJson(productRes, sp)
+
 	return pctx.JSON(http.StatusOK, productRes)
 }
 
@@ -105,6 +100,8 @@ func (c *productController) Update(pctx echo.Context) error {
 	}
 
 	productRes := c.productEntityToRes(product)
+
+	c.SetSubAttributesWithJson(productRes, sp)
 	return pctx.JSON(http.StatusOK, productRes)
 }
 
@@ -120,6 +117,8 @@ func (c *productController) Delete(pctx echo.Context) error {
 	}
 
 	productRes := c.productEntityToRes(product)
+	c.SetSubAttributesWithJson(productRes, sp)
+
 	return pctx.JSON(http.StatusOK, productRes)
 }
 
@@ -138,4 +137,36 @@ func (c *productController) productEntityToRes(product *entities.Product) *model
 		ProductPrice: product.ProductPrice,
 	}
 
+}
+
+func (c *productController) SetSubAttributesWithJson(obj any, sp trace.Span) {
+	if products, ok := obj.([]modelRes.Product); ok {
+		var productIDs []string
+		var productNames []string
+		var productPrices []int
+		var quantities []int
+
+		for _, product := range products {
+			productIDs = append(productIDs, product.ProductID)
+			productNames = append(productNames, product.ProductName)
+			productPrices = append(productPrices, int(product.ProductPrice))
+			quantities = append(quantities, int(product.Quantity))
+		}
+
+		sp.SetAttributes(
+			attribute.StringSlice("ProductID", productIDs),
+			attribute.StringSlice("ProductName", productNames),
+			attribute.IntSlice("ProductPrice", productPrices),
+			attribute.IntSlice("Quantity", quantities),
+		)
+	} else if product, ok := obj.(*modelRes.Product); ok {
+		sp.SetAttributes(
+			attribute.String("ProductID", product.ProductID),
+			attribute.String("ProductName", product.ProductName),
+			attribute.Int("ProductPrice", int(product.ProductPrice)),
+			attribute.Int("Quantity", int(product.Quantity)),
+		)
+	} else {
+		sp.RecordError(errors.New("invalid type" + reflect.TypeOf(obj).String()))
+	}
 }

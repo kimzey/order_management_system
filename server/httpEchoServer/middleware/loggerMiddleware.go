@@ -10,7 +10,7 @@ import (
 func LoggerMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		if c.Path() == "/metrics" {
+		if c.Path() == "/metricsx" {
 			return nil
 		}
 

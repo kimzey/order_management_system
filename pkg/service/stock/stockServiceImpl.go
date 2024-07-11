@@ -2,8 +2,11 @@ package stock
 
 import (
 	"context"
+	"errors"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	_StockRepository "github.com/kizmey/order_management_system/pkg/repository/stock"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type stockServiceImpl struct {
@@ -69,4 +72,32 @@ func (s *stockServiceImpl) Delete(ctx context.Context, id string) (*entities.Sto
 	}
 
 	return stock, nil
+}
+
+func (s *stockServiceImpl) SetStockSubAttributes(stockData any, sp trace.Span) {
+	if stocks, ok := stockData.(*[]entities.Stock); ok {
+		stockIDs := make([]string, len(*stocks))
+		productIDs := make([]string, len(*stocks))
+		quantities := make([]int, len(*stocks))
+
+		for _, stock := range *stocks {
+			stockIDs = append(stockIDs, stock.StockID)
+			productIDs = append(productIDs, stock.ProductID)
+			quantities = append(quantities, int(stock.Quantity))
+		}
+
+		sp.SetAttributes(
+			attribute.StringSlice("StockID", stockIDs),
+			attribute.StringSlice("ProductID", productIDs),
+			attribute.IntSlice("Quantity", quantities),
+		)
+	} else if stock, ok := stockData.(*entities.Stock); ok {
+		sp.SetAttributes(
+			attribute.String("StockID", stock.StockID),
+			attribute.String("ProductID", stock.ProductID),
+			attribute.Int("Quantity", int(stock.Quantity)),
+		)
+	} else {
+		sp.RecordError(errors.New("invalid type"))
+	}
 }

@@ -1,6 +1,7 @@
 package order
 
 import (
+	"errors"
 	logger "github.com/kizmey/order_management_system/observability/logs"
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/kizmey/order_management_system/pkg/interface/modelReq"
@@ -9,7 +10,10 @@ import (
 	"github.com/kizmey/order_management_system/server/httpEchoServer/custom"
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 	"net/http"
+	"reflect"
 )
 
 type orderControllerImpl struct {
@@ -41,6 +45,8 @@ func (c *orderControllerImpl) Create(pctx echo.Context) error {
 	logger.LogInfo("Order created successfully", logrus.Fields{"order_id": newOrderRes.OrderID})
 
 	orderRes := c.orderEntityToModelRes(newOrderRes)
+
+	c.SetSubAttributesWithJson(orderRes, sp)
 	return pctx.JSON(http.StatusCreated, orderRes)
 }
 
@@ -61,6 +67,7 @@ func (c *orderControllerImpl) FindAll(pctx echo.Context) error {
 		allOrder = append(allOrder, *c.orderEntityToModelRes(&order))
 	}
 
+	c.SetSubAttributesWithJson(allOrder, sp)
 	return pctx.JSON(http.StatusOK, allOrder)
 }
 
@@ -79,6 +86,8 @@ func (c *orderControllerImpl) FindByID(pctx echo.Context) error {
 	logger.LogInfo("Found order by ID", logrus.Fields{"order_id": newOrderRes.OrderID})
 
 	orderRes := c.orderEntityToModelRes(newOrderRes)
+
+	c.SetSubAttributesWithJson(orderRes, sp)
 	return pctx.JSON(http.StatusOK, orderRes)
 }
 
@@ -104,6 +113,8 @@ func (c *orderControllerImpl) Update(pctx echo.Context) error {
 	logger.LogInfo("Order updated successfully", logrus.Fields{"order_id": newOrderRes.OrderID})
 
 	orderRes := c.orderEntityToModelRes(newOrderRes)
+
+	c.SetSubAttributesWithJson(orderRes, sp)
 	return pctx.JSON(http.StatusOK, orderRes)
 }
 
@@ -122,6 +133,8 @@ func (c *orderControllerImpl) Delete(pctx echo.Context) error {
 	logger.LogInfo("Order deleted successfully", logrus.Fields{"order_id": newOrderEntity.OrderID})
 
 	orderRes := c.orderEntityToModelRes(newOrderEntity)
+
+	c.SetSubAttributesWithJson(orderRes, sp)
 	return pctx.JSON(http.StatusOK, orderRes)
 }
 
@@ -130,11 +143,6 @@ func (c *orderControllerImpl) ChangeStatusNext(pctx echo.Context) error {
 	defer sp.End()
 
 	orderId := pctx.Param("id")
-	//if orderId == "" {
-	//	err := custom.ErrOrderNotFound
-	//	logger.LogWarn("Order id not found", logrus.Fields{"error": err.Error()})
-	//	return custom.Error(pctx, http.StatusBadRequest, err)
-	//}
 
 	newOrderRes, err := c.orderService.ChangeStatusNext(ctx, orderId)
 	if err != nil {
@@ -144,6 +152,8 @@ func (c *orderControllerImpl) ChangeStatusNext(pctx echo.Context) error {
 
 	logger.LogInfo("Order status changed successfully", logrus.Fields{"order_id": newOrderRes.OrderID, "new_status": newOrderRes.Status})
 	orderRes := c.orderEntityToModelRes(newOrderRes)
+
+	c.SetSubAttributesWithJson(orderRes, sp)
 	return pctx.JSON(http.StatusOK, orderRes)
 }
 
@@ -162,6 +172,8 @@ func (c *orderControllerImpl) ChageStatusDone(pctx echo.Context) error {
 
 	logger.LogInfo("Order status changed to done successfully", logrus.Fields{"order_id": newOrderRes.OrderID})
 	orderRes := c.orderEntityToModelRes(newOrderRes)
+
+	c.SetSubAttributesWithJson(orderRes, sp)
 	return pctx.JSON(http.StatusOK, orderRes)
 }
 
@@ -177,5 +189,33 @@ func (c *orderControllerImpl) orderEntityToModelRes(order *entities.Order) *mode
 		OrderID:       order.OrderID,
 		TransactionID: order.TransactionID,
 		Status:        order.Status,
+	}
+}
+
+func (c *orderControllerImpl) SetSubAttributesWithJson(orderData any, sp trace.Span) {
+	if orders, ok := orderData.([]modelRes.Order); ok {
+		var orderIDs []string
+		var transactionIDs []string
+		var statuses []string
+
+		for _, order := range orders {
+			orderIDs = append(orderIDs, order.OrderID)
+			transactionIDs = append(transactionIDs, order.TransactionID)
+			statuses = append(statuses, order.Status)
+		}
+
+		sp.SetAttributes(
+			attribute.StringSlice("OrderID", orderIDs),
+			attribute.StringSlice("TransactionID", transactionIDs),
+			attribute.StringSlice("Status", statuses),
+		)
+	} else if order, ok := orderData.(*modelRes.Order); ok {
+		sp.SetAttributes(
+			attribute.String("OrderID", order.OrderID),
+			attribute.String("TransactionID", order.TransactionID),
+			attribute.String("Status", order.Status),
+		)
+	} else {
+		sp.RecordError(errors.New("invalid type" + reflect.TypeOf(orderData).String()))
 	}
 }
