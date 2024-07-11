@@ -22,16 +22,16 @@ go.work
 go.work.sum
 
 # env file
-config/.env
-logs/temp/logs.log
+backend/config/.env
+backend/logs/temp/logs.log
 Monitoring/.data
 Monitoring/node
 Monitoring/prometheus-data
 Monitoring/tempo-data
 .data
 tempo-data
-observability/Monitoring/
-observability/Monitoring/.data
-observability/Monitoring/prometheus-data
-observability/Monitoring/tempo-data
-observability/Monitoring/.data/minio/
+docker/Monitoring/
+docker/Monitoring/.data
+docker/Monitoring/prometheus-data
+docker/Monitoring/tempo-data
+docker/Monitoring/.data/minio/
