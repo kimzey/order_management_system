@@ -1,9 +1,8 @@
-package entities_test
+package entities
 
 import (
 	"testing"
 
-	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -39,7 +38,7 @@ func TestOrder_NextStatus(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			order := &entities.Order{Status: tt.initialStatus}
+			order := &Order{Status: tt.initialStatus}
 			err := order.NextStatus()
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -77,7 +76,7 @@ func TestOrder_NextPaidToDone(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			order := &entities.Order{Status: tt.initialStatus}
+			order := &Order{Status: tt.initialStatus}
 			err := order.NextPaidToDone()
 			if tt.wantErr {
 				assert.Error(t, err)

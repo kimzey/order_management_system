@@ -1,13 +1,12 @@
-package entities_test
+package entities
 
 import (
-	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestTransaction(t *testing.T) {
-	transaction := &entities.Transaction{
+	transaction := &Transaction{
 		TransactionID: "1",
 		SumPrice:      100,
 		IsDomestic:    true,

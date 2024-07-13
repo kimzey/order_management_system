@@ -1,4 +1,4 @@
-package test
+package order
 
 import (
 	"context"
@@ -10,7 +10,6 @@ import (
 	_orderRepository "github.com/kizmey/order_management_system/pkg/repository/order"
 	_stockRepository "github.com/kizmey/order_management_system/pkg/repository/stock"
 	_transactionRepository "github.com/kizmey/order_management_system/pkg/repository/transaction"
-	"github.com/kizmey/order_management_system/pkg/service/order"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -19,7 +18,7 @@ func TestOrderService_Create(t *testing.T) {
 	mockOrderRepo := new(_orderRepository.NewOrderRepositoryMock)
 	mockTransactionRepo := new(_transactionRepository.NewTransactionRepositoryMock)
 	mockStockRepo := new(_stockRepository.NewStockRepositoryMock)
-	service := order.NewOrderServiceImpl(mockOrderRepo, mockTransactionRepo, mockStockRepo)
+	service := NewOrderServiceImpl(mockOrderRepo, mockTransactionRepo, mockStockRepo)
 
 	mockOrder := &entities.Order{
 		OrderID:       "1",
@@ -150,7 +149,7 @@ func TestOrderService_FindAll(t *testing.T) {
 	mockOrderRepo := new(_orderRepository.NewOrderRepositoryMock)
 	mockTransactionRepo := new(_transactionRepository.NewTransactionRepositoryMock)
 	mockStockRepo := new(_stockRepository.NewStockRepositoryMock)
-	service := order.NewOrderServiceImpl(mockOrderRepo, mockTransactionRepo, mockStockRepo)
+	service := NewOrderServiceImpl(mockOrderRepo, mockTransactionRepo, mockStockRepo)
 
 	mockOrders := &[]entities.Order{
 		{
@@ -194,7 +193,7 @@ func TestOrderService_FindByID(t *testing.T) {
 	mockOrderRepo := new(_orderRepository.NewOrderRepositoryMock)
 	mockTransactionRepo := new(_transactionRepository.NewTransactionRepositoryMock)
 	mockStockRepo := new(_stockRepository.NewStockRepositoryMock)
-	service := order.NewOrderServiceImpl(mockOrderRepo, mockTransactionRepo, mockStockRepo)
+	service := NewOrderServiceImpl(mockOrderRepo, mockTransactionRepo, mockStockRepo)
 
 	mockOrder := &entities.Order{
 		OrderID:       "1",
@@ -232,7 +231,7 @@ func TestOrderService_Update(t *testing.T) {
 	mockOrderRepo := new(_orderRepository.NewOrderRepositoryMock)
 	mockTransactionRepo := new(_transactionRepository.NewTransactionRepositoryMock)
 	mockStockRepo := new(_stockRepository.NewStockRepositoryMock)
-	service := order.NewOrderServiceImpl(mockOrderRepo, mockTransactionRepo, mockStockRepo)
+	service := NewOrderServiceImpl(mockOrderRepo, mockTransactionRepo, mockStockRepo)
 
 	mockOrder := &entities.Order{
 		OrderID:       "1",
@@ -369,7 +368,7 @@ func TestOrderService_Delete(t *testing.T) {
 	mockOrderRepo := new(_orderRepository.NewOrderRepositoryMock)
 	mockTransactionRepo := new(_transactionRepository.NewTransactionRepositoryMock)
 	mockStockRepo := new(_stockRepository.NewStockRepositoryMock)
-	service := order.NewOrderServiceImpl(mockOrderRepo, mockTransactionRepo, mockStockRepo)
+	service := NewOrderServiceImpl(mockOrderRepo, mockTransactionRepo, mockStockRepo)
 
 	mockOrder := &entities.Order{
 		OrderID:       "1",
@@ -408,7 +407,7 @@ func TestOrderService_ChangeStatusNext(t *testing.T) {
 	mockOrderRepo := new(_orderRepository.NewOrderRepositoryMock)
 	mockTransactionRepo := new(_transactionRepository.NewTransactionRepositoryMock)
 	mockStockRepo := new(_stockRepository.NewStockRepositoryMock)
-	service := order.NewOrderServiceImpl(mockOrderRepo, mockTransactionRepo, mockStockRepo)
+	service := NewOrderServiceImpl(mockOrderRepo, mockTransactionRepo, mockStockRepo)
 
 	mockOrder := &entities.Order{
 		OrderID:       "1",
@@ -475,7 +474,7 @@ func TestOrderService_ChangeStatusDone(t *testing.T) {
 	mockOrderRepo := new(_orderRepository.NewOrderRepositoryMock)
 	mockTransactionRepo := new(_transactionRepository.NewTransactionRepositoryMock)
 	mockStockRepo := new(_stockRepository.NewStockRepositoryMock)
-	service := order.NewOrderServiceImpl(mockOrderRepo, mockTransactionRepo, mockStockRepo)
+	service := NewOrderServiceImpl(mockOrderRepo, mockTransactionRepo, mockStockRepo)
 
 	mockOrder := &entities.Order{
 		OrderID:       "1",

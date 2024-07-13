@@ -1,4 +1,4 @@
-package test
+package product
 
 import (
 	"context"
@@ -7,14 +7,13 @@ import (
 
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	_productRepository "github.com/kizmey/order_management_system/pkg/repository/product"
-	_productService "github.com/kizmey/order_management_system/pkg/service/product"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
 
 func TestProductService_Create(t *testing.T) {
 	mockRepo := new(_productRepository.NewProductRepositoryMock)
-	service := _productService.NewProductServiceImpl(mockRepo)
+	service := NewProductServiceImpl(mockRepo)
 
 	product := &entities.Product{ProductID: "1", ProductName: "Product1", ProductPrice: 100}
 
@@ -44,7 +43,7 @@ func TestProductService_Create(t *testing.T) {
 
 func TestProductService_FindAll(t *testing.T) {
 	mockRepo := new(_productRepository.NewProductRepositoryMock)
-	service := _productService.NewProductServiceImpl(mockRepo)
+	service := NewProductServiceImpl(mockRepo)
 
 	mockProducts := []entities.Product{
 		{ProductID: "1", ProductName: "Product1", ProductPrice: 100},
@@ -78,7 +77,7 @@ func TestProductService_FindAll(t *testing.T) {
 
 func TestProductService_FindByID(t *testing.T) {
 	mockRepo := new(_productRepository.NewProductRepositoryMock)
-	service := _productService.NewProductServiceImpl(mockRepo)
+	service := NewProductServiceImpl(mockRepo)
 
 	mockProduct := &entities.Product{ProductID: "1", ProductName: "Product1", ProductPrice: 100}
 
@@ -111,7 +110,7 @@ func TestProductService_FindByID(t *testing.T) {
 
 func TestProductService_Update(t *testing.T) {
 	mockRepo := new(_productRepository.NewProductRepositoryMock)
-	service := _productService.NewProductServiceImpl(mockRepo)
+	service := NewProductServiceImpl(mockRepo)
 
 	mockProduct := &entities.Product{ProductID: "1", ProductName: "UpdatedProduct", ProductPrice: 150}
 
@@ -143,7 +142,7 @@ func TestProductService_Update(t *testing.T) {
 
 func TestProductService_Delete(t *testing.T) {
 	mockRepo := new(_productRepository.NewProductRepositoryMock)
-	service := _productService.NewProductServiceImpl(mockRepo)
+	service := NewProductServiceImpl(mockRepo)
 
 	mockProduct := &entities.Product{ProductID: "1", ProductName: "Product1", ProductPrice: 100}
 

@@ -1,7 +1,6 @@
-package entities_test
+package aggregation
 
 import (
-	"github.com/kizmey/order_management_system/pkg/interface/aggregation"
 	"testing"
 
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
@@ -16,7 +15,7 @@ func TestNewEcommerce(t *testing.T) {
 	}
 	quantities := []uint{1, 2}
 
-	ecommerce := aggregation.NewEcommerce(order, products, quantities)
+	ecommerce := NewEcommerce(order, products, quantities)
 
 	assert.Equal(t, order, ecommerce.Order)
 	assert.Equal(t, products, ecommerce.Product)

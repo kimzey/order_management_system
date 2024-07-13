@@ -1,13 +1,12 @@
-package entities_test
+package entities
 
 import (
-	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestProduct(t *testing.T) {
-	product := entities.Product{
+	product := Product{
 		ProductID:    "1",
 		ProductName:  "Product1",
 		ProductPrice: 100,

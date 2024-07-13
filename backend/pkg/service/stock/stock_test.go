@@ -1,4 +1,4 @@
-package test
+package stock
 
 import (
 	"context"
@@ -7,14 +7,13 @@ import (
 
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	_stockRepository "github.com/kizmey/order_management_system/pkg/repository/stock"
-	_stockService "github.com/kizmey/order_management_system/pkg/service/stock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
 
 func TestStockService_Create(t *testing.T) {
 	mockRepo := new(_stockRepository.NewStockRepositoryMock)
-	service := _stockService.NewStockServiceImpl(mockRepo)
+	service := NewStockServiceImpl(mockRepo)
 
 	stock := &entities.Stock{StockID: "1", ProductID: "1", Quantity: 10}
 
@@ -44,7 +43,7 @@ func TestStockService_Create(t *testing.T) {
 
 func TestStockService_FindAll(t *testing.T) {
 	mockRepo := new(_stockRepository.NewStockRepositoryMock)
-	service := _stockService.NewStockServiceImpl(mockRepo)
+	service := NewStockServiceImpl(mockRepo)
 
 	mockStocks := []entities.Stock{
 		{StockID: "1", ProductID: "1", Quantity: 10},
@@ -78,7 +77,7 @@ func TestStockService_FindAll(t *testing.T) {
 }
 func TestStockService_CheckStockByProductId(t *testing.T) {
 	mockRepo := new(_stockRepository.NewStockRepositoryMock)
-	service := _stockService.NewStockServiceImpl(mockRepo)
+	service := NewStockServiceImpl(mockRepo)
 
 	mockStock := &entities.Stock{StockID: "1", ProductID: "1", Quantity: 10}
 
@@ -111,7 +110,7 @@ func TestStockService_CheckStockByProductId(t *testing.T) {
 
 func TestStockService_Update(t *testing.T) {
 	mockRepo := new(_stockRepository.NewStockRepositoryMock)
-	service := _stockService.NewStockServiceImpl(mockRepo)
+	service := NewStockServiceImpl(mockRepo)
 
 	mockStock := &entities.Stock{StockID: "1", ProductID: "1", Quantity: 10}
 
@@ -144,7 +143,7 @@ func TestStockService_Update(t *testing.T) {
 
 func TestStockService_Delete(t *testing.T) {
 	mockRepo := new(_stockRepository.NewStockRepositoryMock)
-	service := _stockService.NewStockServiceImpl(mockRepo)
+	service := NewStockServiceImpl(mockRepo)
 
 	mockStock := &entities.Stock{StockID: "1", ProductID: "1", Quantity: 10}
 

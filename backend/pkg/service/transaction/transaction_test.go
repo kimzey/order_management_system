@@ -1,4 +1,4 @@
-package test
+package transaction
 
 import (
 	"context"
@@ -9,7 +9,6 @@ import (
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
 	_productRepository "github.com/kizmey/order_management_system/pkg/repository/product"
 	_transactionRepository "github.com/kizmey/order_management_system/pkg/repository/transaction"
-	"github.com/kizmey/order_management_system/pkg/service/transaction"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -17,7 +16,7 @@ import (
 func TestTransactionService_Create(t *testing.T) {
 	mockTransactionRepo := new(_transactionRepository.NewTransactionRepositoryMock)
 	mockProductRepo := new(_productRepository.NewProductRepositoryMock)
-	service := transaction.NewTransactionServiceImpl(mockTransactionRepo, mockProductRepo)
+	service := NewTransactionServiceImpl(mockTransactionRepo, mockProductRepo)
 
 	mockTransaction := &aggregation.TransactionEcommerce{
 		Tranasaction: &entities.Transaction{TransactionID: "1"},
@@ -76,7 +75,7 @@ func TestTransactionService_Create(t *testing.T) {
 func TestTransactionService_FindAll(t *testing.T) {
 	mockTransactionRepo := new(_transactionRepository.NewTransactionRepositoryMock)
 	mockProductRepo := new(_productRepository.NewProductRepositoryMock)
-	service := transaction.NewTransactionServiceImpl(mockTransactionRepo, mockProductRepo)
+	service := NewTransactionServiceImpl(mockTransactionRepo, mockProductRepo)
 
 	mockTransactions := []entities.Transaction{
 		{TransactionID: "1"},
@@ -110,7 +109,7 @@ func TestTransactionService_FindAll(t *testing.T) {
 func TestTransactionService_FindByID(t *testing.T) {
 	mockTransactionRepo := new(_transactionRepository.NewTransactionRepositoryMock)
 	mockProductRepo := new(_productRepository.NewProductRepositoryMock)
-	service := transaction.NewTransactionServiceImpl(mockTransactionRepo, mockProductRepo)
+	service := NewTransactionServiceImpl(mockTransactionRepo, mockProductRepo)
 
 	mockTransaction := &entities.Transaction{TransactionID: "1"}
 
@@ -140,7 +139,7 @@ func TestTransactionService_FindByID(t *testing.T) {
 func TestTransactionService_Update(t *testing.T) {
 	mockTransactionRepo := new(_transactionRepository.NewTransactionRepositoryMock)
 	mockProductRepo := new(_productRepository.NewProductRepositoryMock)
-	service := transaction.NewTransactionServiceImpl(mockTransactionRepo, mockProductRepo)
+	service := NewTransactionServiceImpl(mockTransactionRepo, mockProductRepo)
 
 	mockTransaction := &aggregation.TransactionEcommerce{
 		Tranasaction: &entities.Transaction{TransactionID: "1"},
@@ -195,7 +194,7 @@ func TestTransactionService_Update(t *testing.T) {
 func TestTransactionService_Delete(t *testing.T) {
 	mockTransactionRepo := new(_transactionRepository.NewTransactionRepositoryMock)
 	mockProductRepo := new(_productRepository.NewProductRepositoryMock)
-	service := transaction.NewTransactionServiceImpl(mockTransactionRepo, mockProductRepo)
+	service := NewTransactionServiceImpl(mockTransactionRepo, mockProductRepo)
 
 	mockTransaction := &entities.Transaction{TransactionID: "1"}
 

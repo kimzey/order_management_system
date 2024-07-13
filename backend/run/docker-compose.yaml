@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  order_management_system:
+  postgresDB:
     image: postgres:alpine
-    container_name: order_management_system
+    container_name: postgresDB
     ports:
       - "5433:5432"
     environment:

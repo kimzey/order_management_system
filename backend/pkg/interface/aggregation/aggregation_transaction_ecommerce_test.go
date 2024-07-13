@@ -1,7 +1,6 @@
-package entities_test
+package aggregation
 
 import (
-	"github.com/kizmey/order_management_system/pkg/interface/aggregation"
 	"testing"
 
 	"github.com/kizmey/order_management_system/pkg/interface/entities"
@@ -27,7 +26,7 @@ func TestTransactionecommerceCalculateprice(t *testing.T) {
 				"1": 1,
 				"2": 2,
 			},
-			expectedPrice: (100*1 + 200*2) + aggregation.Domestic,
+			expectedPrice: (100*1 + 200*2) + Domestic,
 		},
 		{
 			name:       "non-domestic order",
@@ -40,14 +39,14 @@ func TestTransactionecommerceCalculateprice(t *testing.T) {
 				"1": 1,
 				"2": 2,
 			},
-			expectedPrice: (100*1 + 200*2) + aggregation.NotDomestic,
+			expectedPrice: (100*1 + 200*2) + NotDomestic,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			transaction := &entities.Transaction{IsDomestic: tt.isDomestic}
-			transactionEcommerce := aggregation.NewTransactionEcommerce(transaction, tt.products, tt.addessProduct)
+			transactionEcommerce := NewTransactionEcommerce(transaction, tt.products, tt.addessProduct)
 
 			calculatedPrice := transactionEcommerce.CalculatePrice()
 			assert.Equal(t, tt.expectedPrice, calculatedPrice)
