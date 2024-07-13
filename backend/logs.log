@@ -1,0 +1,16 @@
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-07-13T21:14:10+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-07-13T21:14:43+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-07-13T21:14:45+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-07-13T21:19:43+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-07-14T00:15:27+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-07-14T00:15:45+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-07-14T00:16:07+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-07-14T00:18:34+07:00"}
+{"function":"main","level":"info","module":"main","msg":"Service started","time":"2024-07-14T00:27:55+07:00"}
+{"latency":0.059150314,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/migration","query":"","remoteIP":"::1","status":200,"time":"2024-07-14T00:27:58+07:00"}
+{"latency":0.011195355,"level":"info","method":"POST","msg":"HTTP response","path":"/v1/product","query":"","remoteIP":"::1","status":201,"time":"2024-07-14T00:28:31+07:00"}
+{"latency":0.002653388,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/product","query":"","remoteIP":"::1","status":200,"time":"2024-07-14T00:28:35+07:00"}
+{"latency":0.0051849,"level":"info","method":"POST","msg":"HTTP response","path":"/v1/product","query":"","remoteIP":"::1","status":201,"time":"2024-07-14T00:28:38+07:00"}
+{"latency":0.004841342,"level":"info","method":"POST","msg":"HTTP response","path":"/v1/product","query":"","remoteIP":"::1","status":201,"time":"2024-07-14T00:28:39+07:00"}
+{"latency":0.002461828,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/product","query":"","remoteIP":"::1","status":200,"time":"2024-07-14T00:28:41+07:00"}
+{"latency":0.001190522,"level":"info","method":"GET","msg":"HTTP response","path":"/v1/product","query":"","remoteIP":"::1","status":200,"time":"2024-07-14T00:28:42+07:00"}

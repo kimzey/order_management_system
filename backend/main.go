@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	// Initialize Logger
+	//Initialize Logger
 	logger.InitLogger()
 	defer func(LogFile *os.File) {
 		err := LogFile.Close()

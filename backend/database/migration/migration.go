@@ -1,4 +1,4 @@
-package main
+package migration
 
 import (
 	"github.com/kizmey/order_management_system/config"
@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func main() {
+func GettingMigration() {
 	conf := config.GettingConfig()
 	db := database.NewPostgresDatabase(conf.Database)
 

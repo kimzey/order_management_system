@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/kizmey/order_management_system/config"
+	"github.com/kizmey/order_management_system/database/migration"
 	"github.com/kizmey/order_management_system/observability"
 	"github.com/kizmey/order_management_system/pkg"
 	"github.com/kizmey/order_management_system/server"
@@ -42,6 +43,7 @@ func NewEchoServer(conf *config.Config, usecase *pkg.Usecase) server.Server {
 func (s *echoServer) Start() {
 	s.app.GET("/v1/health", s.healthCheck)
 	s.app.GET("/metricsx", echo.WrapHandler(promhttp.Handler()))
+	s.app.GET("/v1/migration", s.migration)
 
 	s.app.Use(middleware.Recover())
 	s.app.Use(middleware.Logger())
@@ -90,4 +92,9 @@ func (s *echoServer) httpListening() {
 // path : /v1/health method : GET FOR check server
 func (s *echoServer) healthCheck(c echo.Context) error {
 	return c.String(http.StatusOK, "OK")
+}
+
+func (s *echoServer) migration(c echo.Context) error {
+	migration.GettingMigration()
+	return c.String(http.StatusOK, "Migration OK")
 }
