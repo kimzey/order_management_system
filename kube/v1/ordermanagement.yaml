@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ordermanagementv1
+  labels:
+    app: ordermanagement
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ordermanagement
+  template:
+    metadata:
+      labels:
+        app: ordermanagement
+    spec:
+      containers:
+        - name: ordermanagementdemo
+          image: kimzey/order-management:v1.0.3
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SERVER_PORT
+              value: "8080"
+            - name: SERVER_ALLOW_ORIGINS
+              value: "*"
+            - name: SERVER_BODY_LIMIT
+              value: "10M"
+            - name: SERVER_TIMEOUT
+              value: "30s"
+            - name: DB_HOST
+              value: 10.42.0.18
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USER
+              value: postgres
+            - name: DB_PASSWORD
+              value: "123456"
+            - name: DB_NAME
+              value: orderdb
+            - name: DB_SSLMODE
+              value: disable
+            - name: DB_SCHEMA
+              value: public
