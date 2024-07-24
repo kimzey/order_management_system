@@ -337,7 +337,7 @@ primary:
     ##
     postgresqlWalDir: ""
     ## @param primary.initdb.scripts Dictionary of initdb scripts
-    ## Specify dictionary of scripts to be run at first boot
+    ## Specify dictionary of scripts to be start at first boot
     ## e.g:
     ## scripts:
     ##   my_init_script.sh: |
@@ -349,11 +349,11 @@ primary:
         export PGPASSWORD="123456"
         #!/bin/sh
         psql -U postgres -d orderdb -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
-    ## @param primary.initdb.scriptsConfigMap ConfigMap with scripts to be run at first boot
+    ## @param primary.initdb.scriptsConfigMap ConfigMap with scripts to be start at first boot
     ## NOTE: This will override `primary.initdb.scripts`
     ##
     scriptsConfigMap: ""
-    ## @param primary.initdb.scriptsSecret Secret with scripts to be run at first boot (in case it contains sensitive information)
+    ## @param primary.initdb.scriptsSecret Secret with scripts to be start at first boot (in case it contains sensitive information)
     ## NOTE: This can work along `primary.initdb.scripts` or `primary.initdb.scriptsConfigMap`
     ##
     scriptsSecret: ""
@@ -367,17 +367,17 @@ primary:
   ## ref: https://github.com/bitnami/containers/tree/main/bitnami/postgresql/#on-container-start
   preInitDb:
     ## @param primary.preInitDb.scripts Dictionary of pre-init scripts
-    ## Specify dictionary of shell scripts to be run before db boot
+    ## Specify dictionary of shell scripts to be start before db boot
     ## e.g:
     ## scripts:
     ##   my_pre_init_script.sh: |
     ##      #!/bin/sh
     ##      echo "Do something."
     scripts: {}
-    ## @param primary.preInitDb.scriptsConfigMap ConfigMap with pre-init scripts to be run
+    ## @param primary.preInitDb.scriptsConfigMap ConfigMap with pre-init scripts to be start
     ## NOTE: This will override `primary.preInitDb.scripts`
     scriptsConfigMap: ""
-    ## @param primary.preInitDb.scriptsSecret Secret with pre-init scripts to be run
+    ## @param primary.preInitDb.scriptsSecret Secret with pre-init scripts to be start
     ## NOTE: This can work along `primary.preInitDb.scripts` or `primary.preInitDb.scriptsConfigMap`
     scriptsSecret: ""
   ## Configure current cluster's primary server to be the standby server in other cluster.
@@ -666,7 +666,7 @@ primary:
     ## @param primary.networkPolicy.allowExternalEgress Allow the pod to access any range of port and all destinations.
     ##
     allowExternalEgress: true
-    ## @param primary.networkPolicy.extraIngress [array] Add extra ingress rules to the NetworkPolicy
+    ## @param primary.networkPolicy.extraIngress [array] Add extra ingress.yaml rules to the NetworkPolicy
     ## e.g:
     ## extraIngress:
     ##   - ports:
@@ -682,7 +682,7 @@ primary:
     ##                 values:
     ##                   - frontend
     extraIngress: []
-    ## @param primary.networkPolicy.extraEgress [array] Add extra ingress rules to the NetworkPolicy
+    ## @param primary.networkPolicy.extraEgress [array] Add extra ingress.yaml rules to the NetworkPolicy
     ## e.g:
     ## extraEgress:
     ##   - ports:
@@ -1120,7 +1120,7 @@ readReplicas:
     ## @param readReplicas.networkPolicy.allowExternalEgress Allow the pod to access any range of port and all destinations.
     ##
     allowExternalEgress: true
-    ## @param readReplicas.networkPolicy.extraIngress [array] Add extra ingress rules to the NetworkPolicy
+    ## @param readReplicas.networkPolicy.extraIngress [array] Add extra ingress.yaml rules to the NetworkPolicy
     ## e.g:
     ## extraIngress:
     ##   - ports:
@@ -1136,7 +1136,7 @@ readReplicas:
     ##                 values:
     ##                   - frontend
     extraIngress: []
-    ## @param readReplicas.networkPolicy.extraEgress [array] Add extra ingress rules to the NetworkPolicy
+    ## @param readReplicas.networkPolicy.extraEgress [array] Add extra ingress.yaml rules to the NetworkPolicy
     ## e.g:
     ## extraEgress:
     ##   - ports:
@@ -1344,7 +1344,7 @@ backup:
         drop: ["ALL"]
       seccompProfile:
         type: "RuntimeDefault"
-    ## @param backup.cronjob.command Set backup container's command to run
+    ## @param backup.cronjob.command Set backup container's command to start
     command:
       - /bin/sh
       - -c

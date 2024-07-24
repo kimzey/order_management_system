@@ -3,6 +3,7 @@ package customTracer
 import (
 	"context"
 	"github.com/go-logr/stdr"
+	"github.com/kizmey/order_management_system/config"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
@@ -14,7 +15,7 @@ import (
 	"os"
 )
 
-func InitOpenTelemetry() error {
+func InitOpenTelemetry(conf *config.Observability) error {
 	// Set up loggerx
 	loggerx := stdr.New(log.New(os.Stdout, "", log.LstdFlags|log.Lshortfile))
 	otel.SetLogger(loggerx)
@@ -30,7 +31,7 @@ func InitOpenTelemetry() error {
 	ctx := context.Background()
 	traceExporter, err := otlptrace.New(ctx, otlptracehttp.NewClient(
 		otlptracehttp.WithInsecure(),
-		otlptracehttp.WithEndpoint("localhost:4318"),
+		otlptracehttp.WithEndpoint(conf.UrlTracing),
 	))
 	if err != nil {
 		return err

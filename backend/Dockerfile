@@ -10,7 +10,6 @@ RUN CGO_ENABLED=0 go build -o /bin/app
 FROM debian:bullseye-slim
 
 COPY --from=build /bin/app /bin
-#COPY ../.env /bin/.env
 
 RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 

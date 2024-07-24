@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/joho/godotenv"
 	"os"
 	"strconv"
 	"strings"
@@ -28,13 +29,22 @@ type (
 		BodyLimit    string        `mapstructure:"bodyLimit" validate:"required"`
 	}
 
+	Observability struct {
+		UrlTracing string `mapstructure:"urlTracing" validate:"required"`
+	}
+
 	Config struct {
-		Database *Database `mapstructure:"database" validate:"required"`
-		Server   *Server   `mapstructure:"server" validate:"required"`
+		Database      *Database      `mapstructure:"database" validate:"required"`
+		Server        *Server        `mapstructure:"server" validate:"required"`
+		Observability *Observability `mapstructure:"observability" validate:"required"`
 	}
 )
 
 func GettingConfig() *Config {
+	if err := godotenv.Load(); err != nil {
+		panic(err)
+	}
+
 	viper.AutomaticEnv()
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
@@ -56,6 +66,10 @@ func GettingConfig() *Config {
 		AllowOrigins: strings.Split(os.Getenv("SERVER_ALLOW_ORIGINS"), ","),
 		Timeout:      getDurationEnv("SERVER_TIMEOUT"),
 		BodyLimit:    os.Getenv("SERVER_BODY_LIMIT"),
+	}
+
+	configInstance.Observability = &Observability{
+		UrlTracing: os.Getenv("URL_TRACING"),
 	}
 
 	validate := validator.New()

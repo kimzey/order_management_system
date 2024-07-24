@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ordermanagementv1
+  namespace: orderapp
   labels:
     app: ordermanagement
 spec:
@@ -16,9 +17,10 @@ spec:
     spec:
       containers:
         - name: ordermanagementdemo
-          image: kimzey/order-management:v1.0.0
+          image: kimzey/order-management:v1.0.4
           ports:
-            - containerPort: 8080
+            - name: http
+              containerPort: 8080
           env:
             - name: SERVER_PORT
               value: "8080"
@@ -29,7 +31,7 @@ spec:
             - name: SERVER_TIMEOUT
               value: "30s"
             - name: DB_HOST
-              value: postgresDB
+              value: pqdb-postgresql.db-orderapp
             - name: DB_PORT
               value: "5432"
             - name: DB_USER
@@ -42,3 +44,6 @@ spec:
               value: disable
             - name: DB_SCHEMA
               value: public
+            - name: URL_TRACING
+              value: tempo.monitoring:4318
+

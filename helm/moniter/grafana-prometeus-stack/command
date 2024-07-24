@@ -1,0 +1,1 @@
+helm -n monitoring install promet-grafana prometheus-community/kube-prometheus-stack -f values.yaml
