@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-config
+  namespace: monitoring
+  labels:
+    app: fluentd
+data:
+  fluentd.conf: |
+    <source>
+      @type tail
+      path /var/log/containers/*.log
+      pos_file /fluentd/log/fluentd.pos
+      tag kube.*
+      format json
+      time_format %Y-%m-%dT%H:%M:%S.%L
+    </source>
+
+    <filter kube.**>
+      @type kubernetes
+      @id filter_kubernetes
+      @label @FILTER
+    </filter>
+
+    <filter kube.**>
+      @type grep
+      <regexp>
+        key $.kubernetes.namespace_name
+        pattern orderapp
+      </regexp>
+    </filter>
+
+    <match kube.**>
+      @type loki
+      @id output_loki
+      url "http://loki.monitoring.svc:3100/loki/api/v1/push"
+      <buffer>
+        @type memory
+        flush_interval 5s
+      </buffer>
+    </match>
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fluentd
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fluentd
+  template:
+    metadata:
+      labels:
+        app: fluentd
+    spec:
+      containers:
+        - name: fluentd
+          image: fluent/fluentd:v1.14-debian
+          volumeMounts:
+            - name: fluentd-config
+              mountPath: /fluentd/etc/fluentd.conf
+              subPath: fluentd.conf
+              readOnly: true
+          ports:
+            - containerPort: 24224
+      volumes:
+        - name: fluentd-config
+          configMap:
+            name: fluentd-config

@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	// Initialize Logger
+	//Initialize Logger
 	logger.InitLogger()
 	defer func(LogFile *os.File) {
 		err := LogFile.Close()
@@ -28,7 +28,7 @@ func main() {
 	db := database.NewPostgresDatabase(conf.Database)
 
 	usecases := pkg.InitUsecase(db)
-	err := customTracer.InitOpenTelemetry()
+	err := customTracer.InitOpenTelemetry(conf.Observability)
 	if err != nil {
 		logger.LogError("Failed to initialize OpenTelemetry"+err.Error(), fields)
 	}

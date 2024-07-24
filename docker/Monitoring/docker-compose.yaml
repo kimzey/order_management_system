@@ -55,8 +55,8 @@ services:
 #    image: grafana/alloy-dev:latest
 #    volumes:
 #      - ./alloy-local-config.yaml:/etc/alloy/config.alloy:ro
-#      - /var/run/docker.sock:/var/run/docker.sock
-#    command:  run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
+#      - /var/start/docker.sock:/var/start/docker.sock
+#    command:  start --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
 #    ports:
 #      - 12345:12345
 #    depends_on:
