@@ -36,8 +36,11 @@ func NewCustomEchoRequest(echoRequest echo.Context) EchoRequest {
 
 func (r *customEchoRequest) BindAndValidate(obj any) error {
 
+	fmt.Println(obj, "binded")
+
 	if err := r.ctx.Bind(obj); err != nil {
 		//fmt.Errorf("invalid validate request : %s", err.Error())
+		fmt.Println("invalid request :", err.Error()) //
 		return errors.New(fmt.Sprintf("invalid request "))
 	}
 	if err := r.validator.Struct(obj); err != nil {

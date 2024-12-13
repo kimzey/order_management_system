@@ -1,6 +1,7 @@
-psql -U postgres
+CREATE DATABASE orderdb;
+
+\c orderdb
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE DATABASE orderdb;
 
 -- psql -U postgres -d orderdb -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'

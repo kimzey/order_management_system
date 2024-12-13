@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"github.com/joho/godotenv"
 	"os"
 	"strconv"
@@ -42,7 +43,7 @@ type (
 
 func GettingConfig() *Config {
 	if err := godotenv.Load(); err != nil {
-		panic(err)
+		fmt.Println("Error loading .env file")
 	}
 
 	viper.AutomaticEnv()

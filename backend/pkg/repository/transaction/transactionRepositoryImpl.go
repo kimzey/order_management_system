@@ -29,7 +29,7 @@ func (r *transactionRepositoryImpl) Create(ctx context.Context, transaction *agg
 	if err := r.db.Connect().Create(&transactionModel).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to create transaction"))
 	}
-
+	//ปัญหาคือข้างบนสร้างแล้ว แต่ไม่อัพเดทจำนวนสินค้า ให้ด้วย เลยมาแอดเอาทีหลัง
 	for productID, quantity := range transaction.AddessProduct {
 		if err := r.db.Connect().Model(&model.TransactionProduct{}).Where("transaction_id = ? AND product_id = ?", transactionModel.ID, productID).Update("quantity", quantity).Error; err != nil {
 			return nil, errors.New(fmt.Sprintf("failed to update transaction"))

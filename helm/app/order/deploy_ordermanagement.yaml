@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: ordermanagementdemo
-          image: kimzey/order-management:v1.0.4
+          image: kimzey/order-management:v1.0.7
           ports:
             - name: http
               containerPort: 8080

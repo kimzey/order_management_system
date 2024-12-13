@@ -29,7 +29,6 @@ func (c *transactionControllerImpl) Create(pctx echo.Context) error {
 	defer sp.End()
 
 	transactionReq := new(modelReq.Transaction)
-
 	validatingContext := custom.NewCustomEchoRequest(pctx)
 	if err := validatingContext.BindAndValidate(transactionReq); err != nil {
 		return custom.Error(pctx, http.StatusBadRequest, custom.ErrFailedToValidateTransactionRequest)

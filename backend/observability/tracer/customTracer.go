@@ -2,7 +2,6 @@ package customTracer
 
 import (
 	"context"
-	"github.com/go-logr/stdr"
 	"github.com/kizmey/order_management_system/config"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
@@ -11,14 +10,9 @@ import (
 	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"go.opentelemetry.io/otel/semconv/v1.21.0" // Import semconv package
-	"log"
-	"os"
 )
 
 func InitOpenTelemetry(conf *config.Observability) error {
-	// Set up loggerx
-	loggerx := stdr.New(log.New(os.Stdout, "", log.LstdFlags|log.Lshortfile))
-	otel.SetLogger(loggerx)
 
 	// Set up Propagators
 	propagator := propagation.NewCompositeTextMapPropagator(
