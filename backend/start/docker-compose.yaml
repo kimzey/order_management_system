@@ -13,27 +13,27 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
 #myApp
-#  orderManagementService:
-#    image: kimzey/order-management:v1.0.3
-#    container_name: ordermanagement
-#    ports:
-#      - "8080:8080"
-#    environment:
-#      - SERVER_PORT=8080
-#      - SERVER_ALLOW_ORIGINS=*
-#      - SERVER_BODY_LIMIT=10M
-#      - SERVER_TIMEOUT=30s
-#
-#      - DB_HOST=postgresDB
-#      - DB_PORT=5432
-#      - DB_USER=postgres
-#      - DB_PASSWORD=123456
-#      - DB_NAME=orderdb
-#      - DB_SSLMODE=disable
-#      - DB_SCHEMA=public
-#    depends_on:
-#      - postgresDB
-#    restart: unless-stopped
+  orderManagementService:
+    image: kimzey/order-management:v1.0.3
+    container_name: ordermanagement
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_PORT=8080
+      - SERVER_ALLOW_ORIGINS=*
+      - SERVER_BODY_LIMIT=10M
+      - SERVER_TIMEOUT=30s
+
+      - DB_HOST=postgresDB
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=123456
+      - DB_NAME=orderdb
+      - DB_SSLMODE=disable
+      - DB_SCHEMA=public
+    depends_on:
+      - postgresDB
+    restart: unless-stopped
 
 volumes:
   pgdata:

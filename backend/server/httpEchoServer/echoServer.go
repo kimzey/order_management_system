@@ -57,8 +57,8 @@ func (s *echoServer) Start() {
 
 	s.initStockRouter()
 	s.initProductRouter()
-	s.initOrderRouter()
 	s.inittransactionRouter()
+	s.initOrderRouter()
 
 	// Graceful shutdown
 	quitCh := make(chan os.Signal, 1)
